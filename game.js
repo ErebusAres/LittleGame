@@ -6,7 +6,7 @@
 // - Procedural tiers allow infinite scaling through config-driven helpers.
 
 const SAVE_KEY = 'console-incremental-save';
-const SAVE_VERSION = '1.0.0';
+const SAVE_VERSION = '1.1.0';
 const AUTOSAVE_INTERVAL = 10000; // ms
 const OFFLINE_CAP_SECONDS = 60 * 60 * 12; // 12 hours soft cap
 
@@ -33,7 +33,9 @@ const ui = {
 
 // Utility helpers
 function formatNumber(value) {
-  if (value >= 1e12) return value.toExponential(2);
+  if (value >= 1e18) return value.toExponential(2);
+  if (value >= 1e12) return (value / 1e12).toFixed(2) + 'T';
+  if (value >= 1e9) return (value / 1e9).toFixed(2) + 'B';
   if (value >= 1e6) return (value / 1e6).toFixed(2) + 'M';
   if (value >= 1e3) return (value / 1e3).toFixed(2) + 'k';
   return value.toFixed(2);
@@ -93,6 +95,9 @@ function createTier(index) {
     efficiencyLevel: 0,
     capacityLevel: 0,
     amplifierLevel: 0, // boosts lower tiers to keep progression flowing
+    refinerLevel: 0, // stronger tier-specific multiplier
+    tempoLevel: 0, // reduces cycle time for bar feedback
+    collapsed: false,
   };
 }
 
@@ -122,6 +127,22 @@ const globalUpgradeDefs = [
     scaling: 2.25,
     unlockCondition: () => gameState.tiers.length >= 3 || (gameState.tiers[1] && gameState.tiers[1].autoLevel > 0),
   },
+  {
+    id: 'globalEfficiency',
+    name: 'Global Refiners',
+    description: 'Increase all tier output by +10% per level.',
+    baseCost: 900,
+    scaling: 2.35,
+    unlockCondition: () => gameState.tiers.length >= 3,
+  },
+  {
+    id: 'synergyBoost',
+    name: 'Synergy Echo',
+    description: 'Amplifiers buff lower tiers +5% stronger per level.',
+    baseCost: 1300,
+    scaling: 2.45,
+    unlockCondition: () => gameState.tiers.length >= 4,
+  },
 ];
 
 // Core game state
@@ -144,6 +165,8 @@ let gameState = {
     autoBoost: 0,
     unlockDiscount: 0,
     cycleAccel: 0,
+    globalEfficiency: 0,
+    synergyBoost: 0,
   },
   tiersEverVisible: false,
 };
@@ -164,6 +187,10 @@ function globalAutoMultiplier() {
   return 1 + (gameState.globalUpgrades.autoBoost || 0) * 0.15;
 }
 
+function globalEfficiencyMultiplier() {
+  return 1 + (gameState.globalUpgrades.globalEfficiency || 0) * 0.1;
+}
+
 function tierEfficiency(tier) {
   return 1 + (tier.efficiencyLevel || 0) * 0.25;
 }
@@ -173,12 +200,26 @@ function tierCapacityBonus(tier) {
   return 1 + (tier.capacityLevel || 0) * 0.1;
 }
 
+function tierRefinerBonus(tier) {
+  return 1 + (tier.refinerLevel || 0) * 0.4;
+}
+
+function tierTempoFactor(tier) {
+  // Higher tempo shortens cycle time for more visible bar activity.
+  const reduction = Math.min(0.5, (tier.tempoLevel || 0) * 0.06);
+  return 1 - reduction;
+}
+
+function synergyBoostFactor() {
+  return 1 + (gameState.globalUpgrades.synergyBoost || 0) * 0.05;
+}
+
 function lowerTierBoost(tierIndex) {
   // Higher tiers can amplify lower tiers to keep the ladder moving.
   let boost = 1;
   for (let i = tierIndex + 1; i < gameState.tiers.length; i += 1) {
     const amp = gameState.tiers[i].amplifierLevel || 0;
-    if (amp > 0) boost += amp * 0.1;
+    if (amp > 0) boost += amp * 0.1 * synergyBoostFactor();
   }
   return boost;
 }
@@ -194,8 +235,10 @@ function totalAutoRate(tier) {
     tier.baseAuto *
     tierEfficiency(tier) *
     tierCapacityBonus(tier) *
+    tierRefinerBonus(tier) *
     lowerTierBoost(tier.id) *
     globalAutoMultiplier() *
+    globalEfficiencyMultiplier() *
     getMultiplier();
   // Ensure Tier 0 feels meaningful immediately; clamp early rate to at least 1/sec once purchased.
   if (tier.id === 0 && tier.autoLevel > 0) {
@@ -213,7 +256,7 @@ function updateAutomationBar(tier, dt) {
     return;
   }
   const cycleBase = Math.max(0.2, 2 / Math.log10(rate + 2));
-  const cycle = cycleBase * automationCycleFactor();
+  const cycle = cycleBase * automationCycleFactor() * tierTempoFactor(tier);
   tier.barCycle = cycle;
   tier.saturated = cycle <= 0.25;
   if (tier.saturated) {
@@ -255,9 +298,23 @@ function ensureTierUI(tier) {
   const container = document.createElement('div');
   container.className = 'tier';
 
+  const headRow = document.createElement('div');
+  headRow.className = 'tier-head';
+
+  const toggle = document.createElement('button');
+  toggle.className = 'btn toggle';
+  toggle.onclick = () => {
+    tier.collapsed = !tier.collapsed;
+    setStatus(`${tier.name} ${tier.collapsed ? 'collapsed' : 'expanded'}.`);
+    render();
+  };
+  headRow.appendChild(toggle);
+
   const info = document.createElement('div');
   info.className = 'tier-info';
-  container.appendChild(info);
+  headRow.appendChild(info);
+
+  container.appendChild(headRow);
 
   const upgradesContainer = document.createElement('div');
   upgradesContainer.className = 'tier-upgrades';
@@ -265,7 +322,7 @@ function ensureTierUI(tier) {
 
   ui.tiers.appendChild(container);
 
-  const entry = { container, info, upgradesContainer, buttons: new Map() };
+  const entry = { container, info, upgradesContainer, toggle, buttons: new Map() };
   tierUiMap.set(tier.id, entry);
   return entry;
 }
@@ -284,6 +341,14 @@ function tierCapacityCost(tier) {
 
 function tierAmplifierCost(tier) {
   return 260 * (tier.id + 1) * Math.pow(1.85, tier.amplifierLevel || 0);
+}
+
+function tierRefinerCost(tier) {
+  return 180 * (tier.id + 1) * Math.pow(1.9, tier.refinerLevel || 0);
+}
+
+function tierTempoCost(tier) {
+  return 95 * (tier.id + 1) * Math.pow(1.6, tier.tempoLevel || 0);
 }
 
 function tierUpgradeDefinitions(tier) {
@@ -341,6 +406,33 @@ function tierUpgradeDefinitions(tier) {
     },
   });
 
+  defs.push({
+    id: `ref-${tier.id}`,
+    name: 'Refiner',
+    detail: 'Tier-only multiplier (+40% per level).',
+    getCost: (t) => tierRefinerCost(t),
+    available: () => tier.id >= 1,
+    apply: (t, cost) => {
+      t.amount -= cost;
+      t.refinerLevel = (t.refinerLevel || 0) + 1;
+      setStatus(`${t.name} refined (x${tierRefinerBonus(t).toFixed(2)}).`);
+    },
+  });
+
+  defs.push({
+    id: `tempo-${tier.id}`,
+    name: 'Tempo Tuning',
+    detail: 'Faster cycles for immediate feedback.',
+    getCost: (t) => tierTempoCost(t),
+    available: () => tier.id === 0 || tHasAutomation(tier),
+    apply: (t, cost) => {
+      t.amount -= cost;
+      t.tempoLevel = (t.tempoLevel || 0) + 1;
+      pulseAutomationBar(t);
+      setStatus(`${t.name} tempo increased (cycle ${t.barCycle.toFixed(2)}s).`);
+    },
+  });
+
   return defs.filter((def) => def.available());
 }
 
@@ -366,10 +458,19 @@ function handleTierUpgrade(tierId, upgradeId) {
 
 function updateTierUI(tier) {
   const entry = ensureTierUI(tier);
+  // Auto-collapse deep history tiers to keep UI manageable; user can expand manually.
+  if (gameState.tiers.length > 8 && tier.collapsed === false && tier.id < gameState.tiers.length - 6) {
+    tier.collapsed = true;
+  }
+
   const rate = totalAutoRate(tier);
   const saturatedText = tier.saturated ? 'STATUS: SATURATED' : `${Math.round(tier.barProgress * 100)}%`;
   const synergyText = tier.amplifierLevel > 0 ? `\n SYNERGY: +${(tier.amplifierLevel * 10).toFixed(0)}% to lower tiers` : '';
-  entry.info.textContent = `> ${tier.name}\n AMOUNT: ${formatNumber(tier.amount)}\n AUTO LV ${tier.autoLevel}: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}${synergyText}`;
+  const refinerText = tier.refinerLevel > 0 ? `\n REFINER: x${tierRefinerBonus(tier).toFixed(2)}` : '';
+  const tempoText = tier.tempoLevel > 0 ? `\n TEMPO: ${tier.barCycle.toFixed(2)}s cycles` : '';
+
+  entry.toggle.textContent = tier.collapsed ? '[+]' : '[-]';
+  entry.info.textContent = `> ${tier.name}\n AMOUNT: ${formatNumber(tier.amount)}\n AUTO LV ${tier.autoLevel}: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}${synergyText}${refinerText}${tempoText}`;
 
   const defs = tierUpgradeDefinitions(tier).map((def) => ({
     ...def,
@@ -407,7 +508,12 @@ function updateTierUI(tier) {
 
   // Replace upgrade ordering without recreating buttons.
   entry.upgradesContainer.innerHTML = '';
-  entry.upgradesContainer.appendChild(fragment);
+  if (!tier.collapsed) {
+    entry.upgradesContainer.appendChild(fragment);
+    entry.upgradesContainer.style.display = 'block';
+  } else {
+    entry.upgradesContainer.style.display = 'none';
+  }
 }
 
 function globalUpgradeCost(def) {
@@ -501,7 +607,18 @@ function render() {
 
   updateGlobalUpgradesUI();
 
-  gameState.tiers.forEach((tier) => updateTierUI(tier));
+  // Batch tier render to avoid DOM thrash when many tiers exist.
+  const fragment = document.createDocumentFragment();
+  if (ui.globalUpgradesContainer) {
+    fragment.appendChild(ui.globalUpgradesContainer);
+  }
+  gameState.tiers.forEach((tier) => {
+    updateTierUI(tier);
+    const entry = ensureTierUI(tier);
+    fragment.appendChild(entry.container);
+  });
+  ui.tiers.innerHTML = '';
+  ui.tiers.appendChild(fragment);
 
   // Offline report
   if (gameState.offlineReport) {
@@ -582,7 +699,7 @@ function performPrestige() {
   gameState.clickUpgradeLevel = 0;
   gameState.clickUpgradeCost = 10;
   gameState.autoUpgradeCost = 25;
-  gameState.globalUpgrades = { autoBoost: 0, unlockDiscount: 0, cycleAccel: 0 };
+  gameState.globalUpgrades = { autoBoost: 0, unlockDiscount: 0, cycleAccel: 0, globalEfficiency: 0, synergyBoost: 0 };
   gameState.tiersEverVisible = false;
   resetTierUI();
   setStatus(`Prestige complete. Meta now x${getMultiplier().toFixed(2)}.`);
@@ -638,8 +755,18 @@ function loadGame() {
       autoBoost: parsed.globalUpgrades?.autoBoost || 0,
       unlockDiscount: parsed.globalUpgrades?.unlockDiscount || 0,
       cycleAccel: parsed.globalUpgrades?.cycleAccel || 0,
+      globalEfficiency: parsed.globalUpgrades?.globalEfficiency || 0,
+      synergyBoost: parsed.globalUpgrades?.synergyBoost || 0,
     };
     gameState.tiersEverVisible = parsed.tiersEverVisible || false;
+    // Ensure newly introduced tier properties exist
+    gameState.tiers.forEach((tier, idx) => {
+      if (tier.refinerLevel === undefined) tier.refinerLevel = 0;
+      if (tier.tempoLevel === undefined) tier.tempoLevel = 0;
+      if (tier.capacityLevel === undefined) tier.capacityLevel = 0;
+      if (tier.amplifierLevel === undefined) tier.amplifierLevel = 0;
+      if (tier.collapsed === undefined) tier.collapsed = idx < gameState.tiers.length - 6;
+    });
   } catch (e) {
     console.warn('Failed to load save', e);
   }
@@ -668,7 +795,16 @@ function importSave() {
       autoBoost: parsed.globalUpgrades?.autoBoost || 0,
       unlockDiscount: parsed.globalUpgrades?.unlockDiscount || 0,
       cycleAccel: parsed.globalUpgrades?.cycleAccel || 0,
+      globalEfficiency: parsed.globalUpgrades?.globalEfficiency || 0,
+      synergyBoost: parsed.globalUpgrades?.synergyBoost || 0,
     };
+    gameState.tiers.forEach((tier, idx) => {
+      if (tier.refinerLevel === undefined) tier.refinerLevel = 0;
+      if (tier.tempoLevel === undefined) tier.tempoLevel = 0;
+      if (tier.capacityLevel === undefined) tier.capacityLevel = 0;
+      if (tier.amplifierLevel === undefined) tier.amplifierLevel = 0;
+      if (tier.collapsed === undefined) tier.collapsed = idx < gameState.tiers.length - 6;
+    });
     resetTierUI();
     render();
     saveGame();
@@ -695,7 +831,7 @@ function resetSave() {
     lastActive: Date.now(),
     offlineReport: null,
     statusMessage: 'Awaiting input...',
-    globalUpgrades: { autoBoost: 0, unlockDiscount: 0, cycleAccel: 0 },
+    globalUpgrades: { autoBoost: 0, unlockDiscount: 0, cycleAccel: 0, globalEfficiency: 0, synergyBoost: 0 },
     tiersEverVisible: false,
   };
   resetTierUI();

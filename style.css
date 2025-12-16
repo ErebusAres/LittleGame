@@ -25,7 +25,7 @@ body {
               var(--bg);
   color: var(--text);
   font-family: var(--mono);
-  padding: 16px;
+  padding: 12px;
 }
 
 #app {
@@ -38,7 +38,7 @@ body {
   display: grid;
   grid-template-rows: auto 1fr;
   height: 100%;
-  gap: 12px;
+  gap: 10px;
   min-height: 0;
 }
 
@@ -46,7 +46,7 @@ body {
   background: var(--panel);
   border: 1px solid #133a28;
   border-radius: 8px;
-  padding: 14px 16px;
+  padding: 12px 14px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 6px;
@@ -66,9 +66,10 @@ body {
 }
 
 .status-line {
-  margin: 2px 0 0;
+  margin: 0;
   color: var(--text);
   font-weight: 600;
+  font-size: 15px;
 }
 
 .status-flash {
@@ -88,8 +89,8 @@ body {
     "prestige tiers"
     "save save";
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) 220px;
-  gap: 12px;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) 210px;
+  gap: 10px;
   height: 100%;
   min-height: 0;
 }
@@ -98,7 +99,7 @@ body {
   background: var(--panel);
   border: 1px solid #133a28;
   border-radius: 8px;
-  padding: 12px 14px;
+  padding: 10px 12px;
   box-shadow: 0 0 12px rgba(31, 201, 121, 0.15);
   display: flex;
   flex-direction: column;
@@ -108,7 +109,10 @@ body {
 
 .panel-heading {
   flex: 0 0 auto;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .panel h2 {
@@ -120,32 +124,33 @@ body {
 .panel-body {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   flex: 1 1 auto;
   min-height: 0;
 }
 
 .stack {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .action-block {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn {
   background: transparent;
   color: var(--text);
   border: 1px solid var(--accent);
-  padding: 10px 14px;
+  padding: 9px 12px;
   font-family: var(--mono);
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.15s, transform 0.1s, opacity 0.15s;
   width: 100%;
   text-align: left;
+  font-size: 14px;
 }
 
 .btn:hover {
@@ -163,14 +168,21 @@ body {
 
 .btn:disabled,
 .btn.disabled {
-  opacity: 0.38;
+  opacity: 0.42;
   cursor: not-allowed;
   transform: none;
 }
 
+.btn.toggle {
+  width: auto;
+  min-width: 48px;
+  padding: 6px 10px;
+  text-align: center;
+}
+
 .controls {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   grid-template-columns: 1fr;
 }
 
@@ -193,15 +205,31 @@ body {
 }
 
 .note {
-  margin: 6px 0 0;
+  margin: 4px 0 0;
   color: var(--muted);
   font-size: 13px;
 }
 
 #tiers .tier {
-  padding: 8px 0;
+  padding: 6px 0;
   border-bottom: 1px dashed rgba(31, 201, 121, 0.08);
   white-space: pre-line;
+}
+
+#tiers .tier-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+#tiers .tier-info {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+#tiers .tier-upgrades {
+  margin-top: 4px;
 }
 
 textarea {
@@ -229,7 +257,7 @@ textarea {
 .save-grid {
   display: grid;
   grid-template-rows: auto auto 1fr;
-  gap: 10px;
+  gap: 8px;
   min-height: 0;
 }
 
@@ -260,9 +288,14 @@ textarea {
   padding-right: 4px;
 }
 
+.tiers-heading {
+  justify-content: space-between;
+  align-items: center;
+}
+
 @media (max-width: 640px) {
   body {
-    padding: 12px;
+    padding: 10px;
   }
 
   .dashboard {

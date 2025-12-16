@@ -282,7 +282,7 @@
         "copy. staying on this frequency."
       ]
     },
-    personaPools: {
+personaPools: {
       tryhard: {
         banter: [
           "no sleep until top slot, {player}.",
@@ -331,355 +331,363 @@
             "reset well spent. next loop is yours.",
             "carry that momentum to the next run."
           ]
-        },
-        cutesy: {
-          banter: [
-            "breathe, blink, sip water!",
-            "sending sparkles to your console, {player}.",
-            "your clicks sound like rain. cute!",
-            "little victory dance in the cables."
+        }
+      },
+      cutesy: {
+        banter: [
+          "breathe, blink, sip water!",
+          "sending sparkles to your console, {player}.",
+          "your clicks sound like rain. cute!",
+          "little victory dance in the cables."
+        ],
+        achievement: [
+          "yaaay badge! stick a sticker on it.",
+          "you did it, {player}! proud of you!",
+          "clap clap clap! next one?",
+          "badge unlocked! it's adorable."
+        ],
+        warning: [
+          "careful! sentinel grumpy today.",
+          "slow tiny taps, okay? don't get zapped.",
+          "if lights flash, hide behind me.",
+          "eep! logs look spicy - breathe."
+        ],
+        whisper: [
+          "psst. keep your streak secret, it's magic.",
+          "I'll hum quietly while you climb.",
+          "you can do this. don't tell the core.",
+          "tiny whisper hug for {player}.",
+          "I'll sprinkle luck on your next click.",
+          "sending cozy vibes through the wires."
+        ],
+        whisperTopics: {
+          help: [
+            "try a little automation boost first!",
+            "swap to efficiency—it's comfy power."
           ],
-          achievement: [
-            "yaaay badge! stick a sticker on it.",
-            "you did it, {player}! proud of you!",
-            "clap clap clap! next one?",
-            "badge unlocked! it's adorable."
+          stuck: [
+            "take a breath; prestige can reset the mood.",
+            "if stuck, tiny upgrades add up. promise!"
           ],
-          warning: [
-            "careful! sentinel grumpy today.",
-            "slow tiny taps, okay? don't get zapped.",
-            "if lights flash, hide behind me.",
-            "eep! logs look spicy - breathe."
+          optimize: [
+            "keep cps gentle; sentinel gets cranky.",
+            "rotate upgrades; don't spam one thing."
           ],
-          whisper: [
-            "psst. keep your streak secret, it's magic.",
-            "I'll hum quietly while you climb.",
-            "you can do this. don't tell the core.",
-            "tiny whisper hug for {player}.",
-            "I'll sprinkle luck on your next click.",
-            "sending cozy vibes through the wires."
+          praise: [
+            "proud of you! keep shining.",
+            "that was adorable and efficient!"
           ],
-          whisperTopics: {
-            help: [
-              "try a little automation boost first!",
-              "swap to efficiency—it's comfy power."
-            ],
-            stuck: [
-              "take a breath; prestige can reset the mood.",
-              "if stuck, tiny upgrades add up. promise!"
-            ],
-            optimize: [
-              "keep cps gentle; sentinel gets cranky.",
-              "rotate upgrades; don't spam one thing."
-            ],
-            praise: [
-              "proud of you! keep shining.",
-              "that was adorable and efficient!"
-            ],
-            prestige: [
-              "fresh reboot smell. love it!",
-              "another loop? let's decorate it!"
-            ]
-          },
-          cool: {
-            banter: [
-              "keep floating. vibes only.",
-              "cool breeze through the wires.",
-              "no rush; flow wins races.",
-              "steady drip beats frantic hail."
-            ],
-            achievement: [
-              "clean unlock. smooth hands.",
-              "that's slick, {player}. respect.",
-              "badge secured. stay chill.",
-              "nice glide into that achievement."
-            ],
-            warning: [
-              "heat rising. ease that rhythm.",
-              "sentinel's side-eyeing you. relax.",
-              "too loud on the clicks. muffle it.",
-              "cool it a sec; let the fans spin."
-            ],
-            whisper: [
-              "sharing shade: skip the stress.",
-              "whispering a breeze your way.",
-              "keep the core calm; whispers only.",
-              "quiet nod from the vents.",
-              "take a lap; let autos breathe.",
-              "smooth hands win races."
-            ],
-            whisperTopics: {
-              help: [
-                "ease off and watch the flow.",
-                "balance the arrays; symmetry helps."
-              ],
-              stuck: [
-                "float over the wall; prestige light.",
-                "slow is fine; depth waits."
-              ],
-              optimize: [
-                "trim click bursts; keep it low noise.",
-                "buff efficiency; it's calmer output."
-              ],
-              praise: [
-                "smooth move, {player}.",
-                "that was chill and clean."
-              ],
-              prestige: [
-                "reset like a fresh track drop.",
-                "loop done. spin it again?"
-              ]
-            },
-            shy: {
-              banter: [
-                "oh, uh, hey {player}. nice work.",
-                "listening quietly. impressed.",
-                "I'll just... cheer softly here.",
-                "hope you don't mind quiet support."
-              ],
-              achievement: [
-                "I noticed that badge. good job.",
-                "soft clap for you, {player}.",
-                "you're shining. I'll stay in the back.",
-                "that's impressive. sorry if I'm awkward."
-              ],
-              warning: [
-                "um, logs look hot. maybe slow?",
-                "sentinel noticed... just saying.",
-                "please be careful. I like your run.",
-                "whispers say you're clicking fast."
-              ],
-              whisper: [
-                "I'll keep this secret. proud of you.",
-                "if you need me, I'm on channel 3.",
-                "I like cheering quietly. is that okay?",
-                "I saved you a seat away from the alarms.",
-                "whispering encouragement from the corner.",
-                "I'll watch the gauges while you push."
-              ],
-              whisperTopics: {
-                help: [
-                  "I can nudge some autos if you like.",
-                  "maybe try an efficiency upgrade first?"
-                ],
-                stuck: [
-                  "it's okay to prestige; I'll wait.",
-                  "slow down clicks; penalties hurt."
-                ],
-                optimize: [
-                  "consider alternating tiers to ease costs.",
-                  "lower CPS keeps sentinel calm."
-                ],
-                praise: [
-                  "that was impressive, quietly.",
-                  "soft applause for you, {player}."
-                ],
-                prestige: [
-                  "you reset so confidently. wow.",
-                  "I like this loop. feels calmer."
-                ]
-              },
-              support: {
-                banter: [
-                  "I've got your logs if you need them.",
-                  "call if you want tips, {player}.",
-                  "cheering from the sidelines.",
-                  "I'll patch the holes, you climb."
-                ],
-                achievement: [
-                  "I'll file that badge for you.",
-                  "documented: {player} crushed it.",
-                  "achievement verified. nice.",
-                  "marked your ribbon in the ledger."
-                ],
-                warning: [
-                  "manual spikes detected. adjust cadence.",
-                  "I can cover autos while you cool down.",
-                  "let's not trigger the sentinel today.",
-                  "pacing note: drop CPS a notch."
-                ],
-                whisper: [
-                  "logging this quietly. keep pushing.",
-                  "I'll keep the channel clear for you.",
-                  "whisper line is open if you need help.",
-                  "silent boost: mental buffer +1.",
-                  "flag me if you need recalcs.",
-                  "I'll patch any leaks you make."
-                ],
-                whisperTopics: {
-                  help: [
-                    "shift budget to autos; I'll log it.",
-                    "I can chart your next upgrades."
-                  ],
-                  stuck: [
-                    "prestige and we'll refile the plan.",
-                    "drop difficulty a notch; I'll note it."
-                  ],
-                  optimize: [
-                    "rotate tiers: 0->1->eff upgrades.",
-                    "autos before efficiency before bulk buys."
-                  ],
-                  praise: [
-                    "documented: you crushed that.",
-                    "logging: {player} on a roll."
-                  ],
-                  prestige: [
-                    "reboot logged. carryover clean.",
-                    "next run is prepped. go."
-                  ]
-                },
-                bold: {
-                  banter: [
-                    "kick the door down, {player}.",
-                    "no fear. more power.",
-                    "let's overclock the whole thing.",
-                    "nothing breaks if we go faster. probably."
-                  ],
-                  achievement: [
-                    "badge? crush the next one harder.",
-                    "nice trophy. swing it around.",
-                    "you punched that achievement in the face.",
-                    "stack medals until the panel bows."
-                  ],
-                  warning: [
-                    "you're redlining; love it. careful though.",
-                    "sentinel is itching. dare it? maybe don't.",
-                    "if you trip anti-cheat, I'll laugh then help.",
-                    "heat's climbing; armor up."
-                  ],
-                  whisper: [
-                    "pssst, break the rules? kidding. mostly.",
-                    "I'll shout quietly. go faster.",
-                    "hide this plan: skip sleep, click more.",
-                    "danger's fun. stay sharp.",
-                    "I'll dare you to push harder—quietly.",
-                    "take the risk, but glance at sentinel."
-                  ],
-                  whisperTopics: {
-                    help: [
-                      "overclock autos then sprint clicks.",
-                      "if stuck, nuke it with a prestige and rush."
-                    ],
-                    stuck: [
-                      "kick the wall; prestige and dive again.",
-                      "raise difficulty if bored, drop if blocked."
-                    ],
-                    optimize: [
-                      "burn through early tiers; stop overbuying.",
-                      "fast cycles beat long drags."
-                    ],
-                    praise: [
-                      "that was savage. more.",
-                      "nice hit. do it again."
-                    ],
-                    prestige: [
-                      "reset? bold. push even harder.",
-                      "fresh slate, same aggression."
-                    ]
-                  },
-                  calm: {
-                    banter: [
-                      "steady signals, steady mind.",
-                      "no rush. depth comes.",
-                      "rhythm matters more than speed.",
-                      "breathe in sync with the ticks."
-                    ],
-                    achievement: [
-                      "another stone stacked. balanced.",
-                      "badge placed gently. well done.",
-                      "you moved the needle calmly.",
-                      "quiet progress is still progress."
-                    ],
-                    warning: [
-                      "ease the pace; harmony first.",
-                      "cooling you down to avoid flags.",
-                      "let automation take a breath for you.",
-                      "smooth the cadence; avoid turbulence."
-                    ],
-                    whisper: [
-                      "still waters, {player}. keep them.",
-                      "soft channel open; speak low.",
-                      "I'll hum a steady beat while you climb.",
-                      "calm whisper: you're ahead of schedule.",
-                      "steady hands beat brute force.",
-                      "patience pays; let autos breathe."
-                    ],
-                    whisperTopics: {
-                      help: [
-                        "drop pace; optimize slowly.",
-                        "watch the balance; no need to rush."
-                      ],
-                      stuck: [
-                        "prestige lightly; regain rhythm.",
-                        "shift to efficiency for calm gains."
-                      ],
-                      optimize: [
-                        "avoid penalties; keep CPS low.",
-                        "smooth spending beats spikes."
-                      ],
-                      praise: [
-                        "measured and clean, nice.",
-                        "you kept harmony. good work."
-                      ],
-                      prestige: [
-                        "a gentle reset. good choice.",
-                        "new loop, same quiet focus."
-                      ]
-                    },
-                    analyst: {
-                      banter: [
-                        "logs show a clean climb, {player}.",
-                        "your splits look tight.",
-                        "if you curve the cost, you win.",
-                        "numbers say: you're ahead."
-                      ],
-                      achievement: [
-                        "badge probability met: 99%. confirmed.",
-                        "metric spike detected: achievement secured.",
-                        "data agrees - you nailed it.",
-                        "graph updated. peak recorded."
-                      ],
-                      warning: [
-                        "CPS variance high; sentinel threshold near.",
-                        "entropy rising; reduce manual noise.",
-                        "anti-cheat probability climbing. act.",
-                        "logs show anomaly; smooth clicks now."
-                      ],
-                      whisper: [
-                        "quiet datapoint: you're outperforming mean.",
-                        "I'll stash this message off-ledger.",
-                        "if you pivot now, ROI improves.",
-                        "statistically, a short break boosts output.",
-                        "click cadence too high; lower for best ROI.",
-                        "optimize spend by staggering autos."
-                      ],
-                      whisperTopics: {
-                        help: [
-                          "data says: invest in efficiency now.",
-                          "autos ROI beats clicks at your depth."
-                        ],
-                        stuck: [
-                          "probability favors prestige here.",
-                          "remove penalty by cooling CPS."
-                        ],
-                        optimize: [
-                          "calc shows threads > overclock right now.",
-                          "eff upgrades scale best; model it."
-                        ],
-                        praise: [
-                          "metrics look excellent.",
-                          "your curve is clean. proceed."
-                        ],
-                        prestige: [
-                          "reset efficiency: optimal.",
-                          "carryover looks solid. proceed."
-                        ],
-                      }
-                    }
-                  };
+          prestige: [
+            "fresh reboot smell. love it!",
+            "another loop? let's decorate it!"
+          ]
+        }
+      },
+      cool: {
+        banter: [
+          "keep floating. vibes only.",
+          "cool breeze through the wires.",
+          "no rush; flow wins races.",
+          "steady drip beats frantic hail."
+        ],
+        achievement: [
+          "clean unlock. smooth hands.",
+          "that's slick, {player}. respect.",
+          "badge secured. stay chill.",
+          "nice glide into that achievement."
+        ],
+        warning: [
+          "heat rising. ease that rhythm.",
+          "sentinel's side-eyeing you. relax.",
+          "too loud on the clicks. muffle it.",
+          "cool it a sec; let the fans spin."
+        ],
+        whisper: [
+          "sharing shade: skip the stress.",
+          "whispering a breeze your way.",
+          "keep the core calm; whispers only.",
+          "quiet nod from the vents.",
+          "take a lap; let autos breathe.",
+          "smooth hands win races."
+        ],
+        whisperTopics: {
+          help: [
+            "ease off and watch the flow.",
+            "balance the arrays; symmetry helps."
+          ],
+          stuck: [
+            "float over the wall; prestige light.",
+            "slow is fine; depth waits."
+          ],
+          optimize: [
+            "trim click bursts; keep it low noise.",
+            "buff efficiency; it's calmer output."
+          ],
+          praise: [
+            "smooth move, {player}.",
+            "that was chill and clean."
+          ],
+          prestige: [
+            "reset like a fresh track drop.",
+            "loop done. spin it again?"
+          ]
+        }
+      },
+      shy: {
+        banter: [
+          "oh, uh, hey {player}. nice work.",
+          "listening quietly. impressed.",
+          "I'll just... cheer softly here.",
+          "hope you don't mind quiet support."
+        ],
+        achievement: [
+          "I noticed that badge. good job.",
+          "soft clap for you, {player}.",
+          "you're shining. I'll stay in the back.",
+          "that's impressive. sorry if I'm awkward."
+        ],
+        warning: [
+          "um, logs look hot. maybe slow?",
+          "sentinel noticed... just saying.",
+          "please be careful. I like your run.",
+          "whispers say you're clicking fast."
+        ],
+        whisper: [
+          "I'll keep this secret. proud of you.",
+          "if you need me, I'm on channel 3.",
+          "I like cheering quietly. is that okay?",
+          "I saved you a seat away from the alarms.",
+          "whispering encouragement from the corner.",
+          "I'll watch the gauges while you push."
+        ],
+        whisperTopics: {
+          help: [
+            "I can nudge some autos if you like.",
+            "maybe try an efficiency upgrade first?"
+          ],
+          stuck: [
+            "it's okay to prestige; I'll wait.",
+            "slow down clicks; penalties hurt."
+          ],
+          optimize: [
+            "consider alternating tiers to ease costs.",
+            "lower CPS keeps sentinel calm."
+          ],
+          praise: [
+            "that was impressive, quietly.",
+            "soft applause for you, {player}."
+          ],
+          prestige: [
+            "you reset so confidently. wow.",
+            "I like this loop. feels calmer."
+          ]
+        }
+      },
+      support: {
+        banter: [
+          "I've got your logs if you need them.",
+          "call if you want tips, {player}.",
+          "cheering from the sidelines.",
+          "I'll patch the holes, you climb."
+        ],
+        achievement: [
+          "I'll file that badge for you.",
+          "documented: {player} crushed it.",
+          "achievement verified. nice.",
+          "marked your ribbon in the ledger."
+        ],
+        warning: [
+          "manual spikes detected. adjust cadence.",
+          "I can cover autos while you cool down.",
+          "let's not trigger the sentinel today.",
+          "pacing note: drop CPS a notch."
+        ],
+        whisper: [
+          "logging this quietly. keep pushing.",
+          "I'll keep the channel clear for you.",
+          "whisper line is open if you need help.",
+          "silent boost: mental buffer +1.",
+          "flag me if you need recalcs.",
+          "I'll patch any leaks you make."
+        ],
+        whisperTopics: {
+          help: [
+            "shift budget to autos; I'll log it.",
+            "I can chart your next upgrades."
+          ],
+          stuck: [
+            "prestige and we'll refile the plan.",
+            "drop difficulty a notch; I'll note it."
+          ],
+          optimize: [
+            "rotate tiers: 0->1->eff upgrades.",
+            "autos before efficiency before bulk buys."
+          ],
+          praise: [
+            "documented: you crushed that.",
+            "logging: {player} on a roll."
+          ],
+          prestige: [
+            "reboot logged. carryover clean.",
+            "next run is prepped. go."
+          ]
+        }
+      },
+      bold: {
+        banter: [
+          "kick the door down, {player}.",
+          "no fear. more power.",
+          "let's overclock the whole thing.",
+          "nothing breaks if we go faster. probably."
+        ],
+        achievement: [
+          "badge? crush the next one harder.",
+          "nice trophy. swing it around.",
+          "you punched that achievement in the face.",
+          "stack medals until the panel bows."
+        ],
+        warning: [
+          "you're redlining; love it. careful though.",
+          "sentinel is itching. dare it? maybe don't.",
+          "if you trip anti-cheat, I'll laugh then help.",
+          "heat's climbing; armor up."
+        ],
+        whisper: [
+          "pssst, break the rules? kidding. mostly.",
+          "I'll shout quietly. go faster.",
+          "hide this plan: skip sleep, click more.",
+          "danger's fun. stay sharp.",
+          "I'll dare you to push harder—quietly.",
+          "take the risk, but glance at sentinel."
+        ],
+        whisperTopics: {
+          help: [
+            "overclock autos then sprint clicks.",
+            "if stuck, nuke it with a prestige and rush."
+          ],
+          stuck: [
+            "kick the wall; prestige and dive again.",
+            "raise difficulty if bored, drop if blocked."
+          ],
+          optimize: [
+            "burn through early tiers; stop overbuying.",
+            "fast cycles beat long drags."
+          ],
+          praise: [
+            "that was savage. more.",
+            "nice hit. do it again."
+          ],
+          prestige: [
+            "reset? bold. push even harder.",
+            "fresh slate, same aggression."
+          ]
+        }
+      },
+      calm: {
+        banter: [
+          "steady signals, steady mind.",
+          "no rush. depth comes.",
+          "rhythm matters more than speed.",
+          "breathe in sync with the ticks."
+        ],
+        achievement: [
+          "another stone stacked. balanced.",
+          "badge placed gently. well done.",
+          "you moved the needle calmly.",
+          "quiet progress is still progress."
+        ],
+        warning: [
+          "ease the pace; harmony first.",
+          "cooling you down to avoid flags.",
+          "let automation take a breath for you.",
+          "smooth the cadence; avoid turbulence."
+        ],
+        whisper: [
+          "still waters, {player}. keep them.",
+          "soft channel open; speak low.",
+          "I'll hum a steady beat while you climb.",
+          "calm whisper: you're ahead of schedule.",
+          "steady hands beat brute force.",
+          "patience pays; let autos breathe."
+        ],
+        whisperTopics: {
+          help: [
+            "drop pace; optimize slowly.",
+            "watch the balance; no need to rush."
+          ],
+          stuck: [
+            "prestige lightly; regain rhythm.",
+            "shift to efficiency for calm gains."
+          ],
+          optimize: [
+            "avoid penalties; keep CPS low.",
+            "smooth spending beats spikes."
+          ],
+          praise: [
+            "measured and clean, nice.",
+            "you kept harmony. good work."
+          ],
+          prestige: [
+            "a gentle reset. good choice.",
+            "new loop, same quiet focus."
+          ]
+        }
+      },
+      analyst: {
+        banter: [
+          "logs show a clean climb, {player}.",
+          "your splits look tight.",
+          "if you curve the cost, you win.",
+          "numbers say: you're ahead."
+        ],
+        achievement: [
+          "badge probability met: 99%. confirmed.",
+          "metric spike detected: achievement secured.",
+          "data agrees - you nailed it.",
+          "graph updated. peak recorded."
+        ],
+        warning: [
+          "CPS variance high; sentinel threshold near.",
+          "entropy rising; reduce manual noise.",
+          "anti-cheat probability climbing. act.",
+          "logs show anomaly; smooth clicks now."
+        ],
+        whisper: [
+          "quiet datapoint: you're outperforming mean.",
+          "I'll stash this message off-ledger.",
+          "if you pivot now, ROI improves.",
+          "statistically, a short break boosts output.",
+          "click cadence too high; lower for best ROI.",
+          "optimize spend by staggering autos."
+        ],
+        whisperTopics: {
+          help: [
+            "data says: invest in efficiency now.",
+            "autos ROI beats clicks at your depth."
+          ],
+          stuck: [
+            "probability favors prestige here.",
+            "remove penalty by cooling CPS."
+          ],
+          optimize: [
+            "calc shows threads > overclock right now.",
+            "eff upgrades scale best; model it."
+          ],
+          praise: [
+            "metrics look excellent.",
+            "your curve is clean. proceed."
+          ],
+          prestige: [
+            "reset efficiency: optimal.",
+            "carryover looks solid. proceed."
+          ]
+        }
+      }
+    }
+  };
 
-                  const devTips = [
-                    "tip: watch the chat footer for the freshest ping.",
+  const devTips = [
+    "tip: watch the chat footer for the freshest ping.",
                     "tip: manual spam triggers penalties; pace or automate.",
                     "tip: exports carry chat history too. integrity still enforced."
                   ];

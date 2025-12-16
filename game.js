@@ -116,7 +116,12 @@ function getMultiplier() {
 }
 
 function totalAutoRate(tier) {
-  return tier.autoLevel * tier.baseAuto * getMultiplier();
+  const rate = tier.autoLevel * tier.baseAuto * getMultiplier();
+  // Ensure Tier 0 feels meaningful immediately; clamp early rate to at least 1/sec once purchased.
+  if (tier.id === 0 && tier.autoLevel > 0) {
+    return Math.max(1, rate);
+  }
+  return rate;
 }
 
 function updateAutomationBar(tier, dt) {
@@ -228,30 +233,40 @@ function render() {
   ui.statusLine.textContent = `STATUS: ${gameState.statusMessage}`;
 
   // Conditional visibility to reduce cognitive load
-  ui.tiersSection.classList.toggle('hidden', gameState.tiers[0].autoLevel <= 0);
+  const tiersVisible = gameState.tiers.length > 1 || gameState.tiers.some((tier) => tier.autoLevel > 0);
+  ui.tiersSection.classList.toggle('hidden', !tiersVisible);
   ui.prestigeSection.classList.toggle('hidden', gameState.tiers.length < 2);
 }
 
 // Purchase helpers
 function purchaseClickUpgrade() {
   const primary = gameState.tiers[0];
-  if (primary.amount < gameState.clickUpgradeCost) return;
+  if (primary.amount < gameState.clickUpgradeCost) {
+    setStatus('INSUFFICIENT CREDITS');
+    return;
+  }
   primary.amount -= gameState.clickUpgradeCost;
   gameState.clickUpgradeLevel += 1;
-  gameState.clickPower = 1 + gameState.clickUpgradeLevel * 1;
+  // Lean into early clarity: linear +2 per level keeps clicks obviously stronger.
+  gameState.clickPower = 1 + gameState.clickUpgradeLevel * 2;
   gameState.clickUpgradeCost *= 1.6;
   setStatus(`Click strength boosted to +${formatNumber(gameState.clickPower)}.`);
+  render();
   saveGame();
 }
 
 function purchaseAutoUpgrade() {
   const primary = gameState.tiers[0];
-  if (primary.amount < gameState.autoUpgradeCost) return;
+  if (primary.amount < gameState.autoUpgradeCost) {
+    setStatus('INSUFFICIENT CREDITS');
+    return;
+  }
   primary.amount -= gameState.autoUpgradeCost;
   primary.autoLevel += 1;
   gameState.autoUpgradeCost *= 1.75;
   pulseAutomationBar(primary);
   setStatus(`Automation online: RATE ${formatNumber(totalAutoRate(primary))}/sec.`);
+  render();
   saveGame();
 }
 
@@ -262,22 +277,30 @@ function tierAutoCost(tier) {
 function increaseTierAuto(index) {
   const tier = gameState.tiers[index];
   const cost = tierAutoCost(tier);
-  if (tier.amount < cost) return;
+  if (tier.amount < cost) {
+    setStatus('INSUFFICIENT CREDITS');
+    return;
+  }
   tier.amount -= cost;
   tier.autoLevel += 1;
   pulseAutomationBar(tier);
   setStatus(`${tier.name} automation tuned to ${formatNumber(totalAutoRate(tier))}/sec.`);
+  render();
   saveGame();
 }
 
 function unlockNextTier(index) {
   const current = gameState.tiers[index];
   const cost = unlockCostForTier(index + 1);
-  if (current.amount < cost) return;
+  if (current.amount < cost) {
+    setStatus('INSUFFICIENT CREDITS');
+    return;
+  }
   current.amount -= cost;
   const newTier = createTier(index + 1);
   gameState.tiers.push(newTier);
   setStatus(`${newTier.name} unlocked.`);
+  render();
   saveGame();
 }
 
@@ -342,6 +365,8 @@ function loadGame() {
       ...createTier(tier.id ?? i),
       ...tier,
     }));
+    // Recalculate click power using the current linear formula to keep impact consistent across saves.
+    gameState.clickPower = 1 + (gameState.clickUpgradeLevel || 0) * 2;
     gameState.statusMessage = parsed.statusMessage || 'Awaiting input...';
   } catch (e) {
     console.warn('Failed to load save', e);

@@ -26,6 +26,8 @@ const ui = {
   resetBtn: document.getElementById('reset-btn'),
   saveData: document.getElementById('save-data'),
   statusLine: document.getElementById('status-line'),
+  clickUpgradeBtn: null,
+  autoUpgradeBtn: null,
 };
 
 // Utility helpers
@@ -100,7 +102,7 @@ let gameState = {
   lastSave: Date.now(),
   lastActive: Date.now(),
   offlineReport: null,
-  statusMessage: 'Awaiting input...'
+  statusMessage: 'Awaiting input...',
 };
 
 // Rendering helpers
@@ -165,21 +167,15 @@ function render() {
   ui.clickBtn.textContent = `[CLICK] +${formatNumber(gameState.clickPower * getMultiplier())}`;
   ui.primary.innerHTML = `CREDITS: ${formatNumber(primary.amount)}<br>CLICK POWER: +${formatNumber(gameState.clickPower)} (x${getMultiplier().toFixed(2)} with META)`;
 
-  // Upgrade buttons
-  ui.upgrades.innerHTML = '';
-  const clickUpgrade = document.createElement('button');
-  clickUpgrade.className = 'btn';
-  clickUpgrade.textContent = `[UPGRADE CLICK] Cost: ${formatNumber(gameState.clickUpgradeCost)} CREDITS`;
-  clickUpgrade.onclick = () => purchaseClickUpgrade();
-  clickUpgrade.disabled = primary.amount < gameState.clickUpgradeCost;
-  ui.upgrades.appendChild(clickUpgrade);
-
-  const autoUpgrade = document.createElement('button');
-  autoUpgrade.className = 'btn';
-  autoUpgrade.textContent = `[DEPLOY AUTOS] Cost: ${formatNumber(gameState.autoUpgradeCost)} CREDITS`;
-  autoUpgrade.onclick = () => purchaseAutoUpgrade();
-  autoUpgrade.disabled = primary.amount < gameState.autoUpgradeCost;
-  ui.upgrades.appendChild(autoUpgrade);
+  // Upgrade buttons are created once; render only updates text/disabled to keep wiring intact.
+  if (ui.clickUpgradeBtn) {
+    ui.clickUpgradeBtn.textContent = `[UPGRADE CLICK] Cost: ${formatNumber(gameState.clickUpgradeCost)} CREDITS`;
+    ui.clickUpgradeBtn.disabled = primary.amount < gameState.clickUpgradeCost;
+  }
+  if (ui.autoUpgradeBtn) {
+    ui.autoUpgradeBtn.textContent = `[DEPLOY AUTOS] Cost: ${formatNumber(gameState.autoUpgradeCost)} CREDITS`;
+    ui.autoUpgradeBtn.disabled = primary.amount < gameState.autoUpgradeCost;
+  }
 
   // Automation status (base tier only)
   const autoRate = totalAutoRate(primary);
@@ -421,6 +417,22 @@ function resetSave() {
   saveGame();
 }
 
+function setupUpgradeButtons() {
+  // Buttons are created once so event handlers persist; render only updates state/text.
+  if (!ui.clickUpgradeBtn) {
+    ui.clickUpgradeBtn = document.createElement('button');
+    ui.clickUpgradeBtn.className = 'btn';
+    ui.clickUpgradeBtn.onclick = () => purchaseClickUpgrade();
+    ui.upgrades.appendChild(ui.clickUpgradeBtn);
+  }
+  if (!ui.autoUpgradeBtn) {
+    ui.autoUpgradeBtn = document.createElement('button');
+    ui.autoUpgradeBtn.className = 'btn';
+    ui.autoUpgradeBtn.onclick = () => purchaseAutoUpgrade();
+    ui.upgrades.appendChild(ui.autoUpgradeBtn);
+  }
+}
+
 // Event wiring
 ui.clickBtn.addEventListener('click', () => {
   const primary = gameState.tiers[0];
@@ -463,6 +475,7 @@ function gameLoop() {
 // Initialization
 (function init() {
   loadGame();
+  setupUpgradeButtons();
   const now = Date.now();
   applyOfflineProgress(now);
   gameState.lastActive = now;

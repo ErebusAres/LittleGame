@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Console Incremental</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app" class="terminal">
+    <header class="status-header">
+      <div class="title-block">
+        <h1>>> CONSOLE INCREMENTAL</h1>
+        <p class="subtitle">Theoretically infinite terminal idle game</p>
+      </div>
+      <p id="status-line" class="note status-line">Awaiting input...</p>
+    </header>
+
+    <div class="dashboard">
+      <section id="core" class="panel">
+        <div class="panel-heading">
+          <h2>=== CORE ===</h2>
+        </div>
+        <div class="panel-body">
+          <div id="primary-stats" class="stack"></div>
+          <div class="action-block">
+            <button id="click-btn" class="btn">[CLICK] +1</button>
+            <div id="upgrade-controls" class="controls"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="automation" class="panel">
+        <div class="panel-heading">
+          <h2>=== AUTOMATION ===</h2>
+        </div>
+        <div class="panel-body">
+          <div id="auto-stats" class="stack"></div>
+        </div>
+      </section>
+
+      <section id="prestige" class="panel hidden">
+        <div class="panel-heading">
+          <h2>=== PRESTIGE ===</h2>
+        </div>
+        <div class="panel-body">
+          <div id="prestige-stats" class="stack"></div>
+          <button id="prestige-btn" class="btn warn">[INITIATE PRESTIGE]</button>
+          <p class="note">Resets currencies and upgrades. Grants meta currency based on Prestige Points.</p>
+        </div>
+      </section>
+
+      <section id="currency-tiers" class="panel hidden">
+        <div class="panel-heading">
+          <h2>=== TIERS ===</h2>
+        </div>
+        <div class="panel-body tiers-body">
+          <div id="tiers"></div>
+        </div>
+      </section>
+
+      <section id="save" class="panel save">
+        <div class="panel-heading">
+          <h2>=== SAVE SYSTEM ===</h2>
+        </div>
+        <div class="panel-body save-grid">
+          <div id="offline" class="inline-block">
+            <strong>OFFLINE PROGRESS:</strong>
+            <div id="offline-report">None recorded.</div>
+          </div>
+          <div class="save-controls">
+            <button id="export-btn" class="btn">[EXPORT SAVE]</button>
+            <button id="import-btn" class="btn">[IMPORT SAVE]</button>
+            <button id="reset-btn" class="btn warn">[RESET SAVE]</button>
+          </div>
+          <textarea id="save-data" placeholder="Exported Base64 save will appear here"></textarea>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

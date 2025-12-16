@@ -28,6 +28,7 @@ const ui = {
   statusLine: document.getElementById('status-line'),
   clickUpgradeBtn: null,
   autoUpgradeBtn: null,
+  globalUpgradesContainer: null,
 };
 
 // Utility helpers
@@ -64,9 +65,14 @@ function setStatus(message) {
 }
 
 // Procedural tier helpers
+function unlockDiscountFactor() {
+  const level = gameState.globalUpgrades.unlockDiscount || 0;
+  return Math.pow(0.93, level);
+}
+
 function unlockCostForTier(index) {
   // Exponential scaling: each tier costs roughly 25x the previous unlock cost.
-  return 100 * Math.pow(25, index);
+  return 100 * Math.pow(25, index) * unlockDiscountFactor();
 }
 
 function baseAutoForTier(index) {
@@ -84,8 +90,38 @@ function createTier(index) {
     barProgress: 0,
     barCycle: 2,
     saturated: false,
+    efficiencyLevel: 0,
+    capacityLevel: 0,
   };
 }
+
+// Global upgrade definitions keep the system data-driven and extendable.
+const globalUpgradeDefs = [
+  {
+    id: 'autoBoost',
+    name: 'Global Auto Multiplier',
+    description: 'Increase all automation by +15% per level.',
+    baseCost: 200,
+    scaling: 2,
+    unlockCondition: () => gameState.tiers.some((t) => t.autoLevel > 0),
+  },
+  {
+    id: 'unlockDiscount',
+    name: 'Tier Unlock Discount',
+    description: 'Reduce future tier unlock costs slightly.',
+    baseCost: 500,
+    scaling: 2.5,
+    unlockCondition: () => gameState.tiers.length >= 2,
+  },
+  {
+    id: 'cycleAccel',
+    name: 'Automation Accelerator',
+    description: 'Speed up automation cycles globally.',
+    baseCost: 750,
+    scaling: 2.25,
+    unlockCondition: () => gameState.tiers.length >= 3 || (gameState.tiers[1] && gameState.tiers[1].autoLevel > 0),
+  },
+];
 
 // Core game state
 let gameState = {
@@ -103,6 +139,12 @@ let gameState = {
   lastActive: Date.now(),
   offlineReport: null,
   statusMessage: 'Awaiting input...',
+  globalUpgrades: {
+    autoBoost: 0,
+    unlockDiscount: 0,
+    cycleAccel: 0,
+  },
+  tiersEverVisible: false,
 };
 
 // Rendering helpers
@@ -117,8 +159,26 @@ function getMultiplier() {
   return 1 + gameState.metaPoints * 0.01;
 }
 
+function globalAutoMultiplier() {
+  return 1 + (gameState.globalUpgrades.autoBoost || 0) * 0.15;
+}
+
+function tierEfficiency(tier) {
+  return 1 + (tier.efficiencyLevel || 0) * 0.25;
+}
+
+function tierCapacityBonus(tier) {
+  // Acts as a gentle soft-cap buffer that improves throughput.
+  return 1 + (tier.capacityLevel || 0) * 0.1;
+}
+
+function automationCycleFactor() {
+  const accel = gameState.globalUpgrades.cycleAccel || 0;
+  return 1 - Math.min(0.6, accel * 0.07);
+}
+
 function totalAutoRate(tier) {
-  const rate = tier.autoLevel * tier.baseAuto * getMultiplier();
+  const rate = tier.autoLevel * tier.baseAuto * tierEfficiency(tier) * tierCapacityBonus(tier) * globalAutoMultiplier() * getMultiplier();
   // Ensure Tier 0 feels meaningful immediately; clamp early rate to at least 1/sec once purchased.
   if (tier.id === 0 && tier.autoLevel > 0) {
     return Math.max(1, rate);
@@ -134,7 +194,8 @@ function updateAutomationBar(tier, dt) {
     tier.barCycle = 2;
     return;
   }
-  const cycle = Math.max(0.2, 2 / Math.log10(rate + 2));
+  const cycleBase = Math.max(0.2, 2 / Math.log10(rate + 2));
+  const cycle = cycleBase * automationCycleFactor();
   tier.barCycle = cycle;
   tier.saturated = cycle <= 0.25;
   if (tier.saturated) {
@@ -150,16 +211,233 @@ function pulseAutomationBar(tier) {
 }
 
 function update(dt) {
-  const multiplier = getMultiplier();
   // Automatic generation per tier
   gameState.tiers.forEach((tier) => {
-    const gain = tier.autoLevel * tier.baseAuto * dt * multiplier;
+    const gain = totalAutoRate(tier) * dt;
     tier.amount += gain;
     updateAutomationBar(tier, dt);
   });
 
   // Prestige points trickle in slowly and are persistent between prestiges.
   gameState.prestigePoints += dt * gameState.prestigeRate;
+}
+
+// Tier UI cache to avoid rebuilding buttons and losing handlers.
+const tierUiMap = new Map();
+
+function resetTierUI() {
+  tierUiMap.clear();
+  ui.tiers.innerHTML = '';
+  ui.globalUpgradesContainer = null;
+}
+
+function ensureTierUI(tier) {
+  if (tierUiMap.has(tier.id)) return tierUiMap.get(tier.id);
+
+  const container = document.createElement('div');
+  container.className = 'tier';
+
+  const info = document.createElement('div');
+  info.className = 'tier-info';
+  container.appendChild(info);
+
+  const upgradesContainer = document.createElement('div');
+  upgradesContainer.className = 'tier-upgrades';
+  container.appendChild(upgradesContainer);
+
+  ui.tiers.appendChild(container);
+
+  const entry = { container, info, upgradesContainer, buttons: new Map() };
+  tierUiMap.set(tier.id, entry);
+  return entry;
+}
+
+function tierAutoCost(tier) {
+  return 15 * Math.pow(1.45, tier.autoLevel) * (tier.id + 1);
+}
+
+function tierEfficiencyCost(tier) {
+  return 40 * (tier.id + 1) * Math.pow(1.7, tier.efficiencyLevel);
+}
+
+function tierCapacityCost(tier) {
+  return 120 * (tier.id + 1) * Math.pow(1.8, tier.capacityLevel);
+}
+
+function tierUpgradeDefinitions(tier) {
+  const defs = [];
+  defs.push({
+    id: `auto-${tier.id}`,
+    name: 'Auto Boost',
+    detail: 'Increase automation level (+1).',
+    getCost: (t) => tierAutoCost(t),
+    available: () => true,
+    apply: (t, cost) => {
+      t.amount -= cost;
+      t.autoLevel += 1;
+      pulseAutomationBar(t);
+      setStatus(`${t.name} automation tuned to ${formatNumber(totalAutoRate(t))}/sec.`);
+    },
+  });
+
+  defs.push({
+    id: `eff-${tier.id}`,
+    name: 'Efficiency',
+    detail: 'Boost output by +25% per level.',
+    getCost: (t) => tierEfficiencyCost(t),
+    available: () => tier.id > 0 || tHasAutomation(tier) || gameState.tiers.length > 1,
+    apply: (t, cost) => {
+      t.amount -= cost;
+      t.efficiencyLevel += 1;
+      setStatus(`${t.name} efficiency upgraded (x${tierEfficiency(t).toFixed(2)}).`);
+    },
+  });
+
+  defs.push({
+    id: `cap-${tier.id}`,
+    name: 'Capacity',
+    detail: 'Storage overflow buffer (+10% throughput).',
+    getCost: (t) => tierCapacityCost(t),
+    available: () => tier.id > 1 || tHasAutomation(tier),
+    apply: (t, cost) => {
+      t.amount -= cost;
+      t.capacityLevel += 1;
+      setStatus(`${t.name} capacity expanded (x${tierCapacityBonus(t).toFixed(2)}).`);
+    },
+  });
+
+  return defs.filter((def) => def.available());
+}
+
+function tHasAutomation(tier) {
+  return tier.autoLevel > 0;
+}
+
+function handleTierUpgrade(tierId, upgradeId) {
+  const tier = gameState.tiers.find((t) => t.id === tierId);
+  if (!tier) return;
+  const defs = tierUpgradeDefinitions(tier);
+  const def = defs.find((d) => d.id === upgradeId);
+  if (!def) return;
+  const cost = def.getCost(tier);
+  if (tier.amount < cost) {
+    setStatus('INSUFFICIENT CREDITS');
+    return;
+  }
+  def.apply(tier, cost);
+  render();
+  saveGame();
+}
+
+function updateTierUI(tier) {
+  const entry = ensureTierUI(tier);
+  const rate = totalAutoRate(tier);
+  const saturatedText = tier.saturated ? 'STATUS: SATURATED' : `${Math.round(tier.barProgress * 100)}%`;
+  entry.info.textContent = `> ${tier.name}\n AMOUNT: ${formatNumber(tier.amount)}\n AUTO LV ${tier.autoLevel}: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}`;
+
+  const defs = tierUpgradeDefinitions(tier).map((def) => ({
+    ...def,
+    cost: def.getCost(tier),
+  }));
+
+  // Include unlock action in the same cost ordering for clarity on next steps.
+  if (tier.id === gameState.tiers.length - 1) {
+    defs.push({
+      id: `unlock-${tier.id}`,
+      name: `Unlock Tier ${tier.id + 2}`,
+      detail: 'Open the next tier.',
+      cost: unlockCostForTier(tier.id + 1),
+      onClick: () => unlockNextTier(tier.id),
+    });
+  }
+
+  defs.sort((a, b) => a.cost - b.cost || a.id.localeCompare(b.id));
+
+  const fragment = document.createDocumentFragment();
+  defs.forEach((def) => {
+    let btn = entry.buttons.get(def.id);
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.className = 'btn';
+      const handler = def.onClick ? def.onClick : () => handleTierUpgrade(tier.id, def.id);
+      btn.onclick = handler;
+      entry.buttons.set(def.id, btn);
+    }
+    btn.textContent = `[${def.name}] ${def.detail} Cost: ${formatNumber(def.cost)} ${tier.name}`;
+    btn.disabled = tier.amount < def.cost;
+    fragment.appendChild(btn);
+    fragment.appendChild(document.createElement('br'));
+  });
+
+  // Replace upgrade ordering without recreating buttons.
+  entry.upgradesContainer.innerHTML = '';
+  entry.upgradesContainer.appendChild(fragment);
+}
+
+function globalUpgradeCost(def) {
+  const level = gameState.globalUpgrades[def.id] || 0;
+  return def.baseCost * Math.pow(def.scaling, level);
+}
+
+function handleGlobalUpgrade(id) {
+  const def = globalUpgradeDefs.find((d) => d.id === id);
+  if (!def) return;
+  const cost = globalUpgradeCost(def);
+  const primary = gameState.tiers[0];
+  if (primary.amount < cost) {
+    setStatus('INSUFFICIENT CREDITS');
+    return;
+  }
+  primary.amount -= cost;
+  gameState.globalUpgrades[id] = (gameState.globalUpgrades[id] || 0) + 1;
+  setStatus(`${def.name} upgraded (Lvl ${gameState.globalUpgrades[id]}).`);
+  render();
+  saveGame();
+}
+
+function ensureGlobalUpgradesUI() {
+  if (ui.globalUpgradesContainer) return;
+  ui.globalUpgradesContainer = document.createElement('div');
+  ui.globalUpgradesContainer.className = 'tier global-upgrades';
+  const header = document.createElement('div');
+  header.textContent = 'GLOBAL UPGRADES';
+  ui.globalUpgradesContainer.appendChild(header);
+  const list = document.createElement('div');
+  list.className = 'tier-upgrades';
+  ui.globalUpgradesContainer.list = list;
+  ui.globalUpgradesContainer.appendChild(list);
+  ui.tiers.prepend(ui.globalUpgradesContainer);
+  ui.globalUpgradesContainer.buttons = new Map();
+}
+
+function updateGlobalUpgradesUI() {
+  ensureGlobalUpgradesUI();
+  const list = ui.globalUpgradesContainer.list;
+  const buttons = ui.globalUpgradesContainer.buttons;
+
+  const available = globalUpgradeDefs
+    .filter((def) => def.unlockCondition())
+    .map((def) => ({ ...def, cost: globalUpgradeCost(def) }))
+    .sort((a, b) => a.cost - b.cost || a.id.localeCompare(b.id));
+
+  const fragment = document.createDocumentFragment();
+  available.forEach((def) => {
+    let btn = buttons.get(def.id);
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.className = 'btn';
+      btn.onclick = () => handleGlobalUpgrade(def.id);
+      buttons.set(def.id, btn);
+    }
+    const level = gameState.globalUpgrades[def.id] || 0;
+    btn.textContent = `[${def.name} Lv${level}] ${def.description} Cost: ${formatNumber(def.cost)} CREDITS`;
+    btn.disabled = gameState.tiers[0].amount < def.cost;
+    fragment.appendChild(btn);
+    fragment.appendChild(document.createElement('br'));
+  });
+
+  list.innerHTML = '';
+  list.appendChild(fragment);
 }
 
 function render() {
@@ -185,40 +463,9 @@ function render() {
   // Prestige UI
   ui.prestigeStats.innerHTML = `META MULTIPLIER: x${getMultiplier().toFixed(2)}<br>PRESTIGE POINTS: ${formatNumber(gameState.prestigePoints)}<br>GAIN ON PRESTIGE: +${formatNumber(prestigeReward())} META`;
 
-  // Tiers section
-  ui.tiers.innerHTML = '';
-  gameState.tiers.forEach((tier, index) => {
-    const line = document.createElement('div');
-    line.className = 'tier';
-    const rate = totalAutoRate(tier);
-    const saturatedText = tier.saturated ? 'STATUS: SATURATED' : `${Math.round(tier.barProgress * 100)}%`;
-    line.innerHTML = `> ${tier.name}\n` +
-      ` AMOUNT: ${formatNumber(tier.amount)}\n` +
-      ` AUTO LV ${tier.autoLevel}: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}`;
+  updateGlobalUpgradesUI();
 
-    // Unlock next tier button
-    if (index === gameState.tiers.length - 1) {
-      const nextCost = unlockCostForTier(index + 1);
-      const btn = document.createElement('button');
-      btn.className = 'btn';
-      btn.textContent = `[UNLOCK TIER ${index + 2}] Cost: ${formatNumber(nextCost)} ${tier.name}`;
-      btn.onclick = () => unlockNextTier(index);
-      btn.disabled = tier.amount < nextCost;
-      line.appendChild(document.createElement('br'));
-      line.appendChild(btn);
-    }
-
-    // Auto upgrade per tier
-    const tierAutoBtn = document.createElement('button');
-    tierAutoBtn.className = 'btn';
-    tierAutoBtn.textContent = `[BOOST AUTO] Cost: ${formatNumber(tierAutoCost(tier))} ${tier.name}`;
-    tierAutoBtn.onclick = () => increaseTierAuto(index);
-    tierAutoBtn.disabled = tier.amount < tierAutoCost(tier);
-    line.appendChild(document.createElement('br'));
-    line.appendChild(tierAutoBtn);
-
-    ui.tiers.appendChild(line);
-  });
+  gameState.tiers.forEach((tier) => updateTierUI(tier));
 
   // Offline report
   if (gameState.offlineReport) {
@@ -228,8 +475,9 @@ function render() {
 
   ui.statusLine.textContent = `STATUS: ${gameState.statusMessage}`;
 
-  // Conditional visibility to reduce cognitive load
-  const tiersVisible = gameState.tiers.length > 1 || gameState.tiers.some((tier) => tier.autoLevel > 0);
+  // Conditional visibility to reduce cognitive load but keep unlocked systems visible once shown.
+  const tiersVisible = gameState.tiersEverVisible || gameState.tiers.length > 1 || gameState.tiers.some((tier) => tier.autoLevel > 0);
+  if (tiersVisible) gameState.tiersEverVisible = true;
   ui.tiersSection.classList.toggle('hidden', !tiersVisible);
   ui.prestigeSection.classList.toggle('hidden', gameState.tiers.length < 2);
 }
@@ -266,25 +514,6 @@ function purchaseAutoUpgrade() {
   saveGame();
 }
 
-function tierAutoCost(tier) {
-  return 15 * Math.pow(1.45, tier.autoLevel) * (tier.id + 1);
-}
-
-function increaseTierAuto(index) {
-  const tier = gameState.tiers[index];
-  const cost = tierAutoCost(tier);
-  if (tier.amount < cost) {
-    setStatus('INSUFFICIENT CREDITS');
-    return;
-  }
-  tier.amount -= cost;
-  tier.autoLevel += 1;
-  pulseAutomationBar(tier);
-  setStatus(`${tier.name} automation tuned to ${formatNumber(totalAutoRate(tier))}/sec.`);
-  render();
-  saveGame();
-}
-
 function unlockNextTier(index) {
   const current = gameState.tiers[index];
   const cost = unlockCostForTier(index + 1);
@@ -296,6 +525,7 @@ function unlockNextTier(index) {
   const newTier = createTier(index + 1);
   gameState.tiers.push(newTier);
   setStatus(`${newTier.name} unlocked.`);
+  gameState.tiersEverVisible = true;
   render();
   saveGame();
 }
@@ -316,6 +546,9 @@ function performPrestige() {
   gameState.clickUpgradeLevel = 0;
   gameState.clickUpgradeCost = 10;
   gameState.autoUpgradeCost = 25;
+  gameState.globalUpgrades = { autoBoost: 0, unlockDiscount: 0, cycleAccel: 0 };
+  gameState.tiersEverVisible = false;
+  resetTierUI();
   setStatus(`Prestige complete. Meta now x${getMultiplier().toFixed(2)}.`);
   saveGame();
 }
@@ -364,6 +597,13 @@ function loadGame() {
     // Recalculate click power using the current linear formula to keep impact consistent across saves.
     gameState.clickPower = 1 + (gameState.clickUpgradeLevel || 0) * 2;
     gameState.statusMessage = parsed.statusMessage || 'Awaiting input...';
+    // Initialize new structures for backward compatibility.
+    gameState.globalUpgrades = {
+      autoBoost: parsed.globalUpgrades?.autoBoost || 0,
+      unlockDiscount: parsed.globalUpgrades?.unlockDiscount || 0,
+      cycleAccel: parsed.globalUpgrades?.cycleAccel || 0,
+    };
+    gameState.tiersEverVisible = parsed.tiersEverVisible || false;
   } catch (e) {
     console.warn('Failed to load save', e);
   }
@@ -388,6 +628,13 @@ function importSave() {
       ...createTier(tier.id ?? i),
       ...tier,
     }));
+    gameState.globalUpgrades = {
+      autoBoost: parsed.globalUpgrades?.autoBoost || 0,
+      unlockDiscount: parsed.globalUpgrades?.unlockDiscount || 0,
+      cycleAccel: parsed.globalUpgrades?.cycleAccel || 0,
+    };
+    resetTierUI();
+    render();
     saveGame();
   } catch (e) {
     alert('Import failed: ' + e.message);
@@ -412,7 +659,10 @@ function resetSave() {
     lastActive: Date.now(),
     offlineReport: null,
     statusMessage: 'Awaiting input...',
+    globalUpgrades: { autoBoost: 0, unlockDiscount: 0, cycleAccel: 0 },
+    tiersEverVisible: false,
   };
+  resetTierUI();
   setStatus('Progress reset. Fresh start.');
   saveGame();
 }
@@ -475,6 +725,7 @@ function gameLoop() {
 // Initialization
 (function init() {
   loadGame();
+  resetTierUI();
   setupUpgradeButtons();
   const now = Date.now();
   applyOfflineProgress(now);

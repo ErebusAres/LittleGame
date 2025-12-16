@@ -17,12 +17,15 @@ const ui = {
   autoStats: document.getElementById('auto-stats'),
   prestigeStats: document.getElementById('prestige-stats'),
   prestigeBtn: document.getElementById('prestige-btn'),
+  prestigeSection: document.getElementById('prestige'),
   tiers: document.getElementById('tiers'),
+  tiersSection: document.getElementById('currency-tiers'),
   offline: document.getElementById('offline-report'),
   exportBtn: document.getElementById('export-btn'),
   importBtn: document.getElementById('import-btn'),
   resetBtn: document.getElementById('reset-btn'),
   saveData: document.getElementById('save-data'),
+  statusLine: document.getElementById('status-line'),
 };
 
 // Utility helpers
@@ -47,6 +50,15 @@ function formatTime(seconds) {
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
+}
+
+function setStatus(message) {
+  gameState.statusMessage = message;
+  // retrigger flash animation for visual feedback
+  ui.statusLine.classList.remove('status-flash');
+  // force reflow so the class re-applies
+  void ui.statusLine.offsetWidth;
+  ui.statusLine.classList.add('status-flash');
 }
 
 // Procedural tier helpers
@@ -88,6 +100,7 @@ let gameState = {
   lastSave: Date.now(),
   lastActive: Date.now(),
   offlineReport: null,
+  statusMessage: 'Awaiting input...'
 };
 
 // Rendering helpers
@@ -124,6 +137,11 @@ function updateAutomationBar(tier, dt) {
   tier.barProgress = (tier.barProgress + dt / cycle) % 1;
 }
 
+function pulseAutomationBar(tier) {
+  tier.barProgress = 1;
+  updateAutomationBar(tier, 0);
+}
+
 function update(dt) {
   const multiplier = getMultiplier();
   // Automatic generation per tier
@@ -148,18 +166,20 @@ function render() {
   clickUpgrade.className = 'btn';
   clickUpgrade.textContent = `[UPGRADE CLICK] Cost: ${formatNumber(gameState.clickUpgradeCost)} CREDITS`;
   clickUpgrade.onclick = () => purchaseClickUpgrade();
+  clickUpgrade.disabled = primary.amount < gameState.clickUpgradeCost;
   ui.upgrades.appendChild(clickUpgrade);
 
   const autoUpgrade = document.createElement('button');
   autoUpgrade.className = 'btn';
   autoUpgrade.textContent = `[DEPLOY AUTOS] Cost: ${formatNumber(gameState.autoUpgradeCost)} CREDITS`;
   autoUpgrade.onclick = () => purchaseAutoUpgrade();
+  autoUpgrade.disabled = primary.amount < gameState.autoUpgradeCost;
   ui.upgrades.appendChild(autoUpgrade);
 
   // Automation status (base tier only)
   const autoRate = totalAutoRate(primary);
   const cycleText = primary.saturated ? 'STATUS: SATURATED' : `CYCLE: ${primary.barCycle.toFixed(2)}s`;
-  ui.autoStats.innerHTML = `RATE: ${formatNumber(autoRate)}/sec<br>${renderBar(primary.barProgress, primary.saturated)} ${primary.saturated ? '100%' : `${Math.round(primary.barProgress * 100)}%`}<br>${cycleText}`;
+  ui.autoStats.innerHTML = `AUTO LEVEL: ${primary.autoLevel}<br>RATE: ${formatNumber(autoRate)}/sec<br>${renderBar(primary.barProgress, primary.saturated)} ${primary.saturated ? '100%' : `${Math.round(primary.barProgress * 100)}%`}<br>${cycleText}`;
 
   // Prestige UI
   ui.prestigeStats.innerHTML = `META MULTIPLIER: x${getMultiplier().toFixed(2)}<br>PRESTIGE POINTS: ${formatNumber(gameState.prestigePoints)}<br>GAIN ON PRESTIGE: +${formatNumber(prestigeReward())} META`;
@@ -173,7 +193,7 @@ function render() {
     const saturatedText = tier.saturated ? 'STATUS: SATURATED' : `${Math.round(tier.barProgress * 100)}%`;
     line.innerHTML = `> ${tier.name}\n` +
       ` AMOUNT: ${formatNumber(tier.amount)}\n` +
-      ` AUTO: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}`;
+      ` AUTO LV ${tier.autoLevel}: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}`;
 
     // Unlock next tier button
     if (index === gameState.tiers.length - 1) {
@@ -182,6 +202,7 @@ function render() {
       btn.className = 'btn';
       btn.textContent = `[UNLOCK TIER ${index + 2}] Cost: ${formatNumber(nextCost)} ${tier.name}`;
       btn.onclick = () => unlockNextTier(index);
+      btn.disabled = tier.amount < nextCost;
       line.appendChild(document.createElement('br'));
       line.appendChild(btn);
     }
@@ -191,6 +212,7 @@ function render() {
     tierAutoBtn.className = 'btn';
     tierAutoBtn.textContent = `[BOOST AUTO] Cost: ${formatNumber(tierAutoCost(tier))} ${tier.name}`;
     tierAutoBtn.onclick = () => increaseTierAuto(index);
+    tierAutoBtn.disabled = tier.amount < tierAutoCost(tier);
     line.appendChild(document.createElement('br'));
     line.appendChild(tierAutoBtn);
 
@@ -202,6 +224,12 @@ function render() {
     const { elapsed, gained } = gameState.offlineReport;
     ui.offline.textContent = `Time Away: ${formatTime(elapsed)}\nGained: +${formatNumber(gained)} CREDITS`;
   }
+
+  ui.statusLine.textContent = `STATUS: ${gameState.statusMessage}`;
+
+  // Conditional visibility to reduce cognitive load
+  ui.tiersSection.classList.toggle('hidden', gameState.tiers[0].autoLevel <= 0);
+  ui.prestigeSection.classList.toggle('hidden', gameState.tiers.length < 2);
 }
 
 // Purchase helpers
@@ -210,8 +238,9 @@ function purchaseClickUpgrade() {
   if (primary.amount < gameState.clickUpgradeCost) return;
   primary.amount -= gameState.clickUpgradeCost;
   gameState.clickUpgradeLevel += 1;
-  gameState.clickPower = 1 + gameState.clickUpgradeLevel * 0.6;
+  gameState.clickPower = 1 + gameState.clickUpgradeLevel * 1;
   gameState.clickUpgradeCost *= 1.6;
+  setStatus(`Click strength boosted to +${formatNumber(gameState.clickPower)}.`);
   saveGame();
 }
 
@@ -221,6 +250,8 @@ function purchaseAutoUpgrade() {
   primary.amount -= gameState.autoUpgradeCost;
   primary.autoLevel += 1;
   gameState.autoUpgradeCost *= 1.75;
+  pulseAutomationBar(primary);
+  setStatus(`Automation online: RATE ${formatNumber(totalAutoRate(primary))}/sec.`);
   saveGame();
 }
 
@@ -234,6 +265,8 @@ function increaseTierAuto(index) {
   if (tier.amount < cost) return;
   tier.amount -= cost;
   tier.autoLevel += 1;
+  pulseAutomationBar(tier);
+  setStatus(`${tier.name} automation tuned to ${formatNumber(totalAutoRate(tier))}/sec.`);
   saveGame();
 }
 
@@ -244,6 +277,7 @@ function unlockNextTier(index) {
   current.amount -= cost;
   const newTier = createTier(index + 1);
   gameState.tiers.push(newTier);
+  setStatus(`${newTier.name} unlocked.`);
   saveGame();
 }
 
@@ -263,6 +297,7 @@ function performPrestige() {
   gameState.clickUpgradeLevel = 0;
   gameState.clickUpgradeCost = 10;
   gameState.autoUpgradeCost = 25;
+  setStatus(`Prestige complete. Meta now x${getMultiplier().toFixed(2)}.`);
   saveGame();
 }
 
@@ -307,6 +342,7 @@ function loadGame() {
       ...createTier(tier.id ?? i),
       ...tier,
     }));
+    gameState.statusMessage = parsed.statusMessage || 'Awaiting input...';
   } catch (e) {
     console.warn('Failed to load save', e);
   }
@@ -354,7 +390,9 @@ function resetSave() {
     lastSave: Date.now(),
     lastActive: Date.now(),
     offlineReport: null,
+    statusMessage: 'Awaiting input...',
   };
+  setStatus('Progress reset. Fresh start.');
   saveGame();
 }
 
@@ -362,6 +400,7 @@ function resetSave() {
 ui.clickBtn.addEventListener('click', () => {
   const primary = gameState.tiers[0];
   primary.amount += gameState.clickPower * getMultiplier();
+  setStatus(`Manual input registered (+${formatNumber(gameState.clickPower * getMultiplier())}).`);
   saveGame();
 });
 ui.prestigeBtn.addEventListener('click', () => performPrestige());

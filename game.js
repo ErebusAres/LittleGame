@@ -92,6 +92,7 @@ function createTier(index) {
     saturated: false,
     efficiencyLevel: 0,
     capacityLevel: 0,
+    amplifierLevel: 0, // boosts lower tiers to keep progression flowing
   };
 }
 
@@ -172,13 +173,30 @@ function tierCapacityBonus(tier) {
   return 1 + (tier.capacityLevel || 0) * 0.1;
 }
 
+function lowerTierBoost(tierIndex) {
+  // Higher tiers can amplify lower tiers to keep the ladder moving.
+  let boost = 1;
+  for (let i = tierIndex + 1; i < gameState.tiers.length; i += 1) {
+    const amp = gameState.tiers[i].amplifierLevel || 0;
+    if (amp > 0) boost += amp * 0.1;
+  }
+  return boost;
+}
+
 function automationCycleFactor() {
   const accel = gameState.globalUpgrades.cycleAccel || 0;
   return 1 - Math.min(0.6, accel * 0.07);
 }
 
 function totalAutoRate(tier) {
-  const rate = tier.autoLevel * tier.baseAuto * tierEfficiency(tier) * tierCapacityBonus(tier) * globalAutoMultiplier() * getMultiplier();
+  const rate =
+    tier.autoLevel *
+    tier.baseAuto *
+    tierEfficiency(tier) *
+    tierCapacityBonus(tier) *
+    lowerTierBoost(tier.id) *
+    globalAutoMultiplier() *
+    getMultiplier();
   // Ensure Tier 0 feels meaningful immediately; clamp early rate to at least 1/sec once purchased.
   if (tier.id === 0 && tier.autoLevel > 0) {
     return Math.max(1, rate);
@@ -264,6 +282,10 @@ function tierCapacityCost(tier) {
   return 120 * (tier.id + 1) * Math.pow(1.8, tier.capacityLevel);
 }
 
+function tierAmplifierCost(tier) {
+  return 260 * (tier.id + 1) * Math.pow(1.85, tier.amplifierLevel || 0);
+}
+
 function tierUpgradeDefinitions(tier) {
   const defs = [];
   defs.push({
@@ -306,6 +328,19 @@ function tierUpgradeDefinitions(tier) {
     },
   });
 
+  defs.push({
+    id: `amp-${tier.id}`,
+    name: 'Synergy Amplifier',
+    detail: 'Boost lower tiers by +10% per level.',
+    getCost: (t) => tierAmplifierCost(t),
+    available: () => tier.id > 0, // only meaningful when a lower tier exists
+    apply: (t, cost) => {
+      t.amount -= cost;
+      t.amplifierLevel = (t.amplifierLevel || 0) + 1;
+      setStatus(`${t.name} amplifies lower tiers (+${(t.amplifierLevel * 10).toFixed(0)}%).`);
+    },
+  });
+
   return defs.filter((def) => def.available());
 }
 
@@ -333,7 +368,8 @@ function updateTierUI(tier) {
   const entry = ensureTierUI(tier);
   const rate = totalAutoRate(tier);
   const saturatedText = tier.saturated ? 'STATUS: SATURATED' : `${Math.round(tier.barProgress * 100)}%`;
-  entry.info.textContent = `> ${tier.name}\n AMOUNT: ${formatNumber(tier.amount)}\n AUTO LV ${tier.autoLevel}: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}`;
+  const synergyText = tier.amplifierLevel > 0 ? `\n SYNERGY: +${(tier.amplifierLevel * 10).toFixed(0)}% to lower tiers` : '';
+  entry.info.textContent = `> ${tier.name}\n AMOUNT: ${formatNumber(tier.amount)}\n AUTO LV ${tier.autoLevel}: ${formatNumber(rate)}/sec ${renderBar(tier.barProgress, tier.saturated)} ${saturatedText}${synergyText}`;
 
   const defs = tierUpgradeDefinitions(tier).map((def) => ({
     ...def,

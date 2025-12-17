@@ -78,7 +78,7 @@
     meta: { id: "SYS-META", user: "META", category: "prestige" },
     warning: { id: "SYS-WARN", user: "SENTINEL", category: "warning" },
     integrity: { id: "SYS-INT", user: "INTEGRITY", category: "warning" },
-    operator: { id: "OP-000", user: "OPERATOR", category: "operator", color: "#b3f3ff" },
+    operator: { id: "OP-001", user: "OPERATOR", category: "operator", color: "#b3f3ff" },
     dev: { id: "DEV-01", user: "ErebusAres", category: "dev", color: "#ffd479" },
     npc: { id: "NPC-000", user: "relay", category: "npc" },
     entity: {

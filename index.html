@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terminal Idle</title>
   <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
   <div id="app">
-    <div id="statusLine">STATUS: Booting...</div>
+    <div id="statusLine">
+      <span>STATUS: Booting...</span>
+      <span id="warningLine">WARNING: Active Development. Progress may be reset at any time.</span>
+      </div>
     <div id="mainGrid">
       <section id="corePanel" class="panel">
         <div class="panel-header">Core</div>

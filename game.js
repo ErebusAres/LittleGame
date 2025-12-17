@@ -2506,6 +2506,6 @@ function chatFlags() {
 
 function setStatus(message) {
   state.status = message;
-  ui.status.textContent = `STATUS: ${message}`;
+  ui.status.querySelector('span:first-child').textContent = `STATUS: ${message}`;
 }
 }) ();

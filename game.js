@@ -2,7 +2,7 @@
   "use strict";
 
   const GAME_VERSION = 1;
-  const DEV_MODE = false;
+  const DEV_MODE = true;
   const ENCHANT_GLYPHS = [
     // Minecraft-style runes
     "ᔑ", "ᒷ", "╎", "𝙹", "ꖌ", "ꖎ", "ᒲ", "リ", "∷", "ᓵ", "ᓭ", "⎓", "ℸ", "⍑", "⊣",
@@ -48,8 +48,8 @@
   ];
 
   const globalUpgradeDefs = [
-    { id: "click", name: "Click Power", desc: "+1 click strength", baseCost: 20, costGrowth: 1.6 },
-    { id: "clickBurst", name: "Click Burst", desc: "+0.5 click strength", baseCost: 35, costGrowth: 1.75 },
+    { id: "click", name: "Click Power", desc: "+1 click strength", baseCost: 20, costGrowth: 1.75 },
+    { id: "clickBurst", name: "Click Tap", desc: "+0.5 click strength", baseCost: 10, costGrowth: 1.6 },
     { id: "automation", name: "Automation Core", desc: "+15% automation power", baseCost: 45, costGrowth: 1.65 },
     { id: "threads", name: "Parallel Threads", desc: "+0.25 base auto/sec", baseCost: 60, costGrowth: 1.7 },
     { id: "overclock", name: "Core Overclock", desc: "+5% all output", baseCost: 80, costGrowth: 1.8 },
@@ -1520,14 +1520,18 @@
 
     const header = document.createElement("div");
     header.className = "tier-header";
+
     const name = document.createElement("div");
     name.textContent = `${tier.name} [T${tier.index}]`;
+
     const amount = document.createElement("div");
     amount.className = "value mono";
+
     header.append(name, amount);
 
     const body = document.createElement("div");
     body.className = "tier-body";
+
     const rate = document.createElement("div");
     rate.className = "muted mono";
     rate.textContent = "Rate: 0/s";
@@ -1536,10 +1540,20 @@
     btnRow.className = "button-row";
 
     let buyBtn = null;
+
+    // === ACQUIRE BUTTON (manual buy) ===
     if (tier.index > 0) {
       buyBtn = document.createElement("button");
       buyBtn.className = "small has-tip";
-      buyBtn.addEventListener("click", () => buyTierUnit(tier));
+
+      if (isFrontierTier(tier)) {
+        buyBtn.addEventListener("click", () => buyTierUnit(tier));
+      } else {
+        buyBtn.disabled = true;
+        buyBtn.textContent = "Acquire Locked";
+        buyBtn.title = "Manual acquisition is disabled once the next tier is unlocked";
+      }
+
       btnRow.appendChild(buyBtn);
     }
 
@@ -1653,11 +1667,12 @@
   }
 
   function getDifficultyScalar() {
-    const tierPressure = 1 + Math.max(0, state.tiers.length - 1) * 0.12;
-    const base = 1 + totalUpgradeLoad() * 0.06;
-    const softener = 1 - (state.prestige.upgrades.difficultySoftener || 0) * 0.05;
-    const wall = getProgressionWall();
-    return Math.max(1, base * tierPressure * wall * Math.max(0.35, softener) * getManualCostFactor());
+    // state.difficulty is 1–100 from the UI
+    return 1 + (state.manualDifficulty - 1) * 0.01;
+  }
+
+  function isFrontierTier(tier) {
+    return tier.index === state.tiers.length - 1;
   }
 
   function getIncomeDampener() {
@@ -1683,7 +1698,7 @@
   }
 
   function getClickValue() {
-    const base = 1 + state.globalUpgrades.click * 0.9 + state.globalUpgrades.clickBurst * 0.5;
+    const base = 1 + state.globalUpgrades.click * 1 + state.globalUpgrades.clickBurst * 0.5;
     const meta = 1 + state.prestige.upgrades.clickPersist * 0.2;
     const eff0 = tierEfficiencyMultiplier(state.tiers[0]);
     return base * meta * getPrestigeMultiplier() * eff0 * getManualIncomeFactor();
@@ -1746,17 +1761,27 @@
   }
 
   function tierUnitCost(tier) {
-    const diff = Math.pow(getDifficultyScalar(), 1.15);
-    return tier.baseCost * Math.pow(tier.costGrowth, tier.amount) * diff;
+    return Math.floor(
+      tier.baseCost *
+      Math.pow(tier.costGrowth, tier.amount) *
+      getDifficultyScalar()
+    );
   }
+
 
   function tierUpgradeCost(tier, kind) {
     const level = kind === "auto" ? tier.autoLevel : tier.efficiencyLevel;
     const base = kind === "auto" ? tier.autoCostBase : tier.effCostBase;
     const growth = kind === "auto" ? 1.8 : 1.9;
-    const diff = Math.pow(getDifficultyScalar(), 1.15);
-    return base * Math.pow(growth, level) * diff;
+
+    return Math.floor(
+      base *
+      Math.pow(growth, level) *
+      getDifficultyScalar()
+    );
   }
+
+
 
   function tierUnlockCost(index) {
     // Static tier unlock costs, paid in previous-tier currency
@@ -1780,12 +1805,19 @@
     return Math.floor(base * state.manualDifficulty);
   }
 
-
+  function getTierAcquireCost(tier) {
+    // If this tier is no longer frontier, freeze cost at unlock-time value
+    if (!isFrontierTier(tier)) {
+      return tier._lockedAcquireCost ?? tierUnitCost(tier);
+    }
+    return tierUnitCost(tier);
+  }
 
 
   function buyTierUnit(tier) {
-    const cost = tierUnitCost(tier);
+    const cost = getTierAcquireCost(tier);
     const payer = state.tiers[tier.index - 1];
+
     if (payer.amount >= cost) {
       payer.amount -= cost;
       tier.amount += 1;
@@ -1796,6 +1828,7 @@
       setStatus(`Insufficient ${payer.name}: need ${formatNumber(cost - payer.amount)}`);
     }
   }
+
 
   function buyTierUpgrade(tier, type) {
     const cost = tierUpgradeCost(tier, type);
@@ -1815,18 +1848,28 @@
 
   function buyGlobalUpgrade(def) {
     const level = state.globalUpgrades[def.id];
-    const cost = def.baseCost * Math.pow(def.costGrowth, level) * Math.pow(getDifficultyScalar(), 1.15);
+    const cost =
+      Math.floor(
+        def.baseCost *
+        Math.pow(def.costGrowth, level) *
+        getDifficultyScalar()
+      );
+
     if (state.tiers[0].amount >= cost) {
       state.tiers[0].amount -= cost;
       state.globalUpgrades[def.id] += 1;
       setStatus(`${def.name} upgraded to ${state.globalUpgrades[def.id]}`);
       saveGame();
-      logChatEvent(chatSources.upgrades, `${def.name} -> Lv${state.globalUpgrades[def.id]} (cost ${formatNumber(cost)} cr)`);
+      logChatEvent(
+        chatSources.upgrades,
+        `${def.name} -> Lv${state.globalUpgrades[def.id]} (cost ${formatNumber(cost)} cr)`
+      );
       maybeNpcFirstUpgrade();
     } else {
       setStatus(`Unaffordable: need ${formatNumber(cost - state.tiers[0].amount)} credits`);
     }
   }
+
 
   function buyMetaUpgrade(def) {
     const level = state.prestige.upgrades[def.id] || 0;
@@ -1849,6 +1892,11 @@
       return;
     }
     const prevTier = state.tiers[nextIndex - 1];
+    // Freeze manual acquire cost for the previous tier
+    if (prevTier._lockedAcquireCost == null) {
+      prevTier._lockedAcquireCost = tierUnitCost(prevTier);
+    }
+
     const cost = tierUnlockCost(nextIndex);
     if (prevTier.amount < cost) {
       setStatus(`Need ${formatNumber(cost - prevTier.amount)} more ${prevTier.name} to unlock`);
@@ -1988,7 +2036,7 @@
     globalUpgradeDefs.forEach((def, idx) => {
       const btn = globalUpgradeButtons.get(def.id);
       const level = state.globalUpgrades[def.id];
-      const cost = def.baseCost * Math.pow(def.costGrowth, level) * Math.pow(getDifficultyScalar(), 1.15);
+      const cost = Math.floor(def.baseCost * Math.pow(def.costGrowth, level) * getDifficultyScalar());
       btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} cr`;
       btn.dataset.tip = `${def.desc}`;
       const affordable = state.tiers[0].amount >= cost;
@@ -2024,32 +2072,46 @@
         const rate = tierProductionPerSecond(tier);
         el.rate.textContent = `-> ${state.tiers[idx - 1].name}: ${formatNumber(rate)}/s`;
         if (el.buyBtn) {
-          const cost = tierUnitCost(tier);
-          el.buyBtn.textContent = `Acquire +1 (${formatNumber(cost)} ${state.tiers[idx - 1].name})`;
-          el.buyBtn.dataset.tip = `Spend ${state.tiers[idx - 1].name} to gain ${tier.name}.\nCost rises with amount and difficulty.`;
-          const affordable = state.tiers[idx - 1].amount >= cost;
-          el.buyBtn.disabled = !affordable;
-          toggleDisabled(el.buyBtn, !affordable);
-          el.buyBtn.style.order = orderFromCost(cost, 0);
+          // 🔒 Non-frontier tiers: fully lock manual acquire
+          if (!isFrontierTier(tier)) {
+            el.buyBtn.textContent = "Acquire Locked";
+            el.buyBtn.dataset.tip = "Manual acquisition is disabled once the next tier is unlocked.";
+            el.buyBtn.disabled = true;
+            toggleDisabled(el.buyBtn, true);
+            el.buyBtn.style.order = 999; // keep it out of the way
+          } else {
+            // ✅ Frontier tier: normal behavior
+            const cost = getTierAcquireCost(tier);
+            const payer = state.tiers[idx - 1];
+
+            el.buyBtn.textContent = `Acquire +1 (${formatNumber(cost)} ${payer.name})`;
+            el.buyBtn.dataset.tip =
+              `Spend ${payer.name} to gain ${tier.name}.\nCost rises with amount and difficulty.`;
+
+            const affordable = payer.amount >= cost;
+            el.buyBtn.disabled = !affordable;
+            toggleDisabled(el.buyBtn, !affordable);
+            el.buyBtn.style.order = orderFromCost(cost, 0);
+          }
         }
       }
-      const payer = state.tiers[Math.max(0, tier.index - 1)];
-      const autoCost = tierUpgradeCost(tier, "auto");
-      const effCost = tierUpgradeCost(tier, "eff");
-      const affordAuto = payer.amount >= autoCost;
-      const affordEff = payer.amount >= effCost;
-      el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
-      el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
-      el.autoBtn.disabled = !affordAuto;
-      toggleDisabled(el.autoBtn, !affordAuto);
-      el.autoBtn.style.order = orderFromCost(autoCost, 1);
-      const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
-      el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
-      el.effBtn.dataset.tip = `Boosts efficiency by +22% per level and buffer bonus.\nUses ${payer.name}.`;
-      el.effBtn.disabled = !affordEff;
-      toggleDisabled(el.effBtn, !affordEff);
-      el.effBtn.style.order = orderFromCost(effCost, 2);
-    });
+        const payer = state.tiers[Math.max(0, tier.index - 1)];
+        const autoCost = tierUpgradeCost(tier, "auto");
+        const effCost = tierUpgradeCost(tier, "eff");
+        const affordAuto = payer.amount >= autoCost;
+        const affordEff = payer.amount >= effCost;
+        el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
+        el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
+        el.autoBtn.disabled = !affordAuto;
+        toggleDisabled(el.autoBtn, !affordAuto);
+        el.autoBtn.style.order = orderFromCost(autoCost, 1);
+        const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
+        el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
+        el.effBtn.dataset.tip = `Boosts efficiency by +22% per level and buffer bonus.\nUses ${payer.name}.`;
+        el.effBtn.disabled = !affordEff;
+        toggleDisabled(el.effBtn, !affordEff);
+        el.effBtn.style.order = orderFromCost(effCost, 2);
+      });
 
     const nextIndex = state.tiers.length;
     const unlockCost = tierUnlockCost(nextIndex);
@@ -3035,6 +3097,26 @@
     sendNpcWhisper(voice, formatNpcText(template, voice, {}));
   }
 
+  function resolveTierFromArg(arg) {
+    if (!arg) return null;
+
+    const lower = arg.toLowerCase();
+
+    // t0, t1, t2...
+    if (/^t\d+$/.test(lower)) {
+      const index = parseInt(lower.slice(1), 10);
+      return state.tiers[index] || null;
+    }
+
+    // credits alias
+    if (lower === "credits" || lower === "cr") {
+      return state.tiers[0];
+    }
+
+    // name match (scripts, daemons, etc.)
+    return state.tiers.find(t => t.name.toLowerCase() === lower) || null;
+  }
+
   function reactToOperatorMessage(text) {
     const lower = text.toLowerCase();
     // DEV: manual entity trigger
@@ -3045,6 +3127,33 @@
     if (DEV_MODE && text.trim().toLowerCase() === "/entity reset") {
       state.seenEntityLines = [];
       logChatEvent(chatSources.system, "entity memory cleared");
+      return;
+    }
+
+    // DEV: give resources
+    if (DEV_MODE && lower.startsWith("/give")) {
+      const parts = lower.split(/\s+/);
+      const tierArg = parts[1];
+      const amountArg = parts[2];
+
+      const tier = resolveTierFromArg(tierArg);
+      const amount = Math.floor(Number(amountArg));
+
+      if (!tier || !Number.isFinite(amount) || amount <= 0) {
+        setStatus("Usage: /give <tier|t#|credits> <amount>");
+        return;
+      }
+
+      tier.amount += amount;
+
+      setStatus(`DEV: Gave ${amount} ${tier.name}`);
+      logChatEvent(
+        chatSources.dev,
+        `Granted ${amount} ${tier.name} via /give`
+      );
+
+      saveGame();
+      render(true);
       return;
     }
 

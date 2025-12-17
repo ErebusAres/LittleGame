@@ -1241,6 +1241,8 @@
       prestige: {
         points: 0,
         pending: 0,
+        lastRebootAt: now,
+        minRequired: 8,
         upgrades: { prestigeBoost: 0, clickPersist: 0, autoPersist: 0, offlineBoost: 0, difficultySoftener: 0 }
       },
       lastTick: now,
@@ -1887,7 +1889,6 @@
     }
   }
 
-
   function buyMetaUpgrade(def) {
     const level = state.prestige.upgrades[def.id] || 0;
     const cost = def.baseCost * Math.pow(def.costGrowth, level);
@@ -1933,12 +1934,21 @@
     render(true);
   }
 
+  function secondsSincePrestige() {
+    const t = state?.prestige?.lastRebootAt;
+    if (!t) return 0;
+    return (Date.now() - t) / 1000;
+  }
+
   function doPrestige() {
     const gained = Math.floor(state.prestige.pending);
-    if (gained < 1) {
-      setStatus("Not enough pending prestige to reboot");
+    const required = state.prestige.minRequired || 8;
+
+    if (gained < required) {
+      setStatus(`Need at least ${required} prestige to reboot`);
       return;
     }
+
     flushClickRun();
     const prevChat = state.chat;
     const prevStats = state.stats;
@@ -1954,8 +1964,12 @@
     state.status = `Rebooted for +${gained} prestige`;
     state.stats = prevStats;
     state.stats.prestiges += 1;
+    // Increase minimum required prestige for next reboot
+    state.prestige.minRequired = Math.ceil(required * 1.5);
+
     state.manualDifficulty = prevDifficulty;
     state.achievements = prevAchievements;
+    state.prestige.lastRebootAt = Date.now();
     insertChatDivider("reboot");
     logChatEvent(chatSources.prestige, `Rebooted +${gained} (total ${state.prestige.points})`);
     maybeNpcPrestige(gained);

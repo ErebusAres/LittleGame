@@ -112,16 +112,16 @@
       "fresh welds, fewer sparks.",
       "that tune-up shaved some noise.",
       "your rig just got a lot less squeaky.",
-        "smooth purchase. efficiency just ticked up.",
-  "that upgrade's humming nicely. good choice.",
-  "bought yourself some breathing room with that one.",
-  "cores appreciate the love. they'll return the favor.",
-  "investment logged. returns should compound nicely.",
-  "shiny new upgrade. treat it well.",
-  "buffers are happy. I can hear them purring.",
-  "that's going to save you some headaches later.",
-  "nice optimization. the numbers will thank you.",
-  "upgrade successful. no sparks, no smoke. perfect."
+      "smooth purchase. efficiency just ticked up.",
+      "that upgrade's humming nicely. good choice.",
+      "bought yourself some breathing room with that one.",
+      "cores appreciate the love. they'll return the favor.",
+      "investment logged. returns should compound nicely.",
+      "shiny new upgrade. treat it well.",
+      "buffers are happy. I can hear them purring.",
+      "that's going to save you some headaches later.",
+      "nice optimization. the numbers will thank you.",
+      "upgrade successful. no sparks, no smoke. perfect."
     ],
     prestige: [
       "reboot complete. scent of ozone everywhere.",
@@ -132,16 +132,16 @@
       "new loop, same fire. don't let it cool.",
       "resetting is just stretching. sprint next.",
       "reboot fumes still warm. push now.",
-        "reset acknowledged. carry that momentum forward.",
-  "clean slate feels good, doesn't it?",
-  "prestige locked in. multiplier looks tasty.",
-  "another loop down. how many until you're satisfied?",
-  "reboot complete. core temperature dropping to normal.",
-  "wiped clean. time to climb faster this round.",
-  "prestige gained. that permanent boost hits different.",
-  "reset successful. your last run taught you well.",
-  "fresh cycle incoming. apply what you learned.",
-  "another reboot in the books. the grind continues."
+      "reset acknowledged. carry that momentum forward.",
+      "clean slate feels good, doesn't it?",
+      "prestige locked in. multiplier looks tasty.",
+      "another loop down. how many until you're satisfied?",
+      "reboot complete. core temperature dropping to normal.",
+      "wiped clean. time to climb faster this round.",
+      "prestige gained. that permanent boost hits different.",
+      "reset successful. your last run taught you well.",
+      "fresh cycle incoming. apply what you learned.",
+      "another reboot in the books. the grind continues."
     ],
     milestone: [
       "depth marker reached. the void notices.",
@@ -152,16 +152,16 @@
       "scoreboard noticed that tier, {player}.",
       "plates shift down here. step soft.",
       "new stratum unlocked. breathe shallow.",
-        "checkpoint passed. save your progress.",
-  "new depth achieved. the systems are noticing.",
-  "tier milestone reached. pressure's building nicely.",
-  "{player} just broke through another layer. respect.",
-  "you've gone deeper than most. keep that pace.",
-  "achievement logged. your name's climbing the boards.",
-  "that's a significant threshold. celebrate briefly, then push.",
-  "milestone cleared. most operators stall here.",
-  "impressive depth, {player}. the void is watching.",
-  "you're in rare territory now. tread carefully."
+      "checkpoint passed. save your progress.",
+      "new depth achieved. the systems are noticing.",
+      "tier milestone reached. pressure's building nicely.",
+      "{player} just broke through another layer. respect.",
+      "you've gone deeper than most. keep that pace.",
+      "achievement logged. your name's climbing the boards.",
+      "that's a significant threshold. celebrate briefly, then push.",
+      "milestone cleared. most operators stall here.",
+      "impressive depth, {player}. the void is watching.",
+      "you're in rare territory now. tread carefully."
     ],
     click: [
       "manual streak registered. wrists okay?",
@@ -213,26 +213,26 @@
       "who keeps naming tiers after snacks?",
       "found a note that just says \"run\".",
       "if you hear whispering fans, that's us.",
-        "anyone else hear that clicking? just me?",
-  "maintenance scheduled for... checks notes... eventually.",
-  "core temperature nominal. mostly.",
-  "someone left a sticky note that says 'don't panic'. noted.",
-  "if you see any ghosts in the system, they're friendly. probably.",
-  "reminder: backup your backups. then backup those.",
-  "I found a bug in tier 7. caught it and released it outside.",
-  "the entity hasn't messaged in a while. that's good, right?",
-  "coffee count for today: lost count.",
-  "whoever named these tiers was either brilliant or sleep-deprived.",
-  "systems stable. knock on wood. virtual wood.",
-  "fun fact: nobody knows what half these buttons do.",
-  "the core made a weird noise. added it to the log.",
-  "everything's fine. that alarm is just... decorative.",
-  "remember when tier 5 was impressive? me neither.",
-  "{player}, you've been climbing for a while. hydration check.",
-  "sentinel's been quiet. suspiciously quiet.",
-  "found an old manual. it's in a language nobody speaks.",
-  "the automation wants a vacation. told it to wait.",
-  "packet loss at 0.01%. we'll call that a win."
+      "anyone else hear that clicking? just me?",
+      "maintenance scheduled for... checks notes... eventually.",
+      "core temperature nominal. mostly.",
+      "someone left a sticky note that says 'don't panic'. noted.",
+      "if you see any ghosts in the system, they're friendly. probably.",
+      "reminder: backup your backups. then backup those.",
+      "I found a bug in tier 7. caught it and released it outside.",
+      "the entity hasn't messaged in a while. that's good, right?",
+      "coffee count for today: lost count.",
+      "whoever named these tiers was either brilliant or sleep-deprived.",
+      "systems stable. knock on wood. virtual wood.",
+      "fun fact: nobody knows what half these buttons do.",
+      "the core made a weird noise. added it to the log.",
+      "everything's fine. that alarm is just... decorative.",
+      "remember when tier 5 was impressive? me neither.",
+      "{player}, you've been climbing for a while. hydration check.",
+      "sentinel's been quiet. suspiciously quiet.",
+      "found an old manual. it's in a language nobody speaks.",
+      "the automation wants a vacation. told it to wait.",
+      "packet loss at 0.01%. we'll call that a win."
     ],
     conversation: [
       "handing logs to {to}. don't lose them.",
@@ -256,21 +256,21 @@
       "tagging {to} to sweep tier dust.",
       "hey {to}, your coffee is evaporating.",
       "{to}, check your whisper queue; it's full.",
-        "hey {to}, who left the debugger running?",
-  "{to}, your automation's making weird sounds again.",
-  "passing the baton to {to}. don't drop it.",
-  "{to}, check channel 3. something's off.",
-  "yo {to}, you owe me a coffee. remember the bet?",
-  "{to}, your cables are a mess. organize that chaos.",
-  "tagging {to} for the next shift. good luck.",
-  "{to}, the core's asking for you. don't ask why.",
-  "hand off to {to}. systems are your problem now.",
-  "{to}, sentinel's watching. keep it clean.",
-  "{to}, did you recalibrate the buffers? they're drifting.",
-  "passing logs to {to}. there's a weird entry on line 847.",
-  "{to}, your last optimization broke something. fix it.",
-  "{to}, if the alarms go off, it's your fault.",
-  "hey {to}, {player}'s on a streak. don't jinx it."
+      "hey {to}, who left the debugger running?",
+      "{to}, your automation's making weird sounds again.",
+      "passing the baton to {to}. don't drop it.",
+      "{to}, check channel 3. something's off.",
+      "yo {to}, you owe me a coffee. remember the bet?",
+      "{to}, your cables are a mess. organize that chaos.",
+      "tagging {to} for the next shift. good luck.",
+      "{to}, the core's asking for you. don't ask why.",
+      "hand off to {to}. systems are your problem now.",
+      "{to}, sentinel's watching. keep it clean.",
+      "{to}, did you recalibrate the buffers? they're drifting.",
+      "passing logs to {to}. there's a weird entry on line 847.",
+      "{to}, your last optimization broke something. fix it.",
+      "{to}, if the alarms go off, it's your fault.",
+      "hey {to}, {player}'s on a streak. don't jinx it."
     ],
     conversationQA: [
       { ask: "{to}, you rerouted the coolant lines yet?", answer: "yeah, {from}, flow stabilized. stop worrying." },
@@ -282,48 +282,189 @@
       { ask: "what's your fastest split, {to}?", answer: "ask me after coffee, {from}. probably faster than yours." },
       { ask: "{to}, did you patch the leak?", answer: "temporary seal only, {from}. keep pressure low." },
       { ask: "who's leading depth today, {to}?", answer: "looks like {player}, unless {from} wakes up." },
-       { 
-    ask: "{to}, you seeing these latency spikes?", 
-    answer: "yeah {from}, looks like packet congestion. rerouting now." 
-  },
-  { 
-    ask: "hey {to}, is the entity acting weird today?", 
-    answer: "when is it not weird, {from}? stay sharp." 
-  },
-  { 
-    ask: "{to}, did you backup before that prestige?", 
-    answer: "always do, {from}. learned that lesson the hard way." 
-  },
-  { 
-    ask: "{to}, what's your automation strategy?", 
-    answer: "efficiency first, {from}. clicks are for emergencies." 
-  },
-  { 
-    ask: "{to}, think we'll hit tier 50 today?", 
-    answer: "if {player} keeps this pace, {from}, easily." 
-  },
-  { 
-    ask: "{to}, you ever wonder what's really down there?", 
-    answer: "not while I'm working, {from}. keep focused." 
-  },
-  { 
-    ask: "yo {to}, got any tips for {player}?", 
-    answer: "watch the difficulty curve, {from}. it bites." 
-  },
-  { 
-    ask: "{to}, why's the core humming like that?", 
-    answer: "because we pushed it hard, {from}. it'll settle." 
-  },
-  { 
-    ask: "{to}, you trust the integrity checks?", 
-    answer: "more than I trust my morning coffee, {from}." 
-  },
-  { 
-    ask: "{to}, what's the weirdest bug you've seen?", 
-    answer: "tier 12 once generated negative credits, {from}. nightmare." 
-  }
-      
+      {
+        ask: "{to}, you seeing these latency spikes?",
+        answer: "yeah {from}, looks like packet congestion. rerouting now."
+      },
+      {
+        ask: "hey {to}, is the entity acting weird today?",
+        answer: "when is it not weird, {from}? stay sharp."
+      },
+      {
+        ask: "{to}, did you backup before that prestige?",
+        answer: "always do, {from}. learned that lesson the hard way."
+      },
+      {
+        ask: "{to}, what's your automation strategy?",
+        answer: "efficiency first, {from}. clicks are for emergencies."
+      },
+      {
+        ask: "{to}, think we'll hit tier 50 today?",
+        answer: "if {player} keeps this pace, {from}, easily."
+      },
+      {
+        ask: "{to}, you ever wonder what's really down there?",
+        answer: "not while I'm working, {from}. keep focused."
+      },
+      {
+        ask: "yo {to}, got any tips for {player}?",
+        answer: "watch the difficulty curve, {from}. it bites."
+      },
+      {
+        ask: "{to}, why's the core humming like that?",
+        answer: "because we pushed it hard, {from}. it'll settle."
+      },
+      {
+        ask: "{to}, you trust the integrity checks?",
+        answer: "more than I trust my morning coffee, {from}."
+      },
+      {
+        ask: "{to}, what's the weirdest bug you've seen?",
+        answer: "tier 12 once generated negative credits, {from}. nightmare."
+      }
+
     ],
+    conversationThreads: [
+      {
+        // 4-line back-and-forth
+        lines: [
+          { who: "from", text: "{to}, you seeing the jitter on tier 2?" },
+          { who: "to", text: "yeah, {from}. looks like bad routing. i'm tracing it now." },
+          { who: "from", text: "copy. i'll keep {player} busy while you patch it." },
+          { who: "to", text: "do that. and tell {player} not to spike CPS again." }
+        ]
+      },
+      {
+        // 5-line back-and-forth
+        lines: [
+          { who: "from", text: "hey {to}, why did the buffers drop to 0 for a second?" },
+          { who: "to", text: "because you overclocked without cooling, {from}." },
+          { who: "from", text: "it was a calculated risk." },
+          { who: "to", text: "your math stinks. i'm stabilizing it before sentinel notices." },
+          { who: "from", text: "fine. i'll buy you coffee. cheap coffee, but still." }
+        ]
+      },
+      {
+        // 7-line back-and-forth
+        lines: [
+          { who: "from", text: "…{to}, we tracking {player}'s curve or just vibing?" },
+          { who: "to", text: "tracking. they're accelerating. i'm logging anomalies." },
+          { who: "from", text: "anomalies like what?" },
+          { who: "to", text: "micro-spikes in CPS, then long pauses. looks human." },
+          { who: "from", text: "so… not a bot?" },
+          { who: "to", text: "no bot would hesitate like that. keep quiet." },
+          { who: "from", text: "copy. i'll throw a harmless tip in chat later." }
+        ]
+      },
+      {
+        // 8-line back-and-forth
+        lines: [
+          { who: "from", text: "{to}, status check: core temp feels high." },
+          { who: "to", text: "it is. someone pushed automation without smoothing." },
+          { who: "from", text: "…{player}?" },
+          { who: "to", text: "maybe. but they're learning. don't scare them off." },
+          { who: "from", text: "i'll distract with banter." },
+          { who: "to", text: "good. i'm throttling a little to avoid a crash." },
+          { who: "from", text: "if it crashes, i'm blaming you." },
+          { who: "to", text: "you always do, {from}. now hush." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, you notice how {player} hesitates before buying now?" },
+          { who: "to", text: "yeah. they stopped panic-spending. that's new." },
+          { who: "from", text: "means the numbers finally hurt." },
+          { who: "to", text: "or they’re starting to understand them." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, automation power jumped again." },
+          { who: "to", text: "saw it. clean build this time." },
+          { who: "from", text: "think {player} realizes clicks scale worse now?" },
+          { who: "to", text: "maybe not yet." },
+          { who: "from", text: "they will. the wall teaches fast." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, sentinel pinged twice in the last minute." },
+          { who: "to", text: "false positives. mostly." },
+          { who: "from", text: "mostly?" },
+          { who: "to", text: "CPS variance spiked when {player} rushed upgrades." },
+          { who: "from", text: "should we warn them?" },
+          { who: "to", text: "not yet. let them self-correct." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, they’re hovering over prestige again." },
+          { who: "to", text: "too early?" },
+          { who: "from", text: "numbers say yes." },
+          { who: "to", text: "instinct says no." },
+          { who: "from", text: "instinct gets people erased." },
+          { who: "to", text: "so does waiting too long." },
+          { who: "from", text: "…we’ll see which lesson sticks." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, they’re still going." },
+          { who: "to", text: "yeah. slower, but cleaner." },
+          { who: "from", text: "most operators quit by now." },
+          { who: "to", text: "then let’s not distract them." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, do you hear that hum?" },
+          { who: "to", text: "always hear it." },
+          { who: "from", text: "it’s louder when {player} pushes deep." },
+          { who: "to", text: "feedback loop. or something else." },
+          { who: "from", text: "you don’t believe that." },
+          { who: "to", text: "I don’t *not* believe it." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, who named these tiers again?" },
+          { who: "to", text: "someone sleep-deprived." },
+          { who: "from", text: "that explains the math." },
+          { who: "to", text: "and the smell." },
+          { who: "from", text: "especially the smell." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, I checked the logs." },
+          { who: "to", text: "and?" },
+          { who: "from", text: "{player} fixed their own bottleneck." },
+          { who: "to", text: "no hints?" },
+          { who: "from", text: "none." },
+          { who: "to", text: "then they’re learning." },
+          { who: "from", text: "yeah. that makes them dangerous." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, how deep does this actually go?" },
+          { who: "to", text: "deeper than the UI shows." },
+          { who: "from", text: "should {player} know?" },
+          { who: "to", text: "not yet." },
+          { who: "from", text: "when?" },
+          { who: "to", text: "when turning back stops being an option." }
+        ]
+      },
+      {
+        lines: [
+          { who: "from", text: "{to}, shift almost over." },
+          { who: "to", text: "for us. not for {player}." },
+          { who: "from", text: "think they’ll stop soon?" },
+          { who: "to", text: "not if the numbers keep whispering." }
+        ]
+      }
+    ],
+
     npcProgress: [
       "{user} finally cleared a new tier. pace yourself.",
       "{user} just caught up a bit. they look proud.",
@@ -346,16 +487,16 @@
       "off the record: you're ahead.",
       "passing you a hush-hush buff. it's imaginary.",
       "keep the lights dim. whispers travel better.",
-        "quiet channel. just between us, {player}.",
-  "off the record: you're doing better than you think.",
-  "psst. next tier's easier than it looks.",
-  "keep this hush: I've been tracking your progress. impressive.",
-  "whisper network says you're the one to watch.",
-  "between you and me? you've got good instincts.",
-  "don't broadcast this, but you're in the top percentile.",
-  "quiet tip: trust your automation more.",
-  "this stays between us: you're ready for the next jump.",
-  "soft whisper: the grid favors patience over speed."
+      "quiet channel. just between us, {player}.",
+      "off the record: you're doing better than you think.",
+      "psst. next tier's easier than it looks.",
+      "keep this hush: I've been tracking your progress. impressive.",
+      "whisper network says you're the one to watch.",
+      "between you and me? you've got good instincts.",
+      "don't broadcast this, but you're in the top percentile.",
+      "quiet tip: trust your automation more.",
+      "this stays between us: you're ready for the next jump.",
+      "soft whisper: the grid favors patience over speed."
     ],
     warning: [
       "careful, your click spikes are on radar.",
@@ -363,16 +504,16 @@
       "logs show heat. slow your taps, {player}.",
       "automation can cover while you cool off.",
       "anti-cheat is sniffing. keep it clean.",
-        "CPS breach detected. throttle back, {player}.",
-  "sentinel's algorithms are flagging you. ease up.",
-  "manual input rate exceeding safe limits. slow down.",
-  "anti-cheat subroutines activating. keep it legitimate.",
-  "your click pattern looks suspicious. normalize it.",
-  "warning: sustained high CPS draws attention.",
-  "sentinel ping incoming. clean up your rhythm.",
-  "logs show irregular activity. steady your pace.",
-  "integrity scan initiated. make sure you're clean.",
-  "you're pushing the envelope. sentinel's watching."
+      "CPS breach detected. throttle back, {player}.",
+      "sentinel's algorithms are flagging you. ease up.",
+      "manual input rate exceeding safe limits. slow down.",
+      "anti-cheat subroutines activating. keep it legitimate.",
+      "your click pattern looks suspicious. normalize it.",
+      "warning: sustained high CPS draws attention.",
+      "sentinel ping incoming. clean up your rhythm.",
+      "logs show irregular activity. steady your pace.",
+      "integrity scan initiated. make sure you're clean.",
+      "you're pushing the envelope. sentinel's watching."
     ],
     whisperTopics: {
       help: [
@@ -381,16 +522,16 @@
         "balance autos and clicks; don't tunnel one stat.",
         "watch the unlock cost curve; don't overbuy autos.",
         "prestige sooner if gains flatten.",
-            "quick tip: automate tier 0 before anything else.",
-    "try boosting efficiency on your bottleneck tier.",
-    "balance autos and clicks; don't tunnel one stat.",
-    "watch the unlock cost curve; don't overbuy autos.",
-    "prestige sooner if gains flatten.",
-    "efficiency upgrades compound better than raw clicks.",
-    "threads upgrade is secretly one of the best early picks.",
-    "don't sleep on buffer control. it scales everything.",
-    "automation power affects more than you think.",
-    "difficulty scaling hits hard after tier 10. prep for it."
+        "quick tip: automate tier 0 before anything else.",
+        "try boosting efficiency on your bottleneck tier.",
+        "balance autos and clicks; don't tunnel one stat.",
+        "watch the unlock cost curve; don't overbuy autos.",
+        "prestige sooner if gains flatten.",
+        "efficiency upgrades compound better than raw clicks.",
+        "threads upgrade is secretly one of the best early picks.",
+        "don't sleep on buffer control. it scales everything.",
+        "automation power affects more than you think.",
+        "difficulty scaling hits hard after tier 10. prep for it."
       ],
       stuck: [
         "if you're stuck, soften difficulty a tick.",
@@ -398,16 +539,16 @@
         "take a short prestige; momentum resets help.",
         "upgrade threads before brute-forcing clicks.",
         "slow down and reroute autos, it helps.",
-            "if you're stuck, soften difficulty a tick.",
-    "pivot to efficiency; it breaks walls quietly.",
-    "take a short prestige; momentum resets help.",
-    "upgrade threads before brute-forcing clicks.",
-    "slow down and reroute autos, it helps.",
-    "walls usually mean you're over-invested in one path.",
-    "check if you've been ignoring efficiency too long.",
-    "sometimes the answer is just one more prestige.",
-    "difficulty softener is expensive but worth it when stuck.",
-    "look at your weakest tier. that's usually the blockage."
+        "if you're stuck, soften difficulty a tick.",
+        "pivot to efficiency; it breaks walls quietly.",
+        "take a short prestige; momentum resets help.",
+        "upgrade threads before brute-forcing clicks.",
+        "slow down and reroute autos, it helps.",
+        "walls usually mean you're over-invested in one path.",
+        "check if you've been ignoring efficiency too long.",
+        "sometimes the answer is just one more prestige.",
+        "difficulty softener is expensive but worth it when stuck.",
+        "look at your weakest tier. that's usually the blockage."
       ],
       optimize: [
         "curve costs by alternating autos and efficiency.",
@@ -415,16 +556,16 @@
         "tweak difficulty for better ROI, {player}.",
         "watch cps; penalties wreck efficiency.",
         "buffers before bulk buys saves credits.",
-            "curve costs by alternating autos and efficiency.",
-    "run shorter loops; compounding wins.",
-    "tweak difficulty for better ROI, {player}.",
-    "watch cps; penalties wreck efficiency.",
-    "buffers before bulk buys saves credits.",
-    "optimal path varies by depth. adapt constantly.",
-    "overclock pays for itself after tier 5.",
-    "balance your prestige upgrades. don't overweight one.",
-    "difficulty affects costs more than income. adjust accordingly.",
-    "tier efficiency multiplies everything. prioritize it."
+        "curve costs by alternating autos and efficiency.",
+        "run shorter loops; compounding wins.",
+        "tweak difficulty for better ROI, {player}.",
+        "watch cps; penalties wreck efficiency.",
+        "buffers before bulk buys saves credits.",
+        "optimal path varies by depth. adapt constantly.",
+        "overclock pays for itself after tier 5.",
+        "balance your prestige upgrades. don't overweight one.",
+        "difficulty affects costs more than income. adjust accordingly.",
+        "tier efficiency multiplies everything. prioritize it."
       ],
       praise: [
         "nice work; keep that pace steady.",
@@ -432,16 +573,16 @@
         "good instincts, {player}.",
         "you're reading the grid right.",
         "logs look sharp. keep going.",
-            "nice work; keep that pace steady.",
-    "clean play. keep stacking.",
-    "good instincts, {player}.",
-    "you're reading the grid right.",
-    "logs look sharp. keep going.",
-    "that's solid gameplay. don't second-guess yourself.",
-    "you're ahead of the curve. maintain that edge.",
-    "clean execution. the numbers show it.",
-    "your strategy's working. trust the process.",
-    "that's how it's done. textbook."
+        "nice work; keep that pace steady.",
+        "clean play. keep stacking.",
+        "good instincts, {player}.",
+        "you're reading the grid right.",
+        "logs look sharp. keep going.",
+        "that's solid gameplay. don't second-guess yourself.",
+        "you're ahead of the curve. maintain that edge.",
+        "clean execution. the numbers show it.",
+        "your strategy's working. trust the process.",
+        "that's how it's done. textbook."
       ],
       greet: [
         "hey {player}, channel's open.",
@@ -449,16 +590,16 @@
         "yo. what's the plan today?",
         "I'm listening. fire away.",
         "present and watching, {player}.",
-            "hey {player}, channel's open.",
-    "hi. your signals are clear.",
-    "yo. what's the plan today?",
-    "I'm listening. fire away.",
-    "present and watching, {player}.",
-    "channel secured. what's on your mind?",
-    "signal locked. how can I help?",
-    "hey there. need something?",
-    "online and ready. what's up?",
-    "tuned in. talk to me."
+        "hey {player}, channel's open.",
+        "hi. your signals are clear.",
+        "yo. what's the plan today?",
+        "I'm listening. fire away.",
+        "present and watching, {player}.",
+        "channel secured. what's on your mind?",
+        "signal locked. how can I help?",
+        "hey there. need something?",
+        "online and ready. what's up?",
+        "tuned in. talk to me."
       ],
       generic: [
         "I'll keep this quiet. you've got this.",
@@ -466,16 +607,16 @@
         "I'll ping you if anything drifts.",
         "keeping the channel clear; talk to me.",
         "copy. staying on this frequency.",
-            "I'll keep this quiet. you've got this.",
-    "noted. I'll watch your back silently.",
-    "I'll ping you if anything drifts.",
-    "keeping the channel clear; talk to me.",
-    "copy. staying on this frequency.",
-    "understood. I'm here if you need.",
-    "logged. let me know if things shift.",
-    "acknowledged. keep pushing.",
-    "received. I'll monitor from here.",
-    "got it. stay focused."
+        "I'll keep this quiet. you've got this.",
+        "noted. I'll watch your back silently.",
+        "I'll ping you if anything drifts.",
+        "keeping the channel clear; talk to me.",
+        "copy. staying on this frequency.",
+        "understood. I'm here if you need.",
+        "logged. let me know if things shift.",
+        "acknowledged. keep pushing.",
+        "received. I'll monitor from here.",
+        "got it. stay focused."
       ]
     },
     personaPools: {
@@ -979,6 +1120,7 @@
   let clickRunTimer = null;
   let npcChatterTimer = null;
   let operatorSpam = { times: [], warned: false };
+  let npcThreadTimers = [];
 
   initUI();
   bootstrapChat();
@@ -1041,7 +1183,10 @@
       lastRunFlush: now,
       lastDivider: 0,
       lastNpcWhisper: 0,
-      flags: { npcProgress: {} }
+      flags: {
+        npcProgress: {},
+        greeted: false
+      }
     };
   }
 
@@ -1388,6 +1533,12 @@
   }
 
   function handleClick() {
+    // First-ever click: NPC greeting only, no other reactions
+    if (!state.chat.flags.greeted) {
+      triggerNpcGreeting();
+      return;
+    }
+
     const now = Date.now();
     const idleGap = now - (state.lastClickTime || 0);
     // start grace after an idle gap
@@ -2206,7 +2357,8 @@
   }
 
   function notePenaltyState() {
-    const reduced = state.penaltyScale < 0.98;
+    const grace = Date.now() < state.cpsGraceUntil;
+    const reduced = state.penaltyScale < 1 && !grace;
     const flags = chatFlags();
     if (reduced && !flags.penaltyActive) {
       logChatEvent(chatSources.warning, "penalty detected, reducing funds");
@@ -2252,6 +2404,30 @@
     if (gained > 5) pushNpcLine("milestone");
     maybeNpcWhisperEvent("prestige", `+${formatNumber(gained)}`);
     npcProgressCatchUp("prestige");
+  }
+
+  function clearNpcThreadTimers() {
+    npcThreadTimers.forEach((t) => clearTimeout(t));
+    npcThreadTimers = [];
+  }
+
+  function runNpcConversationThread(from, to, thread) {
+    if (!thread || !Array.isArray(thread.lines) || thread.lines.length === 0) return;
+
+    clearNpcThreadTimers();
+
+    let delay = 0;
+    for (const part of thread.lines) {
+      delay += 650 + Math.random() * 850; // 650ms–1500ms between lines
+      const speaker = part.who === "to" ? to : from;
+
+      const timer = setTimeout(() => {
+        const line = formatNpcText(part.text, speaker, { from: from.user, to: to.user });
+        logChatEvent({ ...chatSources.npc, ...speaker }, line);
+      }, delay);
+
+      npcThreadTimers.push(timer);
+    }
   }
 
   function maybeNpcAchievement(name) {
@@ -2398,19 +2574,27 @@
       if (to.id === from.id) {
         to = pick(npcVoices.filter((v) => v.id !== from.id)) || to;
       }
-      const pair = pick(npcLibrary.conversationQA || []);
-      if (pair && pair.ask && pair.answer) {
-        const askLine = formatNpcText(pair.ask, from, { to: to.user, from: from.user });
-        const replyLine = formatNpcText(pair.answer, to, { from: from.user, to: to.user });
-        logChatEvent({ ...chatSources.npc, ...from }, askLine);
-        logChatEvent({ ...chatSources.npc, ...to }, replyLine);
+      // Prefer longer multi-line threads sometimes
+      const threads = npcLibrary.conversationThreads || [];
+      if (threads.length && Math.random() < 0.33) {
+        const thread = pick(threads);
+        runNpcConversationThread(from, to, thread);
       } else {
-        const template = pick(npcLibrary.conversation);
-        if (template) {
-          const line = formatNpcText(template, from, { to: to.user });
-          logChatEvent({ ...chatSources.npc, ...from }, line);
+        const pair = pick(npcLibrary.conversationQA || []);
+        if (pair && pair.ask && pair.answer) {
+          const askLine = formatNpcText(pair.ask, from, { to: to.user, from: from.user });
+          const replyLine = formatNpcText(pair.answer, to, { from: from.user, to: to.user });
+          logChatEvent({ ...chatSources.npc, ...from }, askLine);
+          logChatEvent({ ...chatSources.npc, ...to }, replyLine);
+        } else {
+          const template = pick(npcLibrary.conversation);
+          if (template) {
+            const line = formatNpcText(template, from, { to: to.user });
+            logChatEvent({ ...chatSources.npc, ...from }, line);
+          }
         }
       }
+
       return;
     }
     const voice = pick(npcVoices);
@@ -2434,6 +2618,39 @@
       .replace(/{tier}/gi, extra.tier || "")
       .replace(/{prestige}/gi, extra.prestige || "");
   }
+
+  function triggerNpcGreeting() {
+    if (state.chat.flags.greeted) return;
+
+    const greetings = [...npcLibrary.welcome]
+      .sort(() => Math.random() - 0.5);
+    if (!greetings || greetings.length === 0) return;
+
+    // pick 4 unique NPCs
+    const npcs = [...npcVoices]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 4);
+
+    let delay = 0;
+
+    npcs.forEach((npc, index) => {
+      delay = 100 + index * 400 + Math.random() * 100;
+
+      setTimeout(() => {
+        const text = formatNpcText(
+          greetings[index % greetings.length],
+          npc,
+          { player: state.playerName || "operator" }
+        );
+
+        logChatEvent({ ...chatSources.npc, ...npc }, text);
+      }, delay);
+    });
+
+    // lock greeting so it never happens again
+    state.chat.flags.greeted = true;
+  }
+
 
   function pick(arr) {
     if (!arr || !arr.length) return "";

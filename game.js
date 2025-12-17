@@ -2951,7 +2951,7 @@
     if (whisper) {
       sendWhisperFromOperator(player, whisper.target, whisper.message);
     } else {
-      logChatEvent(chatSources.operator, text, { user: player, id: "OP-000", color: chatSources.operator.color, category: "operator" });
+      logChatEvent(chatSources.operator, text, { user: player, id: "OP-001", color: chatSources.operator.color, category: "operator" });
       handleMentions(text, player);
       reactToOperatorMessage(text);
     }

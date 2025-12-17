@@ -1686,8 +1686,25 @@
   }
 
   function getPrestigeMultiplier() {
-    return 1 + state.prestige.points * 0.01 + state.prestige.upgrades.prestigeBoost * 0.05;
+    const points = Math.max(0, state.prestige.points || 0);
+    const prestiges = Math.max(0, state.stats?.prestiges || 0);
+    const boostLvl = Math.max(0, state.prestige.upgrades?.prestigeBoost || 0);
+
+    // Soft cap grows every time you prestige
+    const baseCap = 2.0;          // starting max bonus from points
+    const capGrowth = 0.35;       // how much the cap grows per prestige
+    const cap = baseCap + prestiges * capGrowth;
+
+    // Diminishing returns curve (smooth, never explodes)
+    const rate = 0.012;
+    const pointBonus = cap * (1 - Math.exp(-points * rate));
+
+    // Existing prestige upgrade stays linear
+    const upgradeBonus = boostLvl * 0.05;
+
+    return 1 + pointBonus + upgradeBonus;
   }
+
 
   function getAutomationMultiplier() {
     return 1 + state.globalUpgrades.automation * 0.15 + state.prestige.upgrades.autoPersist * 0.12;
@@ -2095,23 +2112,23 @@
           }
         }
       }
-        const payer = state.tiers[Math.max(0, tier.index - 1)];
-        const autoCost = tierUpgradeCost(tier, "auto");
-        const effCost = tierUpgradeCost(tier, "eff");
-        const affordAuto = payer.amount >= autoCost;
-        const affordEff = payer.amount >= effCost;
-        el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
-        el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
-        el.autoBtn.disabled = !affordAuto;
-        toggleDisabled(el.autoBtn, !affordAuto);
-        el.autoBtn.style.order = orderFromCost(autoCost, 1);
-        const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
-        el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
-        el.effBtn.dataset.tip = `Boosts efficiency by +22% per level and buffer bonus.\nUses ${payer.name}.`;
-        el.effBtn.disabled = !affordEff;
-        toggleDisabled(el.effBtn, !affordEff);
-        el.effBtn.style.order = orderFromCost(effCost, 2);
-      });
+      const payer = state.tiers[Math.max(0, tier.index - 1)];
+      const autoCost = tierUpgradeCost(tier, "auto");
+      const effCost = tierUpgradeCost(tier, "eff");
+      const affordAuto = payer.amount >= autoCost;
+      const affordEff = payer.amount >= effCost;
+      el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
+      el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
+      el.autoBtn.disabled = !affordAuto;
+      toggleDisabled(el.autoBtn, !affordAuto);
+      el.autoBtn.style.order = orderFromCost(autoCost, 1);
+      const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
+      el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
+      el.effBtn.dataset.tip = `Boosts efficiency by +22% per level and buffer bonus.\nUses ${payer.name}.`;
+      el.effBtn.disabled = !affordEff;
+      toggleDisabled(el.effBtn, !affordEff);
+      el.effBtn.style.order = orderFromCost(effCost, 2);
+    });
 
     const nextIndex = state.tiers.length;
     const unlockCost = tierUnlockCost(nextIndex);

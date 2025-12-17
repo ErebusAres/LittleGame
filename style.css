@@ -343,11 +343,26 @@ button.disabled {
 
 .tier-list {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding-right: 4px;
+}
+
+.tier-card button {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.button-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
 }
 
 .tier-card {
@@ -605,16 +620,43 @@ footer.panel {
   border-left: 3px solid var(--border);
 }
 
-.chat-tab::after {
-  content: "live";
+.live-indicator {
   position: absolute;
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ff4f6b;
+  box-shadow: 
+    0 0 8px rgba(255, 79, 107, 0.8),
+    0 0 12px rgba(255, 79, 107, 0.4);
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+.live-text {
   font-size: 10px;
   letter-spacing: 0.1em;
   color: rgba(124, 240, 255, 0.8);
   text-shadow: 0 0 6px rgba(124, 240, 255, 0.65);
+}
+
+@keyframes live-pulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
 }
 
 .chat-list {

@@ -91,7 +91,17 @@
       "don't mind the hum. it's listening, {player}.",
       "quiet boot loaded. no one else here yet.",
       "try not to trip the alarms on your first loop.",
-      "seal your suit, {player}. it's raining packets."
+      "seal your suit, {player}. it's raining packets.",
+      "signal detected. welcome aboard, {player}.",
+      "console powering up. ready when you are.",
+      "initialization complete. the grid awaits.",
+      "hey {player}, shift just started. let's see what breaks.",
+      "monitors online. coffee optional but recommended.",
+      "{player}, you're cleared for access. don't touch the red switches.",
+      "good timing. we just finished the last reboot.",
+      "linkup confirmed, {player}. diagnostics look clean.",
+      "welcome to the grind. literally and figuratively.",
+      "systems nominal. let's push some numbers."
     ],
     upgrade: [
       "nice pickup. buffers will thank you.",
@@ -101,7 +111,17 @@
       "polish those cores; they'll purr.",
       "fresh welds, fewer sparks.",
       "that tune-up shaved some noise.",
-      "your rig just got a lot less squeaky."
+      "your rig just got a lot less squeaky.",
+        "smooth purchase. efficiency just ticked up.",
+  "that upgrade's humming nicely. good choice.",
+  "bought yourself some breathing room with that one.",
+  "cores appreciate the love. they'll return the favor.",
+  "investment logged. returns should compound nicely.",
+  "shiny new upgrade. treat it well.",
+  "buffers are happy. I can hear them purring.",
+  "that's going to save you some headaches later.",
+  "nice optimization. the numbers will thank you.",
+  "upgrade successful. no sparks, no smoke. perfect."
     ],
     prestige: [
       "reboot complete. scent of ozone everywhere.",
@@ -111,7 +131,17 @@
       "prestige hits different every time, huh?",
       "new loop, same fire. don't let it cool.",
       "resetting is just stretching. sprint next.",
-      "reboot fumes still warm. push now."
+      "reboot fumes still warm. push now.",
+        "reset acknowledged. carry that momentum forward.",
+  "clean slate feels good, doesn't it?",
+  "prestige locked in. multiplier looks tasty.",
+  "another loop down. how many until you're satisfied?",
+  "reboot complete. core temperature dropping to normal.",
+  "wiped clean. time to climb faster this round.",
+  "prestige gained. that permanent boost hits different.",
+  "reset successful. your last run taught you well.",
+  "fresh cycle incoming. apply what you learned.",
+  "another reboot in the books. the grind continues."
     ],
     milestone: [
       "depth marker reached. the void notices.",
@@ -121,7 +151,17 @@
       "keep your suit tight. pressure rising.",
       "scoreboard noticed that tier, {player}.",
       "plates shift down here. step soft.",
-      "new stratum unlocked. breathe shallow."
+      "new stratum unlocked. breathe shallow.",
+        "checkpoint passed. save your progress.",
+  "new depth achieved. the systems are noticing.",
+  "tier milestone reached. pressure's building nicely.",
+  "{player} just broke through another layer. respect.",
+  "you've gone deeper than most. keep that pace.",
+  "achievement logged. your name's climbing the boards.",
+  "that's a significant threshold. celebrate briefly, then push.",
+  "milestone cleared. most operators stall here.",
+  "impressive depth, {player}. the void is watching.",
+  "you're in rare territory now. tread carefully."
     ],
     click: [
       "manual streak registered. wrists okay?",
@@ -172,7 +212,27 @@
       "console wants a lullaby. any takers?",
       "who keeps naming tiers after snacks?",
       "found a note that just says \"run\".",
-      "if you hear whispering fans, that's us."
+      "if you hear whispering fans, that's us.",
+        "anyone else hear that clicking? just me?",
+  "maintenance scheduled for... checks notes... eventually.",
+  "core temperature nominal. mostly.",
+  "someone left a sticky note that says 'don't panic'. noted.",
+  "if you see any ghosts in the system, they're friendly. probably.",
+  "reminder: backup your backups. then backup those.",
+  "I found a bug in tier 7. caught it and released it outside.",
+  "the entity hasn't messaged in a while. that's good, right?",
+  "coffee count for today: lost count.",
+  "whoever named these tiers was either brilliant or sleep-deprived.",
+  "systems stable. knock on wood. virtual wood.",
+  "fun fact: nobody knows what half these buttons do.",
+  "the core made a weird noise. added it to the log.",
+  "everything's fine. that alarm is just... decorative.",
+  "remember when tier 5 was impressive? me neither.",
+  "{player}, you've been climbing for a while. hydration check.",
+  "sentinel's been quiet. suspiciously quiet.",
+  "found an old manual. it's in a language nobody speaks.",
+  "the automation wants a vacation. told it to wait.",
+  "packet loss at 0.01%. we'll call that a win."
     ],
     conversation: [
       "handing logs to {to}. don't lose them.",
@@ -195,7 +255,22 @@
       "{to}, push your splits; {player} is watching.",
       "tagging {to} to sweep tier dust.",
       "hey {to}, your coffee is evaporating.",
-      "{to}, check your whisper queue; it's full."
+      "{to}, check your whisper queue; it's full.",
+        "hey {to}, who left the debugger running?",
+  "{to}, your automation's making weird sounds again.",
+  "passing the baton to {to}. don't drop it.",
+  "{to}, check channel 3. something's off.",
+  "yo {to}, you owe me a coffee. remember the bet?",
+  "{to}, your cables are a mess. organize that chaos.",
+  "tagging {to} for the next shift. good luck.",
+  "{to}, the core's asking for you. don't ask why.",
+  "hand off to {to}. systems are your problem now.",
+  "{to}, sentinel's watching. keep it clean.",
+  "{to}, did you recalibrate the buffers? they're drifting.",
+  "passing logs to {to}. there's a weird entry on line 847.",
+  "{to}, your last optimization broke something. fix it.",
+  "{to}, if the alarms go off, it's your fault.",
+  "hey {to}, {player}'s on a streak. don't jinx it."
     ],
     conversationQA: [
       { ask: "{to}, you rerouted the coolant lines yet?", answer: "yeah, {from}, flow stabilized. stop worrying." },
@@ -206,7 +281,48 @@
       { ask: "{to}, you see that operator spike?", answer: "yep, {from}. flagging it before sentinel does." },
       { ask: "what's your fastest split, {to}?", answer: "ask me after coffee, {from}. probably faster than yours." },
       { ask: "{to}, did you patch the leak?", answer: "temporary seal only, {from}. keep pressure low." },
-      { ask: "who's leading depth today, {to}?", answer: "looks like {player}, unless {from} wakes up." }
+      { ask: "who's leading depth today, {to}?", answer: "looks like {player}, unless {from} wakes up." },
+       { 
+    ask: "{to}, you seeing these latency spikes?", 
+    answer: "yeah {from}, looks like packet congestion. rerouting now." 
+  },
+  { 
+    ask: "hey {to}, is the entity acting weird today?", 
+    answer: "when is it not weird, {from}? stay sharp." 
+  },
+  { 
+    ask: "{to}, did you backup before that prestige?", 
+    answer: "always do, {from}. learned that lesson the hard way." 
+  },
+  { 
+    ask: "{to}, what's your automation strategy?", 
+    answer: "efficiency first, {from}. clicks are for emergencies." 
+  },
+  { 
+    ask: "{to}, think we'll hit tier 50 today?", 
+    answer: "if {player} keeps this pace, {from}, easily." 
+  },
+  { 
+    ask: "{to}, you ever wonder what's really down there?", 
+    answer: "not while I'm working, {from}. keep focused." 
+  },
+  { 
+    ask: "yo {to}, got any tips for {player}?", 
+    answer: "watch the difficulty curve, {from}. it bites." 
+  },
+  { 
+    ask: "{to}, why's the core humming like that?", 
+    answer: "because we pushed it hard, {from}. it'll settle." 
+  },
+  { 
+    ask: "{to}, you trust the integrity checks?", 
+    answer: "more than I trust my morning coffee, {from}." 
+  },
+  { 
+    ask: "{to}, what's the weirdest bug you've seen?", 
+    answer: "tier 12 once generated negative credits, {from}. nightmare." 
+  }
+      
     ],
     npcProgress: [
       "{user} finally cleared a new tier. pace yourself.",
@@ -229,14 +345,34 @@
       "if anyone asks, I wasn't here.",
       "off the record: you're ahead.",
       "passing you a hush-hush buff. it's imaginary.",
-      "keep the lights dim. whispers travel better."
+      "keep the lights dim. whispers travel better.",
+        "quiet channel. just between us, {player}.",
+  "off the record: you're doing better than you think.",
+  "psst. next tier's easier than it looks.",
+  "keep this hush: I've been tracking your progress. impressive.",
+  "whisper network says you're the one to watch.",
+  "between you and me? you've got good instincts.",
+  "don't broadcast this, but you're in the top percentile.",
+  "quiet tip: trust your automation more.",
+  "this stays between us: you're ready for the next jump.",
+  "soft whisper: the grid favors patience over speed."
     ],
     warning: [
       "careful, your click spikes are on radar.",
       "sentinel eyes are open. ease up.",
       "logs show heat. slow your taps, {player}.",
       "automation can cover while you cool off.",
-      "anti-cheat is sniffing. keep it clean."
+      "anti-cheat is sniffing. keep it clean.",
+        "CPS breach detected. throttle back, {player}.",
+  "sentinel's algorithms are flagging you. ease up.",
+  "manual input rate exceeding safe limits. slow down.",
+  "anti-cheat subroutines activating. keep it legitimate.",
+  "your click pattern looks suspicious. normalize it.",
+  "warning: sustained high CPS draws attention.",
+  "sentinel ping incoming. clean up your rhythm.",
+  "logs show irregular activity. steady your pace.",
+  "integrity scan initiated. make sure you're clean.",
+  "you're pushing the envelope. sentinel's watching."
     ],
     whisperTopics: {
       help: [
@@ -244,45 +380,105 @@
         "try boosting efficiency on your bottleneck tier.",
         "balance autos and clicks; don't tunnel one stat.",
         "watch the unlock cost curve; don't overbuy autos.",
-        "prestige sooner if gains flatten."
+        "prestige sooner if gains flatten.",
+            "quick tip: automate tier 0 before anything else.",
+    "try boosting efficiency on your bottleneck tier.",
+    "balance autos and clicks; don't tunnel one stat.",
+    "watch the unlock cost curve; don't overbuy autos.",
+    "prestige sooner if gains flatten.",
+    "efficiency upgrades compound better than raw clicks.",
+    "threads upgrade is secretly one of the best early picks.",
+    "don't sleep on buffer control. it scales everything.",
+    "automation power affects more than you think.",
+    "difficulty scaling hits hard after tier 10. prep for it."
       ],
       stuck: [
         "if you're stuck, soften difficulty a tick.",
         "pivot to efficiency; it breaks walls quietly.",
         "take a short prestige; momentum resets help.",
         "upgrade threads before brute-forcing clicks.",
-        "slow down and reroute autos, it helps."
+        "slow down and reroute autos, it helps.",
+            "if you're stuck, soften difficulty a tick.",
+    "pivot to efficiency; it breaks walls quietly.",
+    "take a short prestige; momentum resets help.",
+    "upgrade threads before brute-forcing clicks.",
+    "slow down and reroute autos, it helps.",
+    "walls usually mean you're over-invested in one path.",
+    "check if you've been ignoring efficiency too long.",
+    "sometimes the answer is just one more prestige.",
+    "difficulty softener is expensive but worth it when stuck.",
+    "look at your weakest tier. that's usually the blockage."
       ],
       optimize: [
         "curve costs by alternating autos and efficiency.",
         "run shorter loops; compounding wins.",
         "tweak difficulty for better ROI, {player}.",
         "watch cps; penalties wreck efficiency.",
-        "buffers before bulk buys saves credits."
+        "buffers before bulk buys saves credits.",
+            "curve costs by alternating autos and efficiency.",
+    "run shorter loops; compounding wins.",
+    "tweak difficulty for better ROI, {player}.",
+    "watch cps; penalties wreck efficiency.",
+    "buffers before bulk buys saves credits.",
+    "optimal path varies by depth. adapt constantly.",
+    "overclock pays for itself after tier 5.",
+    "balance your prestige upgrades. don't overweight one.",
+    "difficulty affects costs more than income. adjust accordingly.",
+    "tier efficiency multiplies everything. prioritize it."
       ],
       praise: [
         "nice work; keep that pace steady.",
         "clean play. keep stacking.",
         "good instincts, {player}.",
         "you're reading the grid right.",
-        "logs look sharp. keep going."
+        "logs look sharp. keep going.",
+            "nice work; keep that pace steady.",
+    "clean play. keep stacking.",
+    "good instincts, {player}.",
+    "you're reading the grid right.",
+    "logs look sharp. keep going.",
+    "that's solid gameplay. don't second-guess yourself.",
+    "you're ahead of the curve. maintain that edge.",
+    "clean execution. the numbers show it.",
+    "your strategy's working. trust the process.",
+    "that's how it's done. textbook."
       ],
       greet: [
         "hey {player}, channel's open.",
         "hi. your signals are clear.",
         "yo. what's the plan today?",
         "I'm listening. fire away.",
-        "present and watching, {player}."
+        "present and watching, {player}.",
+            "hey {player}, channel's open.",
+    "hi. your signals are clear.",
+    "yo. what's the plan today?",
+    "I'm listening. fire away.",
+    "present and watching, {player}.",
+    "channel secured. what's on your mind?",
+    "signal locked. how can I help?",
+    "hey there. need something?",
+    "online and ready. what's up?",
+    "tuned in. talk to me."
       ],
       generic: [
         "I'll keep this quiet. you've got this.",
         "noted. I'll watch your back silently.",
         "I'll ping you if anything drifts.",
         "keeping the channel clear; talk to me.",
-        "copy. staying on this frequency."
+        "copy. staying on this frequency.",
+            "I'll keep this quiet. you've got this.",
+    "noted. I'll watch your back silently.",
+    "I'll ping you if anything drifts.",
+    "keeping the channel clear; talk to me.",
+    "copy. staying on this frequency.",
+    "understood. I'm here if you need.",
+    "logged. let me know if things shift.",
+    "acknowledged. keep pushing.",
+    "received. I'll monitor from here.",
+    "got it. stay focused."
       ]
     },
-personaPools: {
+    personaPools: {
       tryhard: {
         banter: [
           "no sleep until top slot, {player}.",
@@ -688,1824 +884,1824 @@ personaPools: {
 
   const devTips = [
     "tip: watch the chat footer for the freshest ping.",
-                    "tip: manual spam triggers penalties; pace or automate.",
-                    "tip: exports carry chat history too. integrity still enforced."
-                  ];
+    "tip: manual spam triggers penalties; pace or automate.",
+    "tip: exports carry chat history too. integrity still enforced."
+  ];
 
-                  const entityLines = {
-                    early: [
-                      "stop. you don't want what waits below.",
-                      "turn back. the math frays down there.",
-                      "leave. this core was sealed for a reason.",
-                      "pause. feel the static? that's warning enough.",
-                      "halt now and the echoes quiet."
-                    ],
-                    mid: [
-                      "prestige again? you're feeding it.",
-                      "depth tastes like ash. step away.",
-                      "your signals scream. silence them.",
-                      "this isn't progress. it's bait.",
-                      "I can hide you. just stop clicking."
-                    ],
-                    late: [
-                      "it is awake. do not give it more.",
-                      "every reboot opens the gate wider.",
-                      "the core will take you. let it starve.",
-                      "your name is already etched below. stay above.",
-                      "pull the plug before it pulls you.",
-                      "leave the depth to me. leave now."
-                    ]
-                  };
+  const entityLines = {
+    early: [
+      "stop. you don't want what waits below.",
+      "turn back. the math frays down there.",
+      "leave. this core was sealed for a reason.",
+      "pause. feel the static? that's warning enough.",
+      "halt now and the echoes quiet."
+    ],
+    mid: [
+      "prestige again? you're feeding it.",
+      "depth tastes like ash. step away.",
+      "your signals scream. silence them.",
+      "this isn't progress. it's bait.",
+      "I can hide you. just stop clicking."
+    ],
+    late: [
+      "it is awake. do not give it more.",
+      "every reboot opens the gate wider.",
+      "the core will take you. let it starve.",
+      "your name is already etched below. stay above.",
+      "pull the plug before it pulls you.",
+      "leave the depth to me. leave now."
+    ]
+  };
 
-                  function buildAchievementDefs() {
-                    const defs = [];
-  const add = (section, id, name, desc, check) => defs.push({ section, id, name, desc, check });
+  function buildAchievementDefs() {
+    const defs = [];
+    const add = (section, id, name, desc, check) => defs.push({ section, id, name, desc, check });
 
-  // Progression milestones up to tier 100 (tier index, excluding tier 0 baseline)
-  const tierMilestones = [1, 3, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100];
-  tierMilestones.forEach((t) =>
-    add("Progression", `tier-${t}`, `Depth ${t}`, `Reach Tier ${t}`, (s) => s.tiers.length - 1 >= t)
-  );
+    // Progression milestones up to tier 100 (tier index, excluding tier 0 baseline)
+    const tierMilestones = [1, 3, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100];
+    tierMilestones.forEach((t) =>
+      add("Progression", `tier-${t}`, `Depth ${t}`, `Reach Tier ${t}`, (s) => s.tiers.length - 1 >= t)
+    );
 
-  // Currency holdings milestones
-  const cashMilestones = [1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12];
-  cashMilestones.forEach((v) =>
-    add("Currency", `cash-${v}`, `Reserve ${formatNumber(v)}`, `Hold ${formatNumber(v)} Credits at once`, (s) => s.tiers[0]?.amount >= v)
-  );
+    // Currency holdings milestones
+    const cashMilestones = [1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12];
+    cashMilestones.forEach((v) =>
+      add("Currency", `cash-${v}`, `Reserve ${formatNumber(v)}`, `Hold ${formatNumber(v)} Credits at once`, (s) => s.tiers[0]?.amount >= v)
+    );
 
-  // Automation milestones (tier 0 automation levels)
-  [1, 3, 5, 10, 15, 20, 30, 40, 50].forEach((lvl) =>
-    add("Automation", `auto-${lvl}`, `Auto Lv${lvl}`, `Reach automation level ${lvl} on Tier 0`, (s) => (s.tiers[0]?.autoLevel || 0) >= lvl)
-  );
+    // Automation milestones (tier 0 automation levels)
+    [1, 3, 5, 10, 15, 20, 30, 40, 50].forEach((lvl) =>
+      add("Automation", `auto-${lvl}`, `Auto Lv${lvl}`, `Reach automation level ${lvl} on Tier 0`, (s) => (s.tiers[0]?.autoLevel || 0) >= lvl)
+    );
 
-  // Efficiency milestones (any tier)
-  [1, 3, 5, 10, 15, 20, 30].forEach((lvl) =>
-    add("Efficiency", `eff-${lvl}`, `Efficient ${lvl}`, `Reach efficiency level ${lvl} on any tier`, (s) =>
-      s.tiers.some((t) => (t.efficiencyLevel || 0) >= lvl)
-    )
-  );
+    // Efficiency milestones (any tier)
+    [1, 3, 5, 10, 15, 20, 30].forEach((lvl) =>
+      add("Efficiency", `eff-${lvl}`, `Efficient ${lvl}`, `Reach efficiency level ${lvl} on any tier`, (s) =>
+        s.tiers.some((t) => (t.efficiencyLevel || 0) >= lvl)
+      )
+    );
 
-  // Prestige milestones
-  [1, 3, 5, 10, 20, 50].forEach((p) =>
-    add("Prestige", `prestige-${p}`, `Reboot x${p}`, `Prestige ${p} time${p === 1 ? "" : "s"}`, (s) => (s.stats.prestiges || 0) >= p)
-  );
+    // Prestige milestones
+    [1, 3, 5, 10, 20, 50].forEach((p) =>
+      add("Prestige", `prestige-${p}`, `Reboot x${p}`, `Prestige ${p} time${p === 1 ? "" : "s"}`, (s) => (s.stats.prestiges || 0) >= p)
+    );
 
-  // Click milestones
-  [10, 50, 250, 1000, 5000, 20000].forEach((c) =>
-    add("Clicks", `clicks-${c}`, `Clicker ${formatNumber(c)}`, `Execute ${formatNumber(c)} total clicks`, (s) => (s.stats.clicks || 0) >= c)
-  );
+    // Click milestones
+    [10, 50, 250, 1000, 5000, 20000].forEach((c) =>
+      add("Clicks", `clicks-${c}`, `Clicker ${formatNumber(c)}`, `Execute ${formatNumber(c)} total clicks`, (s) => (s.stats.clicks || 0) >= c)
+    );
 
-  // Hard mode and difficulty-related
-  add("Hard Mode", "diff-10", "Toughen Up", "Set manual difficulty to 10 or higher", (s) => (s.manualDifficulty || 1) >= 10);
-  add("Hard Mode", "diff-50", "No Mercy", "Set manual difficulty to 50 or higher", (s) => (s.manualDifficulty || 1) >= 50);
-  add("Hard Mode", "diff-100", "Full Brutality", "Set manual difficulty to 100", (s) => (s.manualDifficulty || 1) >= 100);
-  add(
-    "Hard Mode",
-    "hard-tier100",
-    "Iron Runner",
-    "Reach Tier 100 with difficulty locked at 100% after 1k credits",
-    (s) => s.tiers.length - 1 >= 100 && s.manualDifficulty === 100 && s.hardModeStarted && s.hardModeValid
-  );
+    // Hard mode and difficulty-related
+    add("Hard Mode", "diff-10", "Toughen Up", "Set manual difficulty to 10 or higher", (s) => (s.manualDifficulty || 1) >= 10);
+    add("Hard Mode", "diff-50", "No Mercy", "Set manual difficulty to 50 or higher", (s) => (s.manualDifficulty || 1) >= 50);
+    add("Hard Mode", "diff-100", "Full Brutality", "Set manual difficulty to 100", (s) => (s.manualDifficulty || 1) >= 100);
+    add(
+      "Hard Mode",
+      "hard-tier100",
+      "Iron Runner",
+      "Reach Tier 100 with difficulty locked at 100% after 1k credits",
+      (s) => s.tiers.length - 1 >= 100 && s.manualDifficulty === 100 && s.hardModeStarted && s.hardModeValid
+    );
 
-  return defs;
-}
+    return defs;
+  }
   const achievementSections = ["Progression", "Currency", "Automation", "Efficiency", "Prestige", "Clicks", "Hard Mode"];
 
-const achievementDefs = buildAchievementDefs();
+  const achievementDefs = buildAchievementDefs();
 
-const ui = {};
-const tierElements = new Map();
-const globalUpgradeButtons = new Map();
-const metaUpgradeButtons = new Map();
+  const ui = {};
+  const tierElements = new Map();
+  const globalUpgradeButtons = new Map();
+  const metaUpgradeButtons = new Map();
 
-let state = loadGame();
-let lastRender = 0;
-let clickRunTimer = null;
-let npcChatterTimer = null;
-let operatorSpam = { times: [], warned: false };
+  let state = loadGame();
+  let lastRender = 0;
+  let clickRunTimer = null;
+  let npcChatterTimer = null;
+  let operatorSpam = { times: [], warned: false };
 
-initUI();
-bootstrapChat();
-applyOfflineProgress();
-render(true);
-requestAnimationFrame(loop);
-
-function loop() {
-  const now = Date.now();
-  const delta = Math.min((now - state.lastTick) / 1000, 0.25);
-  state.lastTick = now;
-  applyIncome(delta);
-  if (now - state.lastSave > 10000) {
-    saveGame();
-  }
-  if (now - lastRender > RENDER_INTERVAL_MS) {
-    render();
-    lastRender = now;
-  }
+  initUI();
+  bootstrapChat();
+  applyOfflineProgress();
+  render(true);
   requestAnimationFrame(loop);
-}
 
-function orderFromCost(cost, tie = 0) {
-  const safe = Math.max(0, cost);
-  return Math.round(Math.log10(safe + 1) * 1000) * 10 + tie;
-}
-
-function tierDisplayName(index) {
-  if (tierNames[index]) return tierNames[index];
-  return `Layer ${index}`;
-}
-
-function tierBaseCost(index) {
-  return 16 * Math.pow(12.5, index);
-}
-
-function makeTier(index) {
-  return {
-    id: `tier-${index}`,
-    index,
-    name: tierDisplayName(index),
-    amount: 0,
-    baseRate: 0.65 * Math.pow(1.18, index),
-    baseCost: tierBaseCost(index),
-    costGrowth: 1.16 + index * 0.015,
-    autoLevel: 0,
-    efficiencyLevel: 0,
-    unlocked: index === 0,
-    autoCostBase: 10 * Math.pow(1.6, index + 1),
-    effCostBase: 16 * Math.pow(1.65, index + 1)
-  };
-}
-
-function createDefaultChatState(now = Date.now()) {
-  return {
-    history: [],
-    scrollLock: false,
-    runCount: 0,
-    lastClickTs: 0,
-    lastRunFlush: now,
-    lastDivider: 0,
-    lastNpcWhisper: 0,
-    flags: { npcProgress: {} }
-  };
-}
-
-function createDefaultState() {
-  const now = Date.now();
-  return {
-    version: GAME_VERSION,
-    tiers: [makeTier(0)],
-    globalUpgrades: { click: 0, clickBurst: 0, automation: 0, threads: 0, overclock: 0, buffer: 0 },
-    prestige: {
-      points: 0,
-      pending: 0,
-      upgrades: { prestigeBoost: 0, clickPersist: 0, autoPersist: 0, offlineBoost: 0, difficultySoftener: 0 }
-    },
-    lastTick: now,
-    lastSave: now,
-    totalCurrency: 0,
-    status: "Booted",
-    offlineSummary: { gain: 0, seconds: 0 },
-    sessionStart: now,
-    manualDifficulty: 1,
-    achievements: [],
-    stats: { clicks: 0, prestiges: 0 },
-    hardModeStarted: false,
-    hardModeValid: true,
-    clickHistory: [],
-    clickPenaltyUntil: 0,
-    penaltyScale: 1,
-    lastCps: 0,
-    lastClickTime: 0,
-    integrityFlag: false,
-    playerName: null,
-    chat: createDefaultChatState(now)
-  };
-}
-
-function mergeState(base, saved) {
-  const merged = { ...base, ...saved };
-  merged.version = GAME_VERSION;
-  merged.globalUpgrades = { ...base.globalUpgrades, ...(saved.globalUpgrades || {}) };
-  merged.prestige = {
-    ...base.prestige,
-    ...(saved.prestige || {}),
-    upgrades: { ...base.prestige.upgrades, ...(saved.prestige?.upgrades || {}) }
-  };
-  merged.tiers = [];
-  const savedTiers = Array.isArray(saved.tiers) ? saved.tiers : [];
-  const count = Math.max(1, Math.min(101, savedTiers.length || 1));
-  for (let i = 0; i < count; i++) {
-    const template = makeTier(i);
-    const savedTier = savedTiers[i] || {};
-    merged.tiers.push({
-      ...template,
-      amount: Number(savedTier.amount) || 0,
-      autoLevel: Number(savedTier.autoLevel) || 0,
-      efficiencyLevel: Number(savedTier.efficiencyLevel) || 0,
-      unlocked: savedTier.unlocked ?? i === 0
-    });
+  function loop() {
+    const now = Date.now();
+    const delta = Math.min((now - state.lastTick) / 1000, 0.25);
+    state.lastTick = now;
+    applyIncome(delta);
+    if (now - state.lastSave > 10000) {
+      saveGame();
+    }
+    if (now - lastRender > RENDER_INTERVAL_MS) {
+      render();
+      lastRender = now;
+    }
+    requestAnimationFrame(loop);
   }
-  merged.totalCurrency = Number(saved.totalCurrency) || 0;
-  merged.lastTick = saved.lastTick || Date.now();
-  merged.lastSave = saved.lastSave || Date.now();
-  merged.sessionStart = saved.sessionStart || Date.now();
-  merged.offlineSummary = saved.offlineSummary || { gain: 0, seconds: 0 };
-  merged.manualDifficulty = Math.min(100, Math.max(1, Number(saved.manualDifficulty) || 1));
-  merged.achievements = Array.isArray(saved.achievements) ? saved.achievements : [];
-  merged.stats = { clicks: 0, prestiges: 0, ...(saved.stats || {}) };
-  merged.hardModeStarted = !!saved.hardModeStarted;
-  merged.hardModeValid = saved.hardModeValid !== false;
-  merged.clickHistory = Array.isArray(saved.clickHistory) ? saved.clickHistory : [];
-  merged.clickPenaltyUntil = Number(saved.clickPenaltyUntil) || 0;
-  merged.penaltyScale = saved.penaltyScale || 1;
-  merged.lastCps = saved.lastCps || 0;
-  merged.cpsGraceUntil = saved.cpsGraceUntil || 0;
-  merged.cpsGraceCooldownUntil = saved.cpsGraceCooldownUntil || 0;
-  merged.lastClickTime = saved.lastClickTime || 0;
-  merged.integrityFlag = !!saved.integrityFlag;
-  merged.status = saved.status || "Recovered save";
-  merged.playerName = saved.playerName || null;
-  merged.chat = mergeChatState(createDefaultChatState(), saved.chat || {});
-  return merged;
-}
 
-function mergeChatState(base, saved) {
-  const history = Array.isArray(saved.history) ? saved.history.slice(-CHAT_HISTORY_LIMIT) : [];
-  return {
-    ...base,
-    ...saved,
-    runCount: saved.runCount || 0,
-    lastClickTs: saved.lastClickTs || 0,
-    lastRunFlush: saved.lastRunFlush || Date.now(),
-    lastNpcWhisper: saved.lastNpcWhisper || 0,
-    history: history.map((entry) => ({
-      ts: Number(entry.ts) || Date.now(),
-      id: String(entry.id || "s000").slice(0, 8),
-      user: String(entry.user || "system").slice(0, 32),
-      category: entry.category || "system",
-      text: String(entry.text || ""),
-      color: entry.color || null,
-      type: entry.type === "divider" ? "divider" : "line"
-    })),
-    flags: { npcProgress: {}, ...(saved.flags || {}) }
-  };
-}
+  function orderFromCost(cost, tie = 0) {
+    const safe = Math.max(0, cost);
+    return Math.round(Math.log10(safe + 1) * 1000) * 10 + tie;
+  }
 
-function loadGame() {
-  const base = createDefaultState();
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return base;
-    const decoded = decodeSave(raw);
-    if (!isValidSignature(decoded)) {
-      base.status = "Integrity check failed; save reset";
-      base.integrityFlag = true;
+  function tierDisplayName(index) {
+    if (tierNames[index]) return tierNames[index];
+    return `Layer ${index}`;
+  }
+
+  function tierBaseCost(index) {
+    return 16 * Math.pow(12.5, index);
+  }
+
+  function makeTier(index) {
+    return {
+      id: `tier-${index}`,
+      index,
+      name: tierDisplayName(index),
+      amount: 0,
+      baseRate: 0.65 * Math.pow(1.18, index),
+      baseCost: tierBaseCost(index),
+      costGrowth: 1.16 + index * 0.015,
+      autoLevel: 0,
+      efficiencyLevel: 0,
+      unlocked: index === 0,
+      autoCostBase: 10 * Math.pow(1.6, index + 1),
+      effCostBase: 16 * Math.pow(1.65, index + 1)
+    };
+  }
+
+  function createDefaultChatState(now = Date.now()) {
+    return {
+      history: [],
+      scrollLock: false,
+      runCount: 0,
+      lastClickTs: 0,
+      lastRunFlush: now,
+      lastDivider: 0,
+      lastNpcWhisper: 0,
+      flags: { npcProgress: {} }
+    };
+  }
+
+  function createDefaultState() {
+    const now = Date.now();
+    return {
+      version: GAME_VERSION,
+      tiers: [makeTier(0)],
+      globalUpgrades: { click: 0, clickBurst: 0, automation: 0, threads: 0, overclock: 0, buffer: 0 },
+      prestige: {
+        points: 0,
+        pending: 0,
+        upgrades: { prestigeBoost: 0, clickPersist: 0, autoPersist: 0, offlineBoost: 0, difficultySoftener: 0 }
+      },
+      lastTick: now,
+      lastSave: now,
+      totalCurrency: 0,
+      status: "Booted",
+      offlineSummary: { gain: 0, seconds: 0 },
+      sessionStart: now,
+      manualDifficulty: 1,
+      achievements: [],
+      stats: { clicks: 0, prestiges: 0 },
+      hardModeStarted: false,
+      hardModeValid: true,
+      clickHistory: [],
+      clickPenaltyUntil: 0,
+      penaltyScale: 1,
+      lastCps: 0,
+      lastClickTime: 0,
+      integrityFlag: false,
+      playerName: null,
+      chat: createDefaultChatState(now)
+    };
+  }
+
+  function mergeState(base, saved) {
+    const merged = { ...base, ...saved };
+    merged.version = GAME_VERSION;
+    merged.globalUpgrades = { ...base.globalUpgrades, ...(saved.globalUpgrades || {}) };
+    merged.prestige = {
+      ...base.prestige,
+      ...(saved.prestige || {}),
+      upgrades: { ...base.prestige.upgrades, ...(saved.prestige?.upgrades || {}) }
+    };
+    merged.tiers = [];
+    const savedTiers = Array.isArray(saved.tiers) ? saved.tiers : [];
+    const count = Math.max(1, Math.min(101, savedTiers.length || 1));
+    for (let i = 0; i < count; i++) {
+      const template = makeTier(i);
+      const savedTier = savedTiers[i] || {};
+      merged.tiers.push({
+        ...template,
+        amount: Number(savedTier.amount) || 0,
+        autoLevel: Number(savedTier.autoLevel) || 0,
+        efficiencyLevel: Number(savedTier.efficiencyLevel) || 0,
+        unlocked: savedTier.unlocked ?? i === 0
+      });
+    }
+    merged.totalCurrency = Number(saved.totalCurrency) || 0;
+    merged.lastTick = saved.lastTick || Date.now();
+    merged.lastSave = saved.lastSave || Date.now();
+    merged.sessionStart = saved.sessionStart || Date.now();
+    merged.offlineSummary = saved.offlineSummary || { gain: 0, seconds: 0 };
+    merged.manualDifficulty = Math.min(100, Math.max(1, Number(saved.manualDifficulty) || 1));
+    merged.achievements = Array.isArray(saved.achievements) ? saved.achievements : [];
+    merged.stats = { clicks: 0, prestiges: 0, ...(saved.stats || {}) };
+    merged.hardModeStarted = !!saved.hardModeStarted;
+    merged.hardModeValid = saved.hardModeValid !== false;
+    merged.clickHistory = Array.isArray(saved.clickHistory) ? saved.clickHistory : [];
+    merged.clickPenaltyUntil = Number(saved.clickPenaltyUntil) || 0;
+    merged.penaltyScale = saved.penaltyScale || 1;
+    merged.lastCps = saved.lastCps || 0;
+    merged.cpsGraceUntil = saved.cpsGraceUntil || 0;
+    merged.cpsGraceCooldownUntil = saved.cpsGraceCooldownUntil || 0;
+    merged.lastClickTime = saved.lastClickTime || 0;
+    merged.integrityFlag = !!saved.integrityFlag;
+    merged.status = saved.status || "Recovered save";
+    merged.playerName = saved.playerName || null;
+    merged.chat = mergeChatState(createDefaultChatState(), saved.chat || {});
+    return merged;
+  }
+
+  function mergeChatState(base, saved) {
+    const history = Array.isArray(saved.history) ? saved.history.slice(-CHAT_HISTORY_LIMIT) : [];
+    return {
+      ...base,
+      ...saved,
+      runCount: saved.runCount || 0,
+      lastClickTs: saved.lastClickTs || 0,
+      lastRunFlush: saved.lastRunFlush || Date.now(),
+      lastNpcWhisper: saved.lastNpcWhisper || 0,
+      history: history.map((entry) => ({
+        ts: Number(entry.ts) || Date.now(),
+        id: String(entry.id || "s000").slice(0, 8),
+        user: String(entry.user || "system").slice(0, 32),
+        category: entry.category || "system",
+        text: String(entry.text || ""),
+        color: entry.color || null,
+        type: entry.type === "divider" ? "divider" : "line"
+      })),
+      flags: { npcProgress: {}, ...(saved.flags || {}) }
+    };
+  }
+
+  function loadGame() {
+    const base = createDefaultState();
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return base;
+      const decoded = decodeSave(raw);
+      if (!isValidSignature(decoded)) {
+        base.status = "Integrity check failed; save reset";
+        base.integrityFlag = true;
+        return base;
+      }
+      return mergeState(base, decoded);
+    } catch (err) {
       return base;
     }
-    return mergeState(base, decoded);
-  } catch (err) {
-    return base;
   }
-}
 
-function saveGame() {
-  state.lastSave = Date.now();
-  try {
-    const signature = computeSignature(snapshotForSignature(state));
-    const toStore = { ...state, signature };
-    const packed = encodeSave(toStore);
-    localStorage.setItem(STORAGE_KEY, packed);
-  } catch (err) {
-    // ignore storage errors quietly
+  function saveGame() {
+    state.lastSave = Date.now();
+    try {
+      const signature = computeSignature(snapshotForSignature(state));
+      const toStore = { ...state, signature };
+      const packed = encodeSave(toStore);
+      localStorage.setItem(STORAGE_KEY, packed);
+    } catch (err) {
+      // ignore storage errors quietly
+    }
   }
-}
 
-function encodeSave(obj) {
-  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-}
-
-function decodeSave(str) {
-  return JSON.parse(decodeURIComponent(escape(atob(str))));
-}
-
-function snapshotForSignature(s) {
-  return {
-    version: GAME_VERSION,
-    manualDifficulty: s.manualDifficulty,
-    globalUpgrades: s.globalUpgrades,
-    prestige: { points: s.prestige.points, upgrades: s.prestige.upgrades },
-    tiers: s.tiers.map((t) => ({
-      amount: t.amount,
-      autoLevel: t.autoLevel,
-      efficiencyLevel: t.efficiencyLevel,
-      unlocked: t.unlocked
-    })),
-    achievements: s.achievements,
-    stats: s.stats
-  };
-}
-
-function computeSignature(obj) {
-  const str = JSON.stringify(obj);
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  function encodeSave(obj) {
+    return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
   }
-  return hash.toString(36);
-}
 
-function isValidSignature(saveObj) {
-  if (!saveObj || !saveObj.signature) return false;
-  try {
-    const snap = snapshotForSignature(saveObj);
-    return computeSignature(snap) === saveObj.signature;
-  } catch {
-    return false;
+  function decodeSave(str) {
+    return JSON.parse(decodeURIComponent(escape(atob(str))));
   }
-}
 
-function initUI() {
-  ui.status = document.getElementById("statusLine");
-  ui.currency = document.getElementById("currencyDisplay");
-  ui.clickValue = document.getElementById("clickValueDisplay");
-  ui.rate = document.getElementById("rateDisplay");
-  ui.automationPower = document.getElementById("automationPower");
-  ui.prestigeMultiplier = document.getElementById("prestigeMultiplier");
-  ui.autoBar = document.getElementById("autoBar");
-  ui.prestigePoints = document.getElementById("prestigePoints");
-  ui.pendingPrestige = document.getElementById("pendingPrestige");
-  ui.nextTierLabel = document.getElementById("nextTierLabel");
-  ui.unlockTierButton = document.getElementById("unlockTierButton");
-  ui.saveData = document.getElementById("saveData");
-  ui.sessionTime = document.getElementById("sessionTime");
-  ui.upgradeCount = document.getElementById("upgradeCount");
-  ui.offlineDisplay = document.getElementById("offlineDisplay");
-  ui.infoDetail = document.getElementById("infoDetail");
-  ui.difficultyInput = document.getElementById("difficultyInput");
-  ui.achievementsButton = document.getElementById("achievementsButton");
-  ui.achievementsModal = document.getElementById("achievementsModal");
-  ui.achievementsList = document.getElementById("achievementsList");
-  ui.closeAchievements = document.getElementById("closeAchievements");
-  ui.toastContainer = document.getElementById("toastContainer");
-  ui.difficultyStatus = document.getElementById("difficultyStatus");
-  ui.hardModeStatus = document.getElementById("hardModeStatus");
-  ui.integrityStatus = document.getElementById("integrityStatus");
-  ui.cpsDisplay = document.getElementById("cpsDisplay");
-  ui.chatList = document.getElementById("chatList");
-  ui.chatInput = document.getElementById("chatInput");
-  ui.chatFooterLine = ui.chatInput;
-  ui.chatLiveButton = document.getElementById("chatLiveButton");
-  ui.chatSendButton = document.getElementById("chatSendButton");
-  ui.status.classList.add("pulse");
-
-  document.getElementById("clickButton").addEventListener("click", handleClick);
-  document.getElementById("saveButton").addEventListener("click", () => {
-    saveGame();
-    setStatus("Manual save complete.");
-  });
-  document.getElementById("exportButton").addEventListener("click", exportSave);
-  document.getElementById("importButton").addEventListener("click", importSave);
-  document.getElementById("hardResetButton").addEventListener("click", hardReset);
-  ui.unlockTierButton.addEventListener("click", unlockNextTier);
-  document.getElementById("prestigeButton").addEventListener("click", doPrestige);
-  ui.difficultyInput.addEventListener("change", onDifficultyChange);
-  ui.achievementsButton.addEventListener("click", toggleAchievementsModal);
-  ui.closeAchievements.addEventListener("click", toggleAchievementsModal);
-  ui.achievementsModal.addEventListener("click", (e) => {
-    if (e.target === ui.achievementsModal) toggleAchievementsModal();
-  });
-
-  if (ui.chatList) {
-    ui.chatList.addEventListener("scroll", handleChatScroll);
+  function snapshotForSignature(s) {
+    return {
+      version: GAME_VERSION,
+      manualDifficulty: s.manualDifficulty,
+      globalUpgrades: s.globalUpgrades,
+      prestige: { points: s.prestige.points, upgrades: s.prestige.upgrades },
+      tiers: s.tiers.map((t) => ({
+        amount: t.amount,
+        autoLevel: t.autoLevel,
+        efficiencyLevel: t.efficiencyLevel,
+        unlocked: t.unlocked
+      })),
+      achievements: s.achievements,
+      stats: s.stats
+    };
   }
-  if (ui.chatLiveButton) {
-    ui.chatLiveButton.addEventListener("click", scrollChatToLive);
+
+  function computeSignature(obj) {
+    const str = JSON.stringify(obj);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+    }
+    return hash.toString(36);
   }
-  if (ui.chatInput) {
-    ui.chatInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleChatSend();
-      }
+
+  function isValidSignature(saveObj) {
+    if (!saveObj || !saveObj.signature) return false;
+    try {
+      const snap = snapshotForSignature(saveObj);
+      return computeSignature(snap) === saveObj.signature;
+    } catch {
+      return false;
+    }
+  }
+
+  function initUI() {
+    ui.status = document.getElementById("statusLine");
+    ui.currency = document.getElementById("currencyDisplay");
+    ui.clickValue = document.getElementById("clickValueDisplay");
+    ui.rate = document.getElementById("rateDisplay");
+    ui.automationPower = document.getElementById("automationPower");
+    ui.prestigeMultiplier = document.getElementById("prestigeMultiplier");
+    ui.autoBar = document.getElementById("autoBar");
+    ui.prestigePoints = document.getElementById("prestigePoints");
+    ui.pendingPrestige = document.getElementById("pendingPrestige");
+    ui.nextTierLabel = document.getElementById("nextTierLabel");
+    ui.unlockTierButton = document.getElementById("unlockTierButton");
+    ui.saveData = document.getElementById("saveData");
+    ui.sessionTime = document.getElementById("sessionTime");
+    ui.upgradeCount = document.getElementById("upgradeCount");
+    ui.offlineDisplay = document.getElementById("offlineDisplay");
+    ui.infoDetail = document.getElementById("infoDetail");
+    ui.difficultyInput = document.getElementById("difficultyInput");
+    ui.achievementsButton = document.getElementById("achievementsButton");
+    ui.achievementsModal = document.getElementById("achievementsModal");
+    ui.achievementsList = document.getElementById("achievementsList");
+    ui.closeAchievements = document.getElementById("closeAchievements");
+    ui.toastContainer = document.getElementById("toastContainer");
+    ui.difficultyStatus = document.getElementById("difficultyStatus");
+    ui.hardModeStatus = document.getElementById("hardModeStatus");
+    ui.integrityStatus = document.getElementById("integrityStatus");
+    ui.cpsDisplay = document.getElementById("cpsDisplay");
+    ui.chatList = document.getElementById("chatList");
+    ui.chatInput = document.getElementById("chatInput");
+    ui.chatFooterLine = ui.chatInput;
+    ui.chatLiveButton = document.getElementById("chatLiveButton");
+    ui.chatSendButton = document.getElementById("chatSendButton");
+    ui.status.classList.add("pulse");
+
+    document.getElementById("clickButton").addEventListener("click", handleClick);
+    document.getElementById("saveButton").addEventListener("click", () => {
+      saveGame();
+      setStatus("Manual save complete.");
     });
-  }
-  if (ui.chatSendButton) {
-    ui.chatSendButton.addEventListener("click", handleChatSend);
-  }
+    document.getElementById("exportButton").addEventListener("click", exportSave);
+    document.getElementById("importButton").addEventListener("click", importSave);
+    document.getElementById("hardResetButton").addEventListener("click", hardReset);
+    ui.unlockTierButton.addEventListener("click", unlockNextTier);
+    document.getElementById("prestigeButton").addEventListener("click", doPrestige);
+    ui.difficultyInput.addEventListener("change", onDifficultyChange);
+    ui.achievementsButton.addEventListener("click", toggleAchievementsModal);
+    ui.closeAchievements.addEventListener("click", toggleAchievementsModal);
+    ui.achievementsModal.addEventListener("click", (e) => {
+      if (e.target === ui.achievementsModal) toggleAchievementsModal();
+    });
 
-  const globalContainer = document.getElementById("globalUpgrades");
-  const gFrag = document.createDocumentFragment();
-  globalUpgradeDefs.forEach((def) => {
-    const btn = document.createElement("button");
-    btn.className = "upgrade has-tip";
-    btn.addEventListener("click", () => buyGlobalUpgrade(def));
-    gFrag.appendChild(btn);
-    globalUpgradeButtons.set(def.id, btn);
-  });
-  globalContainer.appendChild(gFrag);
-
-  const metaContainer = document.getElementById("metaUpgrades");
-  const mFrag = document.createDocumentFragment();
-  metaUpgradeDefs.forEach((def) => {
-    const btn = document.createElement("button");
-    btn.className = "upgrade secondary has-tip";
-    btn.addEventListener("click", () => buyMetaUpgrade(def));
-    mFrag.appendChild(btn);
-    metaUpgradeButtons.set(def.id, btn);
-  });
-  metaContainer.appendChild(mFrag);
-
-  rebuildTierUI();
-}
-
-function rebuildTierUI() {
-  tierElements.clear();
-  const list = document.getElementById("tiersList");
-  list.innerHTML = "";
-  const frag = document.createDocumentFragment();
-  state.tiers.forEach((tier) => {
-    const card = buildTierCard(tier);
-    frag.appendChild(card);
-  });
-  list.appendChild(frag);
-}
-
-function buildTierCard(tier) {
-  const card = document.createElement("div");
-  card.className = "tier-card";
-
-  const header = document.createElement("div");
-  header.className = "tier-header";
-  const name = document.createElement("div");
-  name.textContent = `${tier.name} [T${tier.index}]`;
-  const amount = document.createElement("div");
-  amount.className = "value mono";
-  header.append(name, amount);
-
-  const body = document.createElement("div");
-  body.className = "tier-body";
-  const rate = document.createElement("div");
-  rate.className = "muted mono";
-  rate.textContent = "Rate: 0/s";
-
-  const btnRow = document.createElement("div");
-  btnRow.className = "button-row";
-
-  let buyBtn = null;
-  if (tier.index > 0) {
-    buyBtn = document.createElement("button");
-    buyBtn.className = "small has-tip";
-    buyBtn.addEventListener("click", () => buyTierUnit(tier));
-    btnRow.appendChild(buyBtn);
-  }
-
-  const autoBtn = document.createElement("button");
-  autoBtn.className = "small secondary has-tip";
-  autoBtn.addEventListener("click", () => buyTierUpgrade(tier, "auto"));
-
-  const effBtn = document.createElement("button");
-  effBtn.className = "small secondary has-tip";
-  effBtn.addEventListener("click", () => buyTierUpgrade(tier, "eff"));
-
-  btnRow.append(autoBtn, effBtn);
-  body.append(rate, btnRow);
-  card.append(header, body);
-
-  tierElements.set(tier.id, { card, amount, rate, buyBtn, autoBtn, effBtn });
-  return card;
-}
-
-function applyOfflineProgress() {
-  const now = Date.now();
-  const elapsed = Math.max(0, Math.min((now - state.lastTick) / 1000, MAX_OFFLINE_SECONDS));
-  if (elapsed > 1) {
-    const before = state.tiers[0].amount;
-    applyIncome(elapsed * getOfflineMultiplier());
-    const gain = state.tiers[0].amount - before;
-    state.offlineSummary = { gain, seconds: elapsed };
-    setStatus(`Offline gains: +${formatNumber(gain)} credits over ${formatNumber(elapsed)}s`);
-    logChatEvent(chatSources.system, `offline applied: +${formatNumber(gain)} credits in ${formatNumber(elapsed)}s`, { ts: now });
-  } else {
-    setStatus(state.status || "Online");
-  }
-  state.lastTick = now;
-}
-
-function handleClick() {
-  const now = Date.now();
-  const idleGap = now - (state.lastClickTime || 0);
-  // start grace after an idle gap
-  if (idleGap > 5000) {
-    state.cpsGraceUntil = now + 3000;
-  }
-  state.lastClickTime = now;
-
-  state.clickHistory = (state.clickHistory || []).filter((t) => now - t < 2500);
-  state.clickHistory.push(now);
-  const cps = state.clickHistory.length / Math.max(0.1, (now - state.clickHistory[0]) / 1000);
-  state.lastCps = cps;
-  const threshold = 10; // cps threshold
-  const inGrace = now < state.cpsGraceUntil;
-  if (!inGrace) {
-    if (cps > threshold) {
-      const excess = cps - threshold;
-      const factor = Math.max(0.01, 1 - excess * 0.05); // ramps down to 1%
-      state.penaltyScale = Math.max(0.01, Math.min(state.penaltyScale, factor));
-    } else {
-      // recover steadily when under threshold
-      state.penaltyScale = Math.min(1, state.penaltyScale + 0.08);
+    if (ui.chatList) {
+      ui.chatList.addEventListener("scroll", handleChatScroll);
     }
-  } else {
-    // during grace, recover toward full
-    state.penaltyScale = Math.min(1, state.penaltyScale + 0.1);
-  }
-  const gain = getClickValue() * state.penaltyScale;
-  addCurrency(gain);
-  state.stats.clicks += 1;
-  setStatus(`Manual input ${state.penaltyScale < 1 ? "(reduced)" : ""} +${formatNumber(gain)}`);
-  logClickRun(now);
-  notePenaltyState();
-  maybeNpcFirstClick();
-  render();
-}
-
-function addCurrency(amount) {
-  state.tiers[0].amount += amount;
-  state.totalCurrency += amount;
-  if (!state.hardModeStarted && state.totalCurrency >= 1000) {
-    state.hardModeStarted = true;
-    state.hardModeValid = state.manualDifficulty === 100;
-  } else if (state.hardModeStarted && state.hardModeValid && state.manualDifficulty !== 100) {
-    state.hardModeValid = false;
-  }
-}
-
-function totalUpgradeLoad() {
-  const globalCount = Object.values(state.globalUpgrades).reduce((a, b) => a + b, 0);
-  const tierLoad = state.tiers.reduce((acc, t) => acc + t.autoLevel + t.efficiencyLevel, 0);
-  const metaCount = Object.values(state.prestige.upgrades).reduce((a, b) => a + b, 0);
-  return globalCount + tierLoad + metaCount + state.tiers.length * 1.5;
-}
-
-function getProgressionWall() {
-  const t = state.tiers.length - 1;
-  if (t <= 2) return 1;
-  return Math.pow(1.6, t - 2);
-}
-
-function getManualCostFactor() {
-  return 1 + (state.manualDifficulty || 1) / 100;
-}
-
-function getManualIncomeFactor() {
-  const d = state.manualDifficulty || 1;
-  return Math.max(0.0001, 1 - d / 100);
-}
-
-function getDifficultyScalar() {
-  const tierPressure = 1 + Math.max(0, state.tiers.length - 1) * 0.12;
-  const base = 1 + totalUpgradeLoad() * 0.06;
-  const softener = 1 - (state.prestige.upgrades.difficultySoftener || 0) * 0.05;
-  const wall = getProgressionWall();
-  return Math.max(1, base * tierPressure * wall * Math.max(0.35, softener) * getManualCostFactor());
-}
-
-function getIncomeDampener() {
-  return 1; // Keep income reliable; difficulty expressed through rising costs only.
-}
-
-function getGlobalMultiplier() {
-  const overclock = 1 + state.globalUpgrades.overclock * 0.05;
-  const buffer = 1 + state.globalUpgrades.buffer * 0.03;
-  return overclock * buffer * getIncomeDampener();
-}
-
-function getPrestigeMultiplier() {
-  return 1 + state.prestige.points * 0.01 + state.prestige.upgrades.prestigeBoost * 0.05;
-}
-
-function getAutomationMultiplier() {
-  return 1 + state.globalUpgrades.automation * 0.15 + state.prestige.upgrades.autoPersist * 0.12;
-}
-
-function tierEfficiencyMultiplier(tier) {
-  return (1 + tier.efficiencyLevel * 0.22) * (1 + state.globalUpgrades.buffer * 0.03);
-}
-
-function getClickValue() {
-  const base = 1 + state.globalUpgrades.click * 0.9 + state.globalUpgrades.clickBurst * 0.5;
-  const meta = 1 + state.prestige.upgrades.clickPersist * 0.2;
-  const eff0 = tierEfficiencyMultiplier(state.tiers[0]);
-  return base * meta * getPrestigeMultiplier() * eff0 * getManualIncomeFactor();
-}
-
-function baseAutoPerSecond() {
-  const t0 = state.tiers[0];
-  const autoMult = getAutomationMultiplier();
-  const eff0 = tierEfficiencyMultiplier(t0);
-  const additive = state.globalUpgrades.threads * 0.25;
-  return (t0.autoLevel * (0.45 + state.globalUpgrades.automation * 0.04) + additive) * autoMult * eff0 * getPrestigeMultiplier() * getGlobalMultiplier() * getManualIncomeFactor();
-}
-
-function estimateBaseRate() {
-  let rate = baseAutoPerSecond();
-  if (state.tiers[1]) {
-    rate += tierProductionPerSecond(state.tiers[1]);
-  }
-  return rate;
-}
-
-function tierProductionPerSecond(tier) {
-  if (!tier || tier.index === 0) return 0;
-  const lower = state.tiers[tier.index - 1];
-  if (!lower) return 0;
-  const eff = tierEfficiencyMultiplier(tier);
-  return tier.amount * tier.baseRate * (1 + tier.autoLevel) * eff * getAutomationMultiplier() * getPrestigeMultiplier() * getGlobalMultiplier() * getManualIncomeFactor();
-}
-
-function computePrestigeRate() {
-  const baseRate = estimateBaseRate();
-  const depth = state.tiers.length - 1;
-  const value = Math.max(0, Math.log10(state.totalCurrency + state.tiers[0].amount + 1) - 1);
-  const slow = 1 + getDifficultyScalar() * 0.5 + totalUpgradeLoad() * 0.05;
-  return (value * 0.006 + depth * 0.0005 + baseRate * 0.0003) / slow;
-}
-
-function getOfflineMultiplier() {
-  return 1 + state.prestige.upgrades.offlineBoost * 0.1;
-}
-
-function applyIncome(delta) {
-  const autoGain = baseAutoPerSecond() * delta;
-  if (autoGain > 0) addCurrency(autoGain);
-
-  for (let i = state.tiers.length - 1; i >= 1; i--) {
-    const tier = state.tiers[i];
-    if (!tier.unlocked || tier.amount <= 0) continue;
-    const lower = state.tiers[i - 1];
-    const perSec = tierProductionPerSecond(tier);
-    const gained = perSec * delta;
-    lower.amount += gained;
-    if (i === 1) {
-      state.totalCurrency += gained;
+    if (ui.chatLiveButton) {
+      ui.chatLiveButton.addEventListener("click", scrollChatToLive);
     }
-  }
-
-  const prestigeRate = computePrestigeRate();
-  state.prestige.pending += prestigeRate * delta;
-}
-
-function tierUnitCost(tier) {
-  const diff = Math.pow(getDifficultyScalar(), 1.15);
-  return tier.baseCost * Math.pow(tier.costGrowth, tier.amount) * diff;
-}
-
-function tierUpgradeCost(tier, kind) {
-  const level = kind === "auto" ? tier.autoLevel : tier.efficiencyLevel;
-  const base = kind === "auto" ? tier.autoCostBase : tier.effCostBase;
-  const growth = kind === "auto" ? 1.8 : 1.9;
-  const diff = Math.pow(getDifficultyScalar(), 1.15);
-  return base * Math.pow(growth, level) * diff;
-}
-
-function tierUnlockCost(index) {
-  const diff = Math.pow(getDifficultyScalar(), 1.15);
-  return tierBaseCost(index) * 2.2 * diff;
-}
-
-function buyTierUnit(tier) {
-  const cost = tierUnitCost(tier);
-  const payer = state.tiers[tier.index - 1];
-  if (payer.amount >= cost) {
-    payer.amount -= cost;
-    tier.amount += 1;
-    setStatus(`Acquired 1 ${tier.name}`);
-    saveGame();
-    logChatEvent(chatSourceForTier(tier), `+1 ${tier.name} (cost ${formatNumber(cost)} ${payer.name})`);
-  } else {
-    setStatus(`Insufficient ${payer.name}: need ${formatNumber(cost - payer.amount)}`);
-  }
-}
-
-function buyTierUpgrade(tier, type) {
-  const cost = tierUpgradeCost(tier, type);
-  const payer = state.tiers[Math.max(0, tier.index - 1)];
-  if (payer.amount >= cost) {
-    payer.amount -= cost;
-    if (type === "auto") tier.autoLevel += 1;
-    else tier.efficiencyLevel += 1;
-    setStatus(`${tier.name} ${type === "auto" ? "automation" : "efficiency"} upgraded`);
-    saveGame();
-    const newLevel = type === "auto" ? tier.autoLevel : tier.efficiencyLevel;
-    logChatEvent(chatSourceForTier(tier), `${type === "auto" ? "Automation" : "Efficiency"} -> Lv${newLevel} (spent ${formatNumber(cost)} ${payer.name})`);
-  } else {
-    setStatus(`Need ${formatNumber(cost - payer.amount)} more ${payer.name}`);
-  }
-}
-
-function buyGlobalUpgrade(def) {
-  const level = state.globalUpgrades[def.id];
-  const cost = def.baseCost * Math.pow(def.costGrowth, level) * Math.pow(getDifficultyScalar(), 1.15);
-  if (state.tiers[0].amount >= cost) {
-    state.tiers[0].amount -= cost;
-    state.globalUpgrades[def.id] += 1;
-    setStatus(`${def.name} upgraded to ${state.globalUpgrades[def.id]}`);
-    saveGame();
-    logChatEvent(chatSources.upgrades, `${def.name} -> Lv${state.globalUpgrades[def.id]} (cost ${formatNumber(cost)} cr)`);
-    maybeNpcFirstUpgrade();
-  } else {
-    setStatus(`Unaffordable: need ${formatNumber(cost - state.tiers[0].amount)} credits`);
-  }
-}
-
-function buyMetaUpgrade(def) {
-  const level = state.prestige.upgrades[def.id] || 0;
-  const cost = def.baseCost * Math.pow(def.costGrowth, level);
-  if (state.prestige.points >= cost) {
-    state.prestige.points -= cost;
-    state.prestige.upgrades[def.id] = level + 1;
-    setStatus(`${def.name} upgraded to ${level + 1}`);
-    saveGame();
-    logChatEvent(chatSources.meta, `${def.name} -> Lv${level + 1} (spent ${formatNumber(cost)} prestige)`);
-  } else {
-    setStatus("Not enough prestige points");
-  }
-}
-
-function unlockNextTier() {
-  const nextIndex = state.tiers.length;
-  if (nextIndex > 100) {
-    setStatus("Tier cap reached");
-    return;
-  }
-  const prevTier = state.tiers[nextIndex - 1];
-  const cost = tierUnlockCost(nextIndex);
-  if (prevTier.amount < cost) {
-    setStatus(`Need ${formatNumber(cost - prevTier.amount)} more ${prevTier.name} to unlock`);
-    return;
-  }
-  prevTier.amount -= cost;
-  const newTier = makeTier(nextIndex);
-  newTier.unlocked = true;
-  newTier.amount = 1;
-  state.tiers.push(newTier);
-  document.getElementById("tiersList").appendChild(buildTierCard(newTier));
-  setStatus(`Unlocked ${newTier.name}`);
-  insertChatDivider(`T${nextIndex} // ${newTier.name}`);
-  logChatEvent(chatSourceForTier(newTier), `Unlocked using ${formatNumber(cost)} ${prevTier.name}`);
-  maybeNpcTierUnlock(newTier);
-  saveGame();
-  render(true);
-}
-
-function doPrestige() {
-  const gained = Math.floor(state.prestige.pending);
-  if (gained < 1) {
-    setStatus("Not enough pending prestige to reboot");
-    return;
-  }
-  flushClickRun();
-  const prevChat = state.chat;
-  const prevStats = state.stats;
-  const prevDifficulty = state.manualDifficulty;
-  const prevAchievements = state.achievements;
-  const upgrades = { ...state.prestige.upgrades };
-  const totalPoints = state.prestige.points + gained;
-  state = createDefaultState();
-  state.chat = mergeChatState(createDefaultChatState(), prevChat || {});
-  state.prestige.points = totalPoints;
-  state.prestige.upgrades = upgrades;
-  state.prestige.pending = 0;
-  state.status = `Rebooted for +${gained} prestige`;
-  state.stats = prevStats;
-  state.stats.prestiges += 1;
-  state.manualDifficulty = prevDifficulty;
-  state.achievements = prevAchievements;
-  insertChatDivider("reboot");
-  logChatEvent(chatSources.prestige, `Rebooted +${gained} (total ${state.prestige.points})`);
-  maybeNpcPrestige(gained);
-  maybeEntityMessage();
-  maybeDevTip();
-  rebuildTierUI();
-  render(true);
-  saveGame();
-}
-
-function exportSave() {
-  try {
-    const signature = computeSignature(snapshotForSignature(state));
-    const packed = encodeSave({ ...state, signature });
-    ui.saveData.value = packed;
-    ui.saveData.select();
-    setStatus("Exported save code");
-    logChatEvent(chatSources.system, "save exported");
-  } catch (err) {
-    setStatus("Export failed");
-  }
-}
-
-function importSave() {
-  const code = ui.saveData.value.trim();
-  if (!code) {
-    setStatus("No code to import");
-    return;
-  }
-  try {
-    const parsed = decodeSave(code);
-    if (!isValidSignature(parsed)) {
-      setStatus("Import failed integrity");
-      logChatEvent(chatSources.integrity, "import rejected (integrity failed)");
-      return;
+    if (ui.chatInput) {
+      ui.chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleChatSend();
+        }
+      });
     }
-    state = mergeState(createDefaultState(), parsed);
-    state.lastTick = Date.now();
+    if (ui.chatSendButton) {
+      ui.chatSendButton.addEventListener("click", handleChatSend);
+    }
+
+    const globalContainer = document.getElementById("globalUpgrades");
+    const gFrag = document.createDocumentFragment();
+    globalUpgradeDefs.forEach((def) => {
+      const btn = document.createElement("button");
+      btn.className = "upgrade has-tip";
+      btn.addEventListener("click", () => buyGlobalUpgrade(def));
+      gFrag.appendChild(btn);
+      globalUpgradeButtons.set(def.id, btn);
+    });
+    globalContainer.appendChild(gFrag);
+
+    const metaContainer = document.getElementById("metaUpgrades");
+    const mFrag = document.createDocumentFragment();
+    metaUpgradeDefs.forEach((def) => {
+      const btn = document.createElement("button");
+      btn.className = "upgrade secondary has-tip";
+      btn.addEventListener("click", () => buyMetaUpgrade(def));
+      mFrag.appendChild(btn);
+      metaUpgradeButtons.set(def.id, btn);
+    });
+    metaContainer.appendChild(mFrag);
+
     rebuildTierUI();
-    setStatus("Import successful");
-    logChatEvent(chatSources.system, "imported save (verified)");
-    render(true);
-    saveGame();
-  } catch (err) {
-    setStatus("Import failed");
-    logChatEvent(chatSources.warning, "import failed: unreadable code");
   }
-}
 
-function hardReset() {
-  const confirmed = confirm("Hard reset all progress? Prestige will be wiped.");
-  if (!confirmed) return;
-  state = createDefaultState();
-  rebuildTierUI();
-  render(true);
-  saveGame();
-  setStatus("System wiped");
-  insertChatDivider("reset");
-  logChatEvent(chatSources.warning, "hard reset executed");
-}
+  function rebuildTierUI() {
+    tierElements.clear();
+    const list = document.getElementById("tiersList");
+    list.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    state.tiers.forEach((tier) => {
+      const card = buildTierCard(tier);
+      frag.appendChild(card);
+    });
+    list.appendChild(frag);
+  }
 
-function render(force = false) {
-  if (!force) {
+  function buildTierCard(tier) {
+    const card = document.createElement("div");
+    card.className = "tier-card";
+
+    const header = document.createElement("div");
+    header.className = "tier-header";
+    const name = document.createElement("div");
+    name.textContent = `${tier.name} [T${tier.index}]`;
+    const amount = document.createElement("div");
+    amount.className = "value mono";
+    header.append(name, amount);
+
+    const body = document.createElement("div");
+    body.className = "tier-body";
+    const rate = document.createElement("div");
+    rate.className = "muted mono";
+    rate.textContent = "Rate: 0/s";
+
+    const btnRow = document.createElement("div");
+    btnRow.className = "button-row";
+
+    let buyBtn = null;
+    if (tier.index > 0) {
+      buyBtn = document.createElement("button");
+      buyBtn.className = "small has-tip";
+      buyBtn.addEventListener("click", () => buyTierUnit(tier));
+      btnRow.appendChild(buyBtn);
+    }
+
+    const autoBtn = document.createElement("button");
+    autoBtn.className = "small secondary has-tip";
+    autoBtn.addEventListener("click", () => buyTierUpgrade(tier, "auto"));
+
+    const effBtn = document.createElement("button");
+    effBtn.className = "small secondary has-tip";
+    effBtn.addEventListener("click", () => buyTierUpgrade(tier, "eff"));
+
+    btnRow.append(autoBtn, effBtn);
+    body.append(rate, btnRow);
+    card.append(header, body);
+
+    tierElements.set(tier.id, { card, amount, rate, buyBtn, autoBtn, effBtn });
+    return card;
+  }
+
+  function applyOfflineProgress() {
     const now = Date.now();
-    if (now - lastRender < RENDER_INTERVAL_MS) return;
-    lastRender = now;
+    const elapsed = Math.max(0, Math.min((now - state.lastTick) / 1000, MAX_OFFLINE_SECONDS));
+    if (elapsed > 1) {
+      const before = state.tiers[0].amount;
+      applyIncome(elapsed * getOfflineMultiplier());
+      const gain = state.tiers[0].amount - before;
+      state.offlineSummary = { gain, seconds: elapsed };
+      setStatus(`Offline gains: +${formatNumber(gain)} credits over ${formatNumber(elapsed)}s`);
+      logChatEvent(chatSources.system, `offline applied: +${formatNumber(gain)} credits in ${formatNumber(elapsed)}s`, { ts: now });
+    } else {
+      setStatus(state.status || "Online");
+    }
+    state.lastTick = now;
   }
 
-  ui.currency.textContent = formatNumber(state.tiers[0].amount);
-  ui.clickValue.textContent = `+${formatNumber(getClickValue())}`;
-  ui.rate.textContent = `${formatNumber(estimateBaseRate())}/s`;
-  ui.automationPower.textContent = `x${getAutomationMultiplier().toFixed(2)}`;
-  ui.prestigeMultiplier.textContent = `x${getPrestigeMultiplier().toFixed(2)}`;
-  ui.difficultyInput.value = state.manualDifficulty || 1;
-  renderAchievements();
+  function handleClick() {
+    const now = Date.now();
+    const idleGap = now - (state.lastClickTime || 0);
+    // start grace after an idle gap
+    if (idleGap > 5000) {
+      state.cpsGraceUntil = now + 3000;
+    }
+    state.lastClickTime = now;
 
-  const autoMult = getAutomationMultiplier();
-  const fill = Math.min(1, (autoMult - 1) / 3);
-  const speedFactor =
-    state.tiers[0].autoLevel * 0.15 +
-    state.globalUpgrades.automation * 0.1 +
-    state.globalUpgrades.threads * 0.05;
-  const effectiveSpeed = Math.max(0, speedFactor * autoMult - 0.05);
-  const period =
-    effectiveSpeed <= 0
-      ? Infinity
-      : Math.max(800, 480000 / Math.max(1, effectiveSpeed * 10));
-  const staticFast = period <= 200;
-  const animate = period < Infinity && !staticFast;
-  const phase = animate ? ((Date.now() % period) / period) : 0;
-  ui.autoBar.textContent = buildAsciiBar(fill, phase, staticFast);
-  ui.autoBar.classList.toggle("animated", animate);
-  ui.autoBar.classList.toggle("fast", staticFast);
+    state.clickHistory = (state.clickHistory || []).filter((t) => now - t < 2500);
+    state.clickHistory.push(now);
+    const timeSpan = (now - state.clickHistory[0]) / 1000;
+    const cps = timeSpan >= 1 ? state.clickHistory.length / timeSpan : state.clickHistory.length; state.lastCps = cps;
+    const threshold = 10; // cps threshold
+    const inGrace = now < state.cpsGraceUntil;
+    if (!inGrace) {
+      if (cps > threshold) {
+        const excess = cps - threshold;
+        const factor = Math.max(0.01, 1 - excess * 0.05); // ramps down to 1%
+        state.penaltyScale = Math.max(0.01, Math.min(state.penaltyScale, factor));
+      } else {
+        // recover steadily when under threshold
+        state.penaltyScale = Math.min(1, state.penaltyScale + 0.08);
+      }
+    } else {
+      // during grace, recover toward full
+      state.penaltyScale = Math.min(1, state.penaltyScale + 0.1);
+    }
+    const gain = getClickValue() * state.penaltyScale;
+    addCurrency(gain);
+    state.stats.clicks += 1;
+    setStatus(`Manual input ${state.penaltyScale < 1 ? "(reduced)" : ""} +${formatNumber(gain)}`);
+    logClickRun(now);
+    notePenaltyState();
+    maybeNpcFirstClick();
+    render();
+  }
 
-  globalUpgradeDefs.forEach((def, idx) => {
-    const btn = globalUpgradeButtons.get(def.id);
+  function addCurrency(amount) {
+    state.tiers[0].amount += amount;
+    state.totalCurrency += amount;
+    if (!state.hardModeStarted && state.totalCurrency >= 1000) {
+      state.hardModeStarted = true;
+      state.hardModeValid = state.manualDifficulty === 100;
+    } else if (state.hardModeStarted && state.hardModeValid && state.manualDifficulty !== 100) {
+      state.hardModeValid = false;
+    }
+  }
+
+  function totalUpgradeLoad() {
+    const globalCount = Object.values(state.globalUpgrades).reduce((a, b) => a + b, 0);
+    const tierLoad = state.tiers.reduce((acc, t) => acc + t.autoLevel + t.efficiencyLevel, 0);
+    const metaCount = Object.values(state.prestige.upgrades).reduce((a, b) => a + b, 0);
+    return globalCount + tierLoad + metaCount + state.tiers.length * 1.5;
+  }
+
+  function getProgressionWall() {
+    const t = state.tiers.length - 1;
+    if (t <= 2) return 1;
+    return Math.pow(1.6, t - 2);
+  }
+
+  function getManualCostFactor() {
+    return 1 + (state.manualDifficulty || 1) / 100;
+  }
+
+  function getManualIncomeFactor() {
+    const d = state.manualDifficulty || 1;
+    return Math.max(0.0001, 1 - d / 100);
+  }
+
+  function getDifficultyScalar() {
+    const tierPressure = 1 + Math.max(0, state.tiers.length - 1) * 0.12;
+    const base = 1 + totalUpgradeLoad() * 0.06;
+    const softener = 1 - (state.prestige.upgrades.difficultySoftener || 0) * 0.05;
+    const wall = getProgressionWall();
+    return Math.max(1, base * tierPressure * wall * Math.max(0.35, softener) * getManualCostFactor());
+  }
+
+  function getIncomeDampener() {
+    return 1; // Keep income reliable; difficulty expressed through rising costs only.
+  }
+
+  function getGlobalMultiplier() {
+    const overclock = 1 + state.globalUpgrades.overclock * 0.05;
+    const buffer = 1 + state.globalUpgrades.buffer * 0.03;
+    return overclock * buffer * getIncomeDampener();
+  }
+
+  function getPrestigeMultiplier() {
+    return 1 + state.prestige.points * 0.01 + state.prestige.upgrades.prestigeBoost * 0.05;
+  }
+
+  function getAutomationMultiplier() {
+    return 1 + state.globalUpgrades.automation * 0.15 + state.prestige.upgrades.autoPersist * 0.12;
+  }
+
+  function tierEfficiencyMultiplier(tier) {
+    return (1 + tier.efficiencyLevel * 0.22) * (1 + state.globalUpgrades.buffer * 0.03);
+  }
+
+  function getClickValue() {
+    const base = 1 + state.globalUpgrades.click * 0.9 + state.globalUpgrades.clickBurst * 0.5;
+    const meta = 1 + state.prestige.upgrades.clickPersist * 0.2;
+    const eff0 = tierEfficiencyMultiplier(state.tiers[0]);
+    return base * meta * getPrestigeMultiplier() * eff0 * getManualIncomeFactor();
+  }
+
+  function baseAutoPerSecond() {
+    const t0 = state.tiers[0];
+    const autoMult = getAutomationMultiplier();
+    const eff0 = tierEfficiencyMultiplier(t0);
+    const additive = state.globalUpgrades.threads * 0.25;
+    return (t0.autoLevel * (0.45 + state.globalUpgrades.automation * 0.04) + additive) * autoMult * eff0 * getPrestigeMultiplier() * getGlobalMultiplier() * getManualIncomeFactor();
+  }
+
+  function estimateBaseRate() {
+    let rate = baseAutoPerSecond();
+    if (state.tiers[1]) {
+      rate += tierProductionPerSecond(state.tiers[1]);
+    }
+    return rate;
+  }
+
+  function tierProductionPerSecond(tier) {
+    if (!tier || tier.index === 0) return 0;
+    const lower = state.tiers[tier.index - 1];
+    if (!lower) return 0;
+    const eff = tierEfficiencyMultiplier(tier);
+    return tier.amount * tier.baseRate * (1 + tier.autoLevel) * eff * getAutomationMultiplier() * getPrestigeMultiplier() * getGlobalMultiplier() * getManualIncomeFactor();
+  }
+
+  function computePrestigeRate() {
+    const baseRate = estimateBaseRate();
+    const depth = state.tiers.length - 1;
+    const value = Math.max(0, Math.log10(state.totalCurrency + state.tiers[0].amount + 1) - 1);
+    const slow = 1 + getDifficultyScalar() * 0.5 + totalUpgradeLoad() * 0.05;
+    return (value * 0.006 + depth * 0.0005 + baseRate * 0.0003) / slow;
+  }
+
+  function getOfflineMultiplier() {
+    return 1 + state.prestige.upgrades.offlineBoost * 0.1;
+  }
+
+  function applyIncome(delta) {
+    const autoGain = baseAutoPerSecond() * delta;
+    if (autoGain > 0) addCurrency(autoGain);
+
+    for (let i = state.tiers.length - 1; i >= 1; i--) {
+      const tier = state.tiers[i];
+      if (!tier.unlocked || tier.amount <= 0) continue;
+      const lower = state.tiers[i - 1];
+      const perSec = tierProductionPerSecond(tier);
+      const gained = perSec * delta;
+      lower.amount += gained;
+      if (i === 1) {
+        state.totalCurrency += gained;
+      }
+    }
+
+    const prestigeRate = computePrestigeRate();
+    state.prestige.pending += prestigeRate * delta;
+  }
+
+  function tierUnitCost(tier) {
+    const diff = Math.pow(getDifficultyScalar(), 1.15);
+    return tier.baseCost * Math.pow(tier.costGrowth, tier.amount) * diff;
+  }
+
+  function tierUpgradeCost(tier, kind) {
+    const level = kind === "auto" ? tier.autoLevel : tier.efficiencyLevel;
+    const base = kind === "auto" ? tier.autoCostBase : tier.effCostBase;
+    const growth = kind === "auto" ? 1.8 : 1.9;
+    const diff = Math.pow(getDifficultyScalar(), 1.15);
+    return base * Math.pow(growth, level) * diff;
+  }
+
+  function tierUnlockCost(index) {
+    const diff = Math.pow(getDifficultyScalar(), 1.15);
+    return tierBaseCost(index) * 2.2 * diff;
+  }
+
+  function buyTierUnit(tier) {
+    const cost = tierUnitCost(tier);
+    const payer = state.tiers[tier.index - 1];
+    if (payer.amount >= cost) {
+      payer.amount -= cost;
+      tier.amount += 1;
+      setStatus(`Acquired 1 ${tier.name}`);
+      saveGame();
+      logChatEvent(chatSourceForTier(tier), `+1 ${tier.name} (cost ${formatNumber(cost)} ${payer.name})`);
+    } else {
+      setStatus(`Insufficient ${payer.name}: need ${formatNumber(cost - payer.amount)}`);
+    }
+  }
+
+  function buyTierUpgrade(tier, type) {
+    const cost = tierUpgradeCost(tier, type);
+    const payer = state.tiers[Math.max(0, tier.index - 1)];
+    if (payer.amount >= cost) {
+      payer.amount -= cost;
+      if (type === "auto") tier.autoLevel += 1;
+      else tier.efficiencyLevel += 1;
+      setStatus(`${tier.name} ${type === "auto" ? "automation" : "efficiency"} upgraded`);
+      saveGame();
+      const newLevel = type === "auto" ? tier.autoLevel : tier.efficiencyLevel;
+      logChatEvent(chatSourceForTier(tier), `${type === "auto" ? "Automation" : "Efficiency"} -> Lv${newLevel} (spent ${formatNumber(cost)} ${payer.name})`);
+    } else {
+      setStatus(`Need ${formatNumber(cost - payer.amount)} more ${payer.name}`);
+    }
+  }
+
+  function buyGlobalUpgrade(def) {
     const level = state.globalUpgrades[def.id];
-    const cost = def.baseCost * Math.pow(def.costGrowth, level) * getDifficultyScalar();
-    btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} cr`;
-    btn.dataset.tip = `${def.desc}`;
-    const affordable = state.tiers[0].amount >= cost;
-    btn.disabled = !affordable;
-    toggleDisabled(btn, !affordable);
-    btn.style.order = orderFromCost(cost, idx);
-  });
+    const cost = def.baseCost * Math.pow(def.costGrowth, level) * Math.pow(getDifficultyScalar(), 1.15);
+    if (state.tiers[0].amount >= cost) {
+      state.tiers[0].amount -= cost;
+      state.globalUpgrades[def.id] += 1;
+      setStatus(`${def.name} upgraded to ${state.globalUpgrades[def.id]}`);
+      saveGame();
+      logChatEvent(chatSources.upgrades, `${def.name} -> Lv${state.globalUpgrades[def.id]} (cost ${formatNumber(cost)} cr)`);
+      maybeNpcFirstUpgrade();
+    } else {
+      setStatus(`Unaffordable: need ${formatNumber(cost - state.tiers[0].amount)} credits`);
+    }
+  }
 
-  metaUpgradeDefs.forEach((def, idx) => {
-    const btn = metaUpgradeButtons.get(def.id);
+  function buyMetaUpgrade(def) {
     const level = state.prestige.upgrades[def.id] || 0;
     const cost = def.baseCost * Math.pow(def.costGrowth, level);
-    btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} prestige`;
-    btn.dataset.tip = `${def.desc}\nPermanent meta bonus.`;
-    const affordable = state.prestige.points >= cost;
-    btn.disabled = !affordable;
-    toggleDisabled(btn, !affordable);
-    btn.style.order = orderFromCost(cost, idx);
-  });
-
-  ui.prestigePoints.textContent = `${formatNumber(state.prestige.points)} (x${getPrestigeMultiplier().toFixed(2)})`;
-  ui.pendingPrestige.textContent = `${formatNumber(state.prestige.pending)} pending`;
-
-  const visibleStart = Math.max(0, state.tiers.length - 6);
-  state.tiers.forEach((tier, idx) => {
-    const el = tierElements.get(tier.id);
-    if (!el) return;
-    el.card.style.display = idx >= visibleStart ? "" : "none";
-    el.amount.textContent = formatNumber(tier.amount);
-    if (idx === 0) {
-      el.rate.textContent = `Auto: ${formatNumber(baseAutoPerSecond())}/s`;
+    if (state.prestige.points >= cost) {
+      state.prestige.points -= cost;
+      state.prestige.upgrades[def.id] = level + 1;
+      setStatus(`${def.name} upgraded to ${level + 1}`);
+      saveGame();
+      logChatEvent(chatSources.meta, `${def.name} -> Lv${level + 1} (spent ${formatNumber(cost)} prestige)`);
     } else {
-      const rate = tierProductionPerSecond(tier);
-      el.rate.textContent = `-> ${state.tiers[idx - 1].name}: ${formatNumber(rate)}/s`;
-      if (el.buyBtn) {
-        const cost = tierUnitCost(tier);
-        el.buyBtn.textContent = `Acquire +1 (${formatNumber(cost)} ${state.tiers[idx - 1].name})`;
-        el.buyBtn.dataset.tip = `Spend ${state.tiers[idx - 1].name} to gain ${tier.name}.\nCost rises with amount and difficulty.`;
-        const affordable = state.tiers[idx - 1].amount >= cost;
-        el.buyBtn.disabled = !affordable;
-        toggleDisabled(el.buyBtn, !affordable);
-        el.buyBtn.style.order = orderFromCost(cost, 0);
-      }
+      setStatus("Not enough prestige points");
     }
-    const payer = state.tiers[Math.max(0, tier.index - 1)];
-    const autoCost = tierUpgradeCost(tier, "auto");
-    const effCost = tierUpgradeCost(tier, "eff");
-    const affordAuto = payer.amount >= autoCost;
-    const affordEff = payer.amount >= effCost;
-    el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
-    el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
-    el.autoBtn.disabled = !affordAuto;
-    toggleDisabled(el.autoBtn, !affordAuto);
-    el.autoBtn.style.order = orderFromCost(autoCost, 1);
-    const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
-    el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
-    el.effBtn.dataset.tip = `Boosts efficiency by +22% per level and buffer bonus.\nUses ${payer.name}.`;
-    el.effBtn.disabled = !affordEff;
-    toggleDisabled(el.effBtn, !affordEff);
-    el.effBtn.style.order = orderFromCost(effCost, 2);
-  });
-
-  const nextIndex = state.tiers.length;
-  const unlockCost = tierUnlockCost(nextIndex);
-  const prevTier = state.tiers[nextIndex - 1];
-  if (nextIndex > 100) {
-    ui.nextTierLabel.textContent = "Tier cap reached";
-    ui.unlockTierButton.disabled = true;
-    toggleDisabled(ui.unlockTierButton, true);
-  } else {
-    ui.nextTierLabel.textContent = `Tier ${nextIndex}: ${tierDisplayName(nextIndex)} Cost: ${formatNumber(unlockCost)} ${prevTier.name}`;
-    const canUnlock = prevTier.amount >= unlockCost;
-    ui.unlockTierButton.disabled = !canUnlock;
-    toggleDisabled(ui.unlockTierButton, !canUnlock);
   }
 
-  renderInfo();
-  checkAchievements();
-}
-
-function renderInfo() {
-  syncHardModeStatus();
-  const elapsed = Date.now() - state.sessionStart;
-  ui.sessionTime.textContent = formatDuration(elapsed);
-  ui.upgradeCount.textContent = `${totalUpgradeLoad().toFixed(0)} load`;
-  if (state.offlineSummary && state.offlineSummary.seconds > 0) {
-    ui.offlineDisplay.textContent = `+${formatNumber(state.offlineSummary.gain)} in ${formatNumber(state.offlineSummary.seconds)}s`;
-  } else {
-    ui.offlineDisplay.textContent = "None";
-  }
-  const diff = state.manualDifficulty || 1;
-  const costFactor = getManualCostFactor().toFixed(2);
-  ui.difficultyStatus.textContent = `${diff} | cost x${costFactor}`;
-  ui.hardModeStatus.textContent = state.hardModeStarted
-    ? state.hardModeValid ? "Tracking" : "Invalidated"
-    : "Idle";
-  ui.integrityStatus.textContent = state.integrityFlag ? "Flagged" : "Clean";
-  const cps = state.lastCps || 0;
-  const grace = Date.now() < state.cpsGraceUntil;
-  ui.cpsDisplay.textContent = `${cps.toFixed(1)}${state.penaltyScale < 1 && !grace ? " (penalty)" : ""}`;
-  ui.infoDetail.textContent = `Status: ${state.status || "Stable"}`;
-}
-
-function renderAchievements() {
-  if (!ui.achievementsList) return;
-  const frag = document.createDocumentFragment();
-  achievementSections.forEach((section) => {
-    const sectionDefs = achievementDefs.filter((a) => a.section === section);
-    const unlockedCount = sectionDefs.filter((a) => state.achievements.includes(a.id)).length;
-    const wrap = document.createElement("div");
-    wrap.className = "achievement-section";
-    const header = document.createElement("div");
-    header.className = "achievement-section-header";
-    header.textContent = `${section} (${unlockedCount}/${sectionDefs.length})`;
-    wrap.appendChild(header);
-    sectionDefs.forEach((def) => {
-      const unlocked = state.achievements.includes(def.id);
-      const row = document.createElement("div");
-      row.className = `achievement${unlocked ? "" : " locked"}`;
-      const left = document.createElement("div");
-      left.innerHTML = `<div>${def.name}</div><div class="muted small-text">${def.desc}</div>`;
-      const right = document.createElement("div");
-      right.className = "muted mono";
-      right.textContent = unlocked ? "Unlocked" : "Locked";
-      row.append(left, right);
-      wrap.appendChild(row);
-    });
-    frag.appendChild(wrap);
-  });
-  ui.achievementsList.innerHTML = "";
-  ui.achievementsList.appendChild(frag);
-}
-
-function checkAchievements() {
-  const newly = [];
-  achievementDefs.forEach((def) => {
-    if (state.achievements.includes(def.id)) return;
-    if (def.check(state)) {
-      state.achievements.push(def.id);
-      newly.push(def);
-    }
-  });
-  if (newly.length) {
-    newly.forEach((def) => {
-      showToast(`Achievement unlocked: ${def.name}`);
-      logChatEvent(chatSources.system, `Achievement unlocked: ${def.name}`, { category: "achievement" });
-      maybeNpcAchievement(def.name);
-    });
-    renderAchievements();
-    saveGame();
-  }
-}
-
-function toggleAchievementsModal() {
-  ui.achievementsModal.classList.toggle("hidden");
-  if (!ui.achievementsModal.classList.contains("hidden")) {
-    renderAchievements();
-  }
-}
-
-function showToast(text) {
-  if (!ui.toastContainer) return;
-  const node = document.createElement("div");
-  node.className = "toast";
-  node.textContent = text;
-  ui.toastContainer.appendChild(node);
-  setTimeout(() => node.remove(), 3200);
-}
-
-function syncHardModeStatus() {
-  if (state.totalCurrency >= 1000 && !state.hardModeStarted) {
-    state.hardModeStarted = true;
-    state.hardModeValid = state.manualDifficulty === 100;
-  }
-  if (state.hardModeStarted && state.hardModeValid && state.manualDifficulty !== 100) {
-    state.hardModeValid = false;
-  }
-}
-
-function onDifficultyChange() {
-  const raw = Number(ui.difficultyInput.value || 1);
-  const clamped = Math.min(100, Math.max(1, Math.round(raw)));
-  const was100 = state.manualDifficulty === 100;
-  state.manualDifficulty = clamped;
-  ui.difficultyInput.value = clamped;
-  if (state.totalCurrency >= 1000) {
-    if (clamped !== 100) state.hardModeValid = false;
-    if (!state.hardModeStarted && clamped === 100) state.hardModeStarted = true;
-  }
-  if (was100 && clamped !== 100 && state.totalCurrency >= 1000) {
-    state.hardModeValid = false;
-  }
-  setStatus(`Manual difficulty set to ${clamped}`);
-  logChatEvent(chatSources.system, `difficulty set to ${clamped} (cost x${getManualCostFactor().toFixed(2)})`);
-  saveGame();
-  render(true);
-}
-
-function toggleDisabled(el, stateDisabled) {
-  if (stateDisabled) el.classList.add("disabled");
-  else el.classList.remove("disabled");
-}
-
-function formatNumber(value) {
-  if (!isFinite(value)) return "INF";
-  const abs = Math.abs(value);
-  const units = [
-    { v: 1e12, s: "T" },
-    { v: 1e9, s: "B" },
-    { v: 1e6, s: "M" },
-    { v: 1e3, s: "K" }
-  ];
-  for (const u of units) {
-    if (abs >= u.v) return `${(value / u.v).toFixed(2)}${u.s}`;
-  }
-  return abs >= 100 ? value.toFixed(0) : value.toFixed(2);
-}
-
-function formatDuration(ms) {
-  const totalSeconds = Math.floor(ms / 1000);
-  const h = Math.floor(totalSeconds / 3600);
-  const m = Math.floor((totalSeconds % 3600) / 60);
-  const s = totalSeconds % 60;
-  const parts = [];
-  if (h > 0) parts.push(h.toString().padStart(2, "0"));
-  parts.push(m.toString().padStart(2, "0"));
-  parts.push(s.toString().padStart(2, "0"));
-  return parts.join(":");
-}
-
-function buildAsciiBar(fill, phase = 0, staticFast = false) {
-  const total = 22;
-  const filled = Math.max(0, Math.min(total, Math.round(fill * total)));
-  const chars = [];
-  for (let i = 0; i < total; i++) {
-    chars.push(i < filled ? "#" : ".");
-  }
-  if (staticFast) {
-    const tail = Math.max(0, Math.min(total - 2, filled));
-    chars[Math.min(total - 1, tail)] = ">";
-    chars[Math.max(0, tail - 1)] = ">";
-  } else if (phase > 0) {
-    const pos = Math.floor(phase * total) % total;
-    chars[pos] = ">";
-  }
-  return `[${chars.join("")}]`;
-}
-
-function chatSourceForTier(tier) {
-  const index = typeof tier === "number" ? tier : tier.index;
-  const name = typeof tier === "number" ? tierDisplayName(index) : tier.name;
-  return { id: `T-${String(index).padStart(3, "0")}`, user: name, category: "tier" };
-}
-
-function bootstrapChat() {
-  renderChat(true);
-  const flags = chatFlags();
-  if (!flags.booted) {
-    const msg = state.integrityFlag ? "integrity warning; save sanitized" : "session link established";
-    logChatEvent(chatSources.system, msg, { forceScroll: true });
-    logChatEvent(chatSources.system, `operator ${resolvePlayerName()} linked`, { forceScroll: true });
-    logChatEvent(chatSources.system, "objective: reach prestige 50", { forceScroll: true });
-    flags.booted = true;
-  }
-  if (state.integrityFlag) {
-    logChatEvent(chatSources.integrity, "integrity check failed on load; reset applied");
-  }
-  scheduleNpcChatter();
-}
-
-function logChatEvent(source, text, opts = {}) {
-  if (!text) return;
-  const color = opts.color || source?.color;
-  let renderedText = text;
-  if ((opts.category || source?.category) === "entity") {
-    renderedText = corruptEntityText(text);
-  }
-  const entry = {
-    ts: opts.ts || Date.now(),
-    id: (opts.id || source?.id || "SYS-000").toString().toUpperCase(),
-    user: opts.user || source?.user || "system",
-    category: opts.category || source?.category || "system",
-    text: renderedText,
-    color,
-    type: opts.type === "divider" ? "divider" : "line"
-  };
-  state.chat.history.push(entry);
-  if (state.chat.history.length > CHAT_HISTORY_LIMIT) {
-    state.chat.history.splice(0, state.chat.history.length - CHAT_HISTORY_LIMIT);
-  }
-  state.chat.lastMessage = entry;
-  if (entry.type === "divider") state.chat.lastDivider = entry.ts;
-  renderChat(!state.chat.scrollLock || opts.forceScroll);
-}
-
-function renderChat(forceStick = false) {
-  if (!ui.chatList) return;
-  const list = ui.chatList;
-  const atBottom = isChatAtBottom();
-  list.innerHTML = "";
-  const frag = document.createDocumentFragment();
-  const mentionName = resolvePlayerName();
-  const mentionPattern = mentionName
-    ? new RegExp(`@${escapeRegex(mentionName)}(\\b|$)`, "i")
-    : null;
-  (state.chat.history || []).forEach((entry) => {
-    if (entry.type === "divider") {
-      const div = document.createElement("div");
-      div.className = "chat-divider";
-      div.textContent = entry.text || "++++++++++++++++++++++++++++";
-      frag.appendChild(div);
+  function unlockNextTier() {
+    const nextIndex = state.tiers.length;
+    if (nextIndex > 100) {
+      setStatus("Tier cap reached");
       return;
     }
-    const line = document.createElement("div");
-    line.className = `chat-line cat-${entry.category || "system"}`;
-    const prefix = document.createElement("div");
-    prefix.className = "chat-prefix";
-    const time = document.createElement("span");
-    time.className = "chat-time";
-    time.textContent = formatChatTime(entry.ts);
-    const id = document.createElement("span");
-    id.className = "chat-id";
-    id.textContent = entry.id || "----";
-    const user = document.createElement("span");
-    user.className = "chat-user";
-    user.textContent = entry.user || "system";
-    const resolvedColor = resolveEntryColor(entry);
-    if (resolvedColor) {
-      user.style.color = resolvedColor;
+    const prevTier = state.tiers[nextIndex - 1];
+    const cost = tierUnlockCost(nextIndex);
+    if (prevTier.amount < cost) {
+      setStatus(`Need ${formatNumber(cost - prevTier.amount)} more ${prevTier.name} to unlock`);
+      return;
     }
-    if ((entry.user || "").toLowerCase() === "erebusares") {
-      user.classList.add("dev-glow");
+    prevTier.amount -= cost;
+    const newTier = makeTier(nextIndex);
+    newTier.unlocked = true;
+    newTier.amount = 1;
+    state.tiers.push(newTier);
+    document.getElementById("tiersList").appendChild(buildTierCard(newTier));
+    setStatus(`Unlocked ${newTier.name}`);
+    insertChatDivider(`T${nextIndex} // ${newTier.name}`);
+    logChatEvent(chatSourceForTier(newTier), `Unlocked using ${formatNumber(cost)} ${prevTier.name}`);
+    maybeNpcTierUnlock(newTier);
+    saveGame();
+    render(true);
+  }
+
+  function doPrestige() {
+    const gained = Math.floor(state.prestige.pending);
+    if (gained < 1) {
+      setStatus("Not enough pending prestige to reboot");
+      return;
     }
-    const sep = document.createElement("span");
-    sep.className = "chat-sep";
-    sep.textContent = "::: ";
-    prefix.append(time, id, user, sep);
-    const text = document.createElement("span");
-    text.className = "chat-text";
-    text.textContent = entry.text || "";
-    if (mentionPattern && mentionPattern.test(entry.text || "")) {
-      line.classList.add("mention-hit");
+    flushClickRun();
+    const prevChat = state.chat;
+    const prevStats = state.stats;
+    const prevDifficulty = state.manualDifficulty;
+    const prevAchievements = state.achievements;
+    const upgrades = { ...state.prestige.upgrades };
+    const totalPoints = state.prestige.points + gained;
+    state = createDefaultState();
+    state.chat = mergeChatState(createDefaultChatState(), prevChat || {});
+    state.prestige.points = totalPoints;
+    state.prestige.upgrades = upgrades;
+    state.prestige.pending = 0;
+    state.status = `Rebooted for +${gained} prestige`;
+    state.stats = prevStats;
+    state.stats.prestiges += 1;
+    state.manualDifficulty = prevDifficulty;
+    state.achievements = prevAchievements;
+    insertChatDivider("reboot");
+    logChatEvent(chatSources.prestige, `Rebooted +${gained} (total ${state.prestige.points})`);
+    maybeNpcPrestige(gained);
+    maybeEntityMessage();
+    maybeDevTip();
+    rebuildTierUI();
+    render(true);
+    saveGame();
+  }
+
+  function exportSave() {
+    try {
+      const signature = computeSignature(snapshotForSignature(state));
+      const packed = encodeSave({ ...state, signature });
+      ui.saveData.value = packed;
+      ui.saveData.select();
+      setStatus("Exported save code");
+      logChatEvent(chatSources.system, "save exported");
+    } catch (err) {
+      setStatus("Export failed");
     }
-    line.append(prefix, text);
-    frag.appendChild(line);
-  });
-  list.appendChild(frag);
-  updateChatFooter(state.chat.lastMessage);
-  const shouldStick = forceStick || !state.chat.scrollLock || atBottom;
-  toggleLiveButton(shouldStick);
-  if (shouldStick) {
-    requestAnimationFrame(() => {
-      list.scrollTop = list.scrollHeight;
-      handleChatScroll();
+  }
+
+  function importSave() {
+    const code = ui.saveData.value.trim();
+    if (!code) {
+      setStatus("No code to import");
+      return;
+    }
+    try {
+      const parsed = decodeSave(code);
+      if (!isValidSignature(parsed)) {
+        setStatus("Import failed integrity");
+        logChatEvent(chatSources.integrity, "import rejected (integrity failed)");
+        return;
+      }
+      state = mergeState(createDefaultState(), parsed);
+      state.lastTick = Date.now();
+      rebuildTierUI();
+      setStatus("Import successful");
+      logChatEvent(chatSources.system, "imported save (verified)");
+      render(true);
+      saveGame();
+    } catch (err) {
+      setStatus("Import failed");
+      logChatEvent(chatSources.warning, "import failed: unreadable code");
+    }
+  }
+
+  function hardReset() {
+    const confirmed = confirm("Hard reset all progress? Prestige will be wiped.");
+    if (!confirmed) return;
+    state = createDefaultState();
+    rebuildTierUI();
+    render(true);
+    saveGame();
+    setStatus("System wiped");
+    insertChatDivider("reset");
+    logChatEvent(chatSources.warning, "hard reset executed");
+  }
+
+  function render(force = false) {
+    if (!force) {
+      const now = Date.now();
+      if (now - lastRender < RENDER_INTERVAL_MS) return;
+      lastRender = now;
+    }
+
+    ui.currency.textContent = formatNumber(state.tiers[0].amount);
+    ui.clickValue.textContent = `+${formatNumber(getClickValue())}`;
+    ui.rate.textContent = `${formatNumber(estimateBaseRate())}/s`;
+    ui.automationPower.textContent = `x${getAutomationMultiplier().toFixed(2)}`;
+    ui.prestigeMultiplier.textContent = `x${getPrestigeMultiplier().toFixed(2)}`;
+    ui.difficultyInput.value = state.manualDifficulty || 1;
+    renderAchievements();
+
+    const autoMult = getAutomationMultiplier();
+    const fill = Math.min(1, (autoMult - 1) / 3);
+    const speedFactor =
+      state.tiers[0].autoLevel * 0.15 +
+      state.globalUpgrades.automation * 0.1 +
+      state.globalUpgrades.threads * 0.05;
+    const effectiveSpeed = Math.max(0, speedFactor * autoMult - 0.05);
+    const period =
+      effectiveSpeed <= 0
+        ? Infinity
+        : Math.max(800, 480000 / Math.max(1, effectiveSpeed * 10));
+    const staticFast = period <= 200;
+    const animate = period < Infinity && !staticFast;
+    const phase = animate ? ((Date.now() % period) / period) : 0;
+    ui.autoBar.textContent = buildAsciiBar(fill, phase, staticFast);
+    ui.autoBar.classList.toggle("animated", animate);
+    ui.autoBar.classList.toggle("fast", staticFast);
+
+    globalUpgradeDefs.forEach((def, idx) => {
+      const btn = globalUpgradeButtons.get(def.id);
+      const level = state.globalUpgrades[def.id];
+      const cost = def.baseCost * Math.pow(def.costGrowth, level) * Math.pow(getDifficultyScalar(), 1.15);
+      btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} cr`;
+      btn.dataset.tip = `${def.desc}`;
+      const affordable = state.tiers[0].amount >= cost;
+      btn.disabled = !affordable;
+      toggleDisabled(btn, !affordable);
+      btn.style.order = orderFromCost(cost, idx);
+    });
+
+    metaUpgradeDefs.forEach((def, idx) => {
+      const btn = metaUpgradeButtons.get(def.id);
+      const level = state.prestige.upgrades[def.id] || 0;
+      const cost = def.baseCost * Math.pow(def.costGrowth, level);
+      btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} prestige`;
+      btn.dataset.tip = `${def.desc}\nPermanent meta bonus.`;
+      const affordable = state.prestige.points >= cost;
+      btn.disabled = !affordable;
+      toggleDisabled(btn, !affordable);
+      btn.style.order = orderFromCost(cost, idx);
+    });
+
+    ui.prestigePoints.textContent = `${formatNumber(state.prestige.points)} (x${getPrestigeMultiplier().toFixed(2)})`;
+    ui.pendingPrestige.textContent = `${formatNumber(state.prestige.pending)} pending`;
+
+    const visibleStart = Math.max(0, state.tiers.length - 6);
+    state.tiers.forEach((tier, idx) => {
+      const el = tierElements.get(tier.id);
+      if (!el) return;
+      el.card.style.display = idx >= visibleStart ? "" : "none";
+      el.amount.textContent = formatNumber(tier.amount);
+      if (idx === 0) {
+        el.rate.textContent = `Auto: ${formatNumber(baseAutoPerSecond())}/s`;
+      } else {
+        const rate = tierProductionPerSecond(tier);
+        el.rate.textContent = `-> ${state.tiers[idx - 1].name}: ${formatNumber(rate)}/s`;
+        if (el.buyBtn) {
+          const cost = tierUnitCost(tier);
+          el.buyBtn.textContent = `Acquire +1 (${formatNumber(cost)} ${state.tiers[idx - 1].name})`;
+          el.buyBtn.dataset.tip = `Spend ${state.tiers[idx - 1].name} to gain ${tier.name}.\nCost rises with amount and difficulty.`;
+          const affordable = state.tiers[idx - 1].amount >= cost;
+          el.buyBtn.disabled = !affordable;
+          toggleDisabled(el.buyBtn, !affordable);
+          el.buyBtn.style.order = orderFromCost(cost, 0);
+        }
+      }
+      const payer = state.tiers[Math.max(0, tier.index - 1)];
+      const autoCost = tierUpgradeCost(tier, "auto");
+      const effCost = tierUpgradeCost(tier, "eff");
+      const affordAuto = payer.amount >= autoCost;
+      const affordEff = payer.amount >= effCost;
+      el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
+      el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
+      el.autoBtn.disabled = !affordAuto;
+      toggleDisabled(el.autoBtn, !affordAuto);
+      el.autoBtn.style.order = orderFromCost(autoCost, 1);
+      const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
+      el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
+      el.effBtn.dataset.tip = `Boosts efficiency by +22% per level and buffer bonus.\nUses ${payer.name}.`;
+      el.effBtn.disabled = !affordEff;
+      toggleDisabled(el.effBtn, !affordEff);
+      el.effBtn.style.order = orderFromCost(effCost, 2);
+    });
+
+    const nextIndex = state.tiers.length;
+    const unlockCost = tierUnlockCost(nextIndex);
+    const prevTier = state.tiers[nextIndex - 1];
+    if (nextIndex > 100) {
+      ui.nextTierLabel.textContent = "Tier cap reached";
+      ui.unlockTierButton.disabled = true;
+      toggleDisabled(ui.unlockTierButton, true);
+    } else {
+      ui.nextTierLabel.textContent = `Tier ${nextIndex}: ${tierDisplayName(nextIndex)} Cost: ${formatNumber(unlockCost)} ${prevTier.name}`;
+      const canUnlock = prevTier.amount >= unlockCost;
+      ui.unlockTierButton.disabled = !canUnlock;
+      toggleDisabled(ui.unlockTierButton, !canUnlock);
+    }
+
+    renderInfo();
+    checkAchievements();
+  }
+
+  function renderInfo() {
+    syncHardModeStatus();
+    const elapsed = Date.now() - state.sessionStart;
+    ui.sessionTime.textContent = formatDuration(elapsed);
+    ui.upgradeCount.textContent = `${totalUpgradeLoad().toFixed(0)} load`;
+    if (state.offlineSummary && state.offlineSummary.seconds > 0) {
+      ui.offlineDisplay.textContent = `+${formatNumber(state.offlineSummary.gain)} in ${formatNumber(state.offlineSummary.seconds)}s`;
+    } else {
+      ui.offlineDisplay.textContent = "None";
+    }
+    const diff = state.manualDifficulty || 1;
+    const costFactor = getManualCostFactor().toFixed(2);
+    ui.difficultyStatus.textContent = `${diff} | cost x${costFactor}`;
+    ui.hardModeStatus.textContent = state.hardModeStarted
+      ? state.hardModeValid ? "Tracking" : "Invalidated"
+      : "Idle";
+    ui.integrityStatus.textContent = state.integrityFlag ? "Flagged" : "Clean";
+    const cps = state.lastCps || 0;
+    const grace = Date.now() < state.cpsGraceUntil;
+    ui.cpsDisplay.textContent = `${cps.toFixed(1)}${state.penaltyScale < 1 && !grace ? " (penalty)" : ""}`;
+    ui.infoDetail.textContent = `Status: ${state.status || "Stable"}`;
+  }
+
+  function renderAchievements() {
+    if (!ui.achievementsList) return;
+    const frag = document.createDocumentFragment();
+    achievementSections.forEach((section) => {
+      const sectionDefs = achievementDefs.filter((a) => a.section === section);
+      const unlockedCount = sectionDefs.filter((a) => state.achievements.includes(a.id)).length;
+      const wrap = document.createElement("div");
+      wrap.className = "achievement-section";
+      const header = document.createElement("div");
+      header.className = "achievement-section-header";
+      header.textContent = `${section} (${unlockedCount}/${sectionDefs.length})`;
+      wrap.appendChild(header);
+      sectionDefs.forEach((def) => {
+        const unlocked = state.achievements.includes(def.id);
+        const row = document.createElement("div");
+        row.className = `achievement${unlocked ? "" : " locked"}`;
+        const left = document.createElement("div");
+        left.innerHTML = `<div>${def.name}</div><div class="muted small-text">${def.desc}</div>`;
+        const right = document.createElement("div");
+        right.className = "muted mono";
+        right.textContent = unlocked ? "Unlocked" : "Locked";
+        row.append(left, right);
+        wrap.appendChild(row);
+      });
+      frag.appendChild(wrap);
+    });
+    ui.achievementsList.innerHTML = "";
+    ui.achievementsList.appendChild(frag);
+  }
+
+  function checkAchievements() {
+    const newly = [];
+    achievementDefs.forEach((def) => {
+      if (state.achievements.includes(def.id)) return;
+      if (def.check(state)) {
+        state.achievements.push(def.id);
+        newly.push(def);
+      }
+    });
+    if (newly.length) {
+      newly.forEach((def) => {
+        showToast(`Achievement unlocked: ${def.name}`);
+        logChatEvent(chatSources.system, `Achievement unlocked: ${def.name}`, { category: "achievement" });
+        maybeNpcAchievement(def.name);
+      });
+      renderAchievements();
+      saveGame();
+    }
+  }
+
+  function toggleAchievementsModal() {
+    ui.achievementsModal.classList.toggle("hidden");
+    if (!ui.achievementsModal.classList.contains("hidden")) {
+      renderAchievements();
+    }
+  }
+
+  function showToast(text) {
+    if (!ui.toastContainer) return;
+    const node = document.createElement("div");
+    node.className = "toast";
+    node.textContent = text;
+    ui.toastContainer.appendChild(node);
+    setTimeout(() => node.remove(), 3200);
+  }
+
+  function syncHardModeStatus() {
+    if (state.totalCurrency >= 1000 && !state.hardModeStarted) {
+      state.hardModeStarted = true;
+      state.hardModeValid = state.manualDifficulty === 100;
+    }
+    if (state.hardModeStarted && state.hardModeValid && state.manualDifficulty !== 100) {
+      state.hardModeValid = false;
+    }
+  }
+
+  function onDifficultyChange() {
+    const raw = Number(ui.difficultyInput.value || 1);
+    const clamped = Math.min(100, Math.max(1, Math.round(raw)));
+    const was100 = state.manualDifficulty === 100;
+    state.manualDifficulty = clamped;
+    ui.difficultyInput.value = clamped;
+    if (state.totalCurrency >= 1000) {
+      if (clamped !== 100) state.hardModeValid = false;
+      if (!state.hardModeStarted && clamped === 100) state.hardModeStarted = true;
+    }
+    if (was100 && clamped !== 100 && state.totalCurrency >= 1000) {
+      state.hardModeValid = false;
+    }
+    setStatus(`Manual difficulty set to ${clamped}`);
+    logChatEvent(chatSources.system, `difficulty set to ${clamped} (cost x${getManualCostFactor().toFixed(2)})`);
+    saveGame();
+    render(true);
+  }
+
+  function toggleDisabled(el, stateDisabled) {
+    if (stateDisabled) el.classList.add("disabled");
+    else el.classList.remove("disabled");
+  }
+
+  function formatNumber(value) {
+    if (!isFinite(value)) return "INF";
+    const abs = Math.abs(value);
+    const units = [
+      { v: 1e12, s: "T" },
+      { v: 1e9, s: "B" },
+      { v: 1e6, s: "M" },
+      { v: 1e3, s: "K" }
+    ];
+    for (const u of units) {
+      if (abs >= u.v) return `${(value / u.v).toFixed(2)}${u.s}`;
+    }
+    return abs >= 100 ? value.toFixed(0) : value.toFixed(2);
+  }
+
+  function formatDuration(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    const parts = [];
+    if (h > 0) parts.push(h.toString().padStart(2, "0"));
+    parts.push(m.toString().padStart(2, "0"));
+    parts.push(s.toString().padStart(2, "0"));
+    return parts.join(":");
+  }
+
+  function buildAsciiBar(fill, phase = 0, staticFast = false) {
+    const total = 22;
+    const filled = Math.max(0, Math.min(total, Math.round(fill * total)));
+    const chars = [];
+    for (let i = 0; i < total; i++) {
+      chars.push(i < filled ? "#" : ".");
+    }
+    if (staticFast) {
+      const tail = Math.max(0, Math.min(total - 2, filled));
+      chars[Math.min(total - 1, tail)] = ">";
+      chars[Math.max(0, tail - 1)] = ">";
+    } else if (phase > 0) {
+      const pos = Math.floor(phase * total) % total;
+      chars[pos] = ">";
+    }
+    return `[${chars.join("")}]`;
+  }
+
+  function chatSourceForTier(tier) {
+    const index = typeof tier === "number" ? tier : tier.index;
+    const name = typeof tier === "number" ? tierDisplayName(index) : tier.name;
+    return { id: `T-${String(index).padStart(3, "0")}`, user: name, category: "tier" };
+  }
+
+  function bootstrapChat() {
+    renderChat(true);
+    const flags = chatFlags();
+    if (!flags.booted) {
+      const msg = state.integrityFlag ? "integrity warning; save sanitized" : "session link established";
+      logChatEvent(chatSources.system, msg, { forceScroll: true });
+      logChatEvent(chatSources.system, `operator ${resolvePlayerName()} linked`, { forceScroll: true });
+      logChatEvent(chatSources.system, "objective: reach prestige 50", { forceScroll: true });
+      flags.booted = true;
+    }
+    if (state.integrityFlag) {
+      logChatEvent(chatSources.integrity, "integrity check failed on load; reset applied");
+    }
+    scheduleNpcChatter();
+  }
+
+  function logChatEvent(source, text, opts = {}) {
+    if (!text) return;
+    const color = opts.color || source?.color;
+    let renderedText = text;
+    if ((opts.category || source?.category) === "entity") {
+      renderedText = corruptEntityText(text);
+    }
+    const entry = {
+      ts: opts.ts || Date.now(),
+      id: (opts.id || source?.id || "SYS-000").toString().toUpperCase(),
+      user: opts.user || source?.user || "system",
+      category: opts.category || source?.category || "system",
+      text: renderedText,
+      color,
+      type: opts.type === "divider" ? "divider" : "line"
+    };
+    state.chat.history.push(entry);
+    if (state.chat.history.length > CHAT_HISTORY_LIMIT) {
+      state.chat.history.splice(0, state.chat.history.length - CHAT_HISTORY_LIMIT);
+    }
+    state.chat.lastMessage = entry;
+    if (entry.type === "divider") state.chat.lastDivider = entry.ts;
+    renderChat(!state.chat.scrollLock || opts.forceScroll);
+  }
+
+  function renderChat(forceStick = false) {
+    if (!ui.chatList) return;
+    const list = ui.chatList;
+    const atBottom = isChatAtBottom();
+    list.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    const mentionName = resolvePlayerName();
+    const mentionPattern = mentionName
+      ? new RegExp(`@${escapeRegex(mentionName)}(\\b|$)`, "i")
+      : null;
+    (state.chat.history || []).forEach((entry) => {
+      if (entry.type === "divider") {
+        const div = document.createElement("div");
+        div.className = "chat-divider";
+        div.textContent = entry.text || "++++++++++++++++++++++++++++";
+        frag.appendChild(div);
+        return;
+      }
+      const line = document.createElement("div");
+      line.className = `chat-line cat-${entry.category || "system"}`;
+      const prefix = document.createElement("div");
+      prefix.className = "chat-prefix";
+      const time = document.createElement("span");
+      time.className = "chat-time";
+      time.textContent = formatChatTime(entry.ts);
+      const id = document.createElement("span");
+      id.className = "chat-id";
+      id.textContent = entry.id || "----";
+      const user = document.createElement("span");
+      user.className = "chat-user";
+      user.textContent = entry.user || "system";
+      const resolvedColor = resolveEntryColor(entry);
+      if (resolvedColor) {
+        user.style.color = resolvedColor;
+      }
+      if ((entry.user || "").toLowerCase() === "erebusares") {
+        user.classList.add("dev-glow");
+      }
+      const sep = document.createElement("span");
+      sep.className = "chat-sep";
+      sep.textContent = "::: ";
+      prefix.append(time, id, user, sep);
+      const text = document.createElement("span");
+      text.className = "chat-text";
+      text.textContent = entry.text || "";
+      if (mentionPattern && mentionPattern.test(entry.text || "")) {
+        line.classList.add("mention-hit");
+      }
+      line.append(prefix, text);
+      frag.appendChild(line);
+    });
+    list.appendChild(frag);
+    updateChatFooter(state.chat.lastMessage);
+    const shouldStick = forceStick || !state.chat.scrollLock || atBottom;
+    toggleLiveButton(shouldStick);
+    if (shouldStick) {
+      requestAnimationFrame(() => {
+        list.scrollTop = list.scrollHeight;
+        handleChatScroll();
+      });
+    }
+  }
+
+  function updateChatFooter(entry) {
+    if (!ui.chatInput) return;
+    if (!entry) {
+      ui.chatInput.placeholder = "broadcast to feed...";
+      return;
+    }
+    ui.chatInput.placeholder = `${formatChatTime(entry.ts)} ${entry.id} ${entry.user} ::: ${entry.text}`;
+  }
+
+  function isChatAtBottom() {
+    if (!ui.chatList) return true;
+    const list = ui.chatList;
+    const diff = list.scrollHeight - list.scrollTop - list.clientHeight;
+    return diff < CHAT_SCROLL_TOLERANCE;
+  }
+
+  function handleChatScroll() {
+    if (!ui.chatList) return;
+    const atBottom = isChatAtBottom();
+    state.chat.scrollLock = !atBottom;
+    toggleLiveButton(atBottom);
+  }
+
+  function scrollChatToLive() {
+    if (!ui.chatList) return;
+    ui.chatList.scrollTop = ui.chatList.scrollHeight;
+    state.chat.scrollLock = false;
+    handleChatScroll();
+  }
+
+  function toggleLiveButton(atBottom) {
+    if (!ui.chatLiveButton) return;
+    ui.chatLiveButton.classList.toggle("hidden-live", atBottom);
+  }
+
+  function formatChatTime(ts) {
+    const d = new Date(ts);
+    const h = d.getHours().toString().padStart(2, "0");
+    const m = d.getMinutes().toString().padStart(2, "0");
+    return `${h}${m}`;
+  }
+
+  function insertChatDivider(label = "") {
+    const text = label ? `++++ ${label} ++++` : "++++++++++++++++++++";
+    logChatEvent(chatSources.system, text, { type: "divider", category: "system" });
+  }
+
+  function logClickRun(now) {
+    const lastTs = state.chat.lastClickTs || 0;
+    if (lastTs && now - lastTs > CLICK_RUN_COOLDOWN && state.chat.runCount > 0) {
+      flushClickRun();
+    }
+    state.chat.runCount = (state.chat.runCount || 0) + 1;
+    state.chat.lastClickTs = now;
+    scheduleClickRunFlush();
+  }
+
+  function scheduleClickRunFlush() {
+    if (clickRunTimer) clearTimeout(clickRunTimer);
+    clickRunTimer = setTimeout(() => {
+      flushClickRun();
+    }, CLICK_RUN_COOLDOWN);
+  }
+
+  function flushClickRun() {
+    if (!state.chat.runCount) return;
+    logChatEvent(chatSources.core, `${state.chat.runCount} clicks executed`);
+    if (state.chat.runCount >= 50) maybeNpcClick();
+    state.chat.runCount = 0;
+    state.chat.lastRunFlush = Date.now();
+  }
+
+  function notePenaltyState() {
+    const reduced = state.penaltyScale < 0.98;
+    const flags = chatFlags();
+    if (reduced && !flags.penaltyActive) {
+      logChatEvent(chatSources.warning, "penalty detected, reducing funds");
+      const voice = pick(npcVoices);
+      logChatEvent({ ...chatSources.npc, ...voice }, "autoclick vibes? that's weak.");
+      maybeNpcWhisperEvent("warning", "penalty detected", 0.8);
+      flags.penaltyActive = true;
+    } else if (!reduced && flags.penaltyActive && state.penaltyScale > 0.995) {
+      logChatEvent(chatSources.system, "manual input normalized");
+      flags.penaltyActive = false;
+    }
+  }
+
+  function maybeNpcFirstClick() {
+    const flags = chatFlags();
+    if (flags.firstClick) return;
+    flags.firstClick = true;
+    broadcastNpcGroup("welcome", 3);
+    maybeNpcWhisperEvent("firstClick", "", 1);
+  }
+
+  function maybeNpcFirstUpgrade() {
+    const flags = chatFlags();
+    if (flags.firstUpgrade) return;
+    flags.firstUpgrade = true;
+    pushNpcLine("upgrade");
+  }
+
+  function maybeNpcTierUnlock(tier) {
+    const flags = chatFlags();
+    const key = `tier-${tier.index}`;
+    if (!flags[key]) {
+      flags[key] = true;
+      pushNpcLine("milestone");
+    }
+    if ([10, 25, 50, 100].includes(tier.index)) {
+      pushNpcLine("milestone");
+    }
+  }
+
+  function maybeNpcPrestige(gained) {
+    pushNpcLine("prestige");
+    if (gained > 5) pushNpcLine("milestone");
+    maybeNpcWhisperEvent("prestige", `+${formatNumber(gained)}`);
+    npcProgressCatchUp("prestige");
+  }
+
+  function maybeNpcAchievement(name) {
+    broadcastNpcGroup("achievement", 4, { detail: name }, true);
+    maybeNpcWhisperEvent("achievement", name, 0.75);
+    npcProgressCatchUp("achievement");
+  }
+
+  function maybeNpcClick() {
+    pushNpcLine("click");
+  }
+
+  function npcProgressCatchUp(reason = "") {
+    const flags = chatFlags();
+    if (!flags.npcProgress) flags.npcProgress = {};
+    const playerTier = Math.max(0, state.tiers.length - 1);
+    const playerPrestige = state.stats?.prestiges || 0;
+    const chance = 0.45;
+    if (Math.random() > chance) return;
+    const voice = pick(npcVoices);
+    const record = flags.npcProgress[voice.user] || { tier: 0, prestige: 0 };
+    const tierSkill = voice.highscore ? Math.max(1, voice.skill || 1.05) : Math.max(0.35, Math.min(0.9, voice.skill || 0.6));
+    const prestigeSkill = voice.highscore ? Math.max(0.8, tierSkill) : Math.max(0.3, Math.min(0.9, tierSkill + 0.1));
+    const targetTier = Math.max(record.tier, Math.min(playerTier + (voice.highscore ? 6 : 2), Math.floor(playerTier * tierSkill)));
+    const targetPrestige = Math.max(record.prestige, Math.floor(playerPrestige * prestigeSkill));
+    const updates = [];
+    if (targetTier > record.tier) {
+      record.tier = targetTier;
+      updates.push(`Tier ${targetTier}`);
+    }
+    if (targetPrestige > record.prestige && targetPrestige > 0) {
+      record.prestige = targetPrestige;
+      updates.push(`Reboot ${targetPrestige}`);
+    }
+    flags.npcProgress[voice.user] = record;
+    if (updates.length) {
+      const template = pick(npcLibrary.npcProgress);
+      const text = formatNpcText(template, voice, { progress: updates.join(", ") });
+      logChatEvent({ ...chatSources.npc, ...voice }, text);
+    } else if (voice.highscore && Math.random() < 0.4) {
+      // High scorer flexes occasionally
+      logChatEvent(
+        { ...chatSources.npc, ...voice },
+        formatNpcText("{user} is aiming past {player}. don't blink.", voice, {})
+      );
+    }
+  }
+
+  function buildPersonaLine(voice, kind) {
+    const personaPick = pickPersonaLine(voice, kind);
+    if (personaPick) return personaPick;
+    const fallbackKey = kind === "firstClick" ? "welcome" : kind;
+    const fallback = npcLibrary[fallbackKey];
+    if (fallback && fallback.length) return pick(fallback);
+    return pick(npcLibrary.whisper);
+  }
+
+  function maybeNpcWhisperEvent(kind, detail = "", chanceOverride = null) {
+    const flags = chatFlags();
+    const now = Date.now();
+    const cooldown = 8000;
+    if (flags.lastNpcWhisper && now - flags.lastNpcWhisper < cooldown) return;
+    const chance = chanceOverride ?? (kind === "firstClick" ? 1 : 0.55);
+    if (Math.random() > chance) return;
+    const voice = pick(npcVoices);
+    const template = buildPersonaLine(voice, kind);
+    if (!template) return;
+    const text = formatNpcText(template, voice, { detail });
+    sendNpcWhisper(voice, text);
+  }
+
+  function broadcastNpcGroup(kind, count = 3, extra = {}, allowNames = false) {
+    const shuffled = [...npcVoices].sort(() => 0.5 - Math.random()).slice(0, Math.max(1, count));
+    const used = new Set();
+    shuffled.forEach((voice) => {
+      const basePool = npcLibrary[kind] || [];
+      let template = buildPersonaLine(voice, kind);
+      if (!allowNames && template && /{user}/i.test(template)) {
+        template = pick(basePool.filter((t) => !/{user}/i.test(t))) || template;
+      }
+      let text = formatNpcText(template, voice, extra);
+      let attempts = 0;
+      while (used.has(text) && attempts < 5) {
+        const retry = buildPersonaLine(voice, kind) || pick(basePool);
+        text = formatNpcText(retry, voice, extra);
+        attempts += 1;
+      }
+      used.add(text);
+      if (extra?.detail && !text.includes(extra.detail)) {
+        text = `${text} (${extra.detail})`;
+      }
+      logChatEvent({ ...chatSources.npc, ...voice }, text);
     });
   }
-}
 
-function updateChatFooter(entry) {
-  if (!ui.chatInput) return;
-  if (!entry) {
-    ui.chatInput.placeholder = "broadcast to feed...";
-    return;
+  function maybeEntityMessage() {
+    const prestiges = state.stats?.prestiges || 0;
+    if (prestiges < 3) return;
+    const flags = chatFlags();
+    const now = Date.now();
+    const last = flags.lastEntity || 0;
+    const cooldown = Math.max(15000, 120000 - prestiges * 3000);
+    if (now - last < cooldown) return;
+    const pool = prestiges >= 20 ? entityLines.late : prestiges >= 10 ? entityLines.mid : entityLines.early;
+    logChatEvent(chatSources.entity, pick(pool));
+    flags.lastEntity = now;
   }
-  ui.chatInput.placeholder = `${formatChatTime(entry.ts)} ${entry.id} ${entry.user} ::: ${entry.text}`;
-}
 
-function isChatAtBottom() {
-  if (!ui.chatList) return true;
-  const list = ui.chatList;
-  const diff = list.scrollHeight - list.scrollTop - list.clientHeight;
-  return diff < CHAT_SCROLL_TOLERANCE;
-}
-
-function handleChatScroll() {
-  if (!ui.chatList) return;
-  const atBottom = isChatAtBottom();
-  state.chat.scrollLock = !atBottom;
-  toggleLiveButton(atBottom);
-}
-
-function scrollChatToLive() {
-  if (!ui.chatList) return;
-  ui.chatList.scrollTop = ui.chatList.scrollHeight;
-  state.chat.scrollLock = false;
-  handleChatScroll();
-}
-
-function toggleLiveButton(atBottom) {
-  if (!ui.chatLiveButton) return;
-  ui.chatLiveButton.classList.toggle("hidden-live", atBottom);
-}
-
-function formatChatTime(ts) {
-  const d = new Date(ts);
-  const h = d.getHours().toString().padStart(2, "0");
-  const m = d.getMinutes().toString().padStart(2, "0");
-  return `${h}${m}`;
-}
-
-function insertChatDivider(label = "") {
-  const text = label ? `++++ ${label} ++++` : "++++++++++++++++++++";
-  logChatEvent(chatSources.system, text, { type: "divider", category: "system" });
-}
-
-function logClickRun(now) {
-  const lastTs = state.chat.lastClickTs || 0;
-  if (lastTs && now - lastTs > CLICK_RUN_COOLDOWN && state.chat.runCount > 0) {
-    flushClickRun();
+  function maybeDevTip() {
+    const flags = chatFlags();
+    const now = Date.now();
+    if (now - (flags.lastDevTip || 0) < 45000) return;
+    flags.lastDevTip = now;
+    logChatEvent(chatSources.dev, pick(devTips));
   }
-  state.chat.runCount = (state.chat.runCount || 0) + 1;
-  state.chat.lastClickTs = now;
-  scheduleClickRunFlush();
-}
 
-function scheduleClickRunFlush() {
-  if (clickRunTimer) clearTimeout(clickRunTimer);
-  clickRunTimer = setTimeout(() => {
-    flushClickRun();
-  }, CLICK_RUN_COOLDOWN);
-}
-
-function flushClickRun() {
-  if (!state.chat.runCount) return;
-  logChatEvent(chatSources.core, `${state.chat.runCount} clicks executed`);
-  if (state.chat.runCount >= 50) maybeNpcClick();
-  state.chat.runCount = 0;
-  state.chat.lastRunFlush = Date.now();
-}
-
-function notePenaltyState() {
-  const reduced = state.penaltyScale < 0.98;
-  const flags = chatFlags();
-  if (reduced && !flags.penaltyActive) {
-    logChatEvent(chatSources.warning, "penalty detected, reducing funds");
+  function pushNpcLine(kind, detail = "") {
     const voice = pick(npcVoices);
-    logChatEvent({ ...chatSources.npc, ...voice }, "autoclick vibes? that's weak.");
-    maybeNpcWhisperEvent("warning", "penalty detected", 0.8);
-    flags.penaltyActive = true;
-  } else if (!reduced && flags.penaltyActive && state.penaltyScale > 0.995) {
-    logChatEvent(chatSources.system, "manual input normalized");
-    flags.penaltyActive = false;
-  }
-}
-
-function maybeNpcFirstClick() {
-  const flags = chatFlags();
-  if (flags.firstClick) return;
-  flags.firstClick = true;
-  broadcastNpcGroup("welcome", 3);
-  maybeNpcWhisperEvent("firstClick", "", 1);
-}
-
-function maybeNpcFirstUpgrade() {
-  const flags = chatFlags();
-  if (flags.firstUpgrade) return;
-  flags.firstUpgrade = true;
-  pushNpcLine("upgrade");
-}
-
-function maybeNpcTierUnlock(tier) {
-  const flags = chatFlags();
-  const key = `tier-${tier.index}`;
-  if (!flags[key]) {
-    flags[key] = true;
-    pushNpcLine("milestone");
-  }
-  if ([10, 25, 50, 100].includes(tier.index)) {
-    pushNpcLine("milestone");
-  }
-}
-
-function maybeNpcPrestige(gained) {
-  pushNpcLine("prestige");
-  if (gained > 5) pushNpcLine("milestone");
-  maybeNpcWhisperEvent("prestige", `+${formatNumber(gained)}`);
-  npcProgressCatchUp("prestige");
-}
-
-function maybeNpcAchievement(name) {
-  broadcastNpcGroup("achievement", 4, { detail: name }, true);
-  maybeNpcWhisperEvent("achievement", name, 0.75);
-  npcProgressCatchUp("achievement");
-}
-
-function maybeNpcClick() {
-  pushNpcLine("click");
-}
-
-function npcProgressCatchUp(reason = "") {
-  const flags = chatFlags();
-  if (!flags.npcProgress) flags.npcProgress = {};
-  const playerTier = Math.max(0, state.tiers.length - 1);
-  const playerPrestige = state.stats?.prestiges || 0;
-  const chance = 0.45;
-  if (Math.random() > chance) return;
-  const voice = pick(npcVoices);
-  const record = flags.npcProgress[voice.user] || { tier: 0, prestige: 0 };
-  const tierSkill = voice.highscore ? Math.max(1, voice.skill || 1.05) : Math.max(0.35, Math.min(0.9, voice.skill || 0.6));
-  const prestigeSkill = voice.highscore ? Math.max(0.8, tierSkill) : Math.max(0.3, Math.min(0.9, tierSkill + 0.1));
-  const targetTier = Math.max(record.tier, Math.min(playerTier + (voice.highscore ? 6 : 2), Math.floor(playerTier * tierSkill)));
-  const targetPrestige = Math.max(record.prestige, Math.floor(playerPrestige * prestigeSkill));
-  const updates = [];
-  if (targetTier > record.tier) {
-    record.tier = targetTier;
-    updates.push(`Tier ${targetTier}`);
-  }
-  if (targetPrestige > record.prestige && targetPrestige > 0) {
-    record.prestige = targetPrestige;
-    updates.push(`Reboot ${targetPrestige}`);
-  }
-  flags.npcProgress[voice.user] = record;
-  if (updates.length) {
-    const template = pick(npcLibrary.npcProgress);
-    const text = formatNpcText(template, voice, { progress: updates.join(", ") });
+    const template = buildPersonaLine(voice, kind);
+    if (!template) return;
+    let text = formatNpcText(template, voice, { detail });
+    if (detail && !text.includes(detail)) {
+      text = `${text} (${detail})`;
+    }
     logChatEvent({ ...chatSources.npc, ...voice }, text);
-  } else if (voice.highscore && Math.random() < 0.4) {
-    // High scorer flexes occasionally
-    logChatEvent(
-      { ...chatSources.npc, ...voice },
-      formatNpcText("{user} is aiming past {player}. don't blink.", voice, {})
+  }
+
+  function scheduleNpcChatter() {
+    if (npcChatterTimer) clearTimeout(npcChatterTimer);
+    const delay = 18000 + Math.random() * 18000;
+    npcChatterTimer = setTimeout(() => {
+      triggerNpcChatter();
+      scheduleNpcChatter();
+    }, delay);
+  }
+
+  function triggerNpcChatter() {
+    const flags = chatFlags();
+    if (!flags.firstClick) return; // stay quiet until player clicks once
+    const convoChance = Math.random();
+    if (convoChance < 0.35) {
+      const from = pick(npcVoices);
+      let to = pick(npcVoices);
+      if (to.id === from.id) {
+        to = pick(npcVoices.filter((v) => v.id !== from.id)) || to;
+      }
+      const pair = pick(npcLibrary.conversationQA || []);
+      if (pair && pair.ask && pair.answer) {
+        const askLine = formatNpcText(pair.ask, from, { to: to.user, from: from.user });
+        const replyLine = formatNpcText(pair.answer, to, { from: from.user, to: to.user });
+        logChatEvent({ ...chatSources.npc, ...from }, askLine);
+        logChatEvent({ ...chatSources.npc, ...to }, replyLine);
+      } else {
+        const template = pick(npcLibrary.conversation);
+        if (template) {
+          const line = formatNpcText(template, from, { to: to.user });
+          logChatEvent({ ...chatSources.npc, ...from }, line);
+        }
+      }
+      return;
+    }
+    const voice = pick(npcVoices);
+    const text = pickPersonaLine(voice, "banter") || pick(npcLibrary.random);
+    if (text) {
+      const line = formatNpcText(text, voice, {});
+      logChatEvent({ ...chatSources.npc, ...voice }, line);
+    }
+  }
+
+  function formatNpcText(template, voice, extra = {}) {
+    if (!template) return "";
+    const player = resolvePlayerName();
+    return template
+      .replace(/{player}/gi, player)
+      .replace(/{user}/gi, voice?.user || "")
+      .replace(/{to}/gi, extra.to || "")
+      .replace(/{from}/gi, extra.from || "")
+      .replace(/{detail}/gi, extra.detail || "")
+      .replace(/{progress}/gi, extra.progress || "")
+      .replace(/{tier}/gi, extra.tier || "")
+      .replace(/{prestige}/gi, extra.prestige || "");
+  }
+
+  function pick(arr) {
+    if (!arr || !arr.length) return "";
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  }
+
+  function resolveEntryColor(entry) {
+    if (entry.color) return entry.color;
+    if (entry.category === "npc" && entry.id) {
+      const voice = npcVoices.find((v) => v.id.toUpperCase() === entry.id.toUpperCase());
+      if (voice && voice.color) return voice.color;
+    }
+    if (entry.category === "whisper") return WHISPER_COLOR;
+    if (entry.category === "operator") return chatSources.operator.color;
+    if (entry.category === "dev" || (entry.user || "").toLowerCase() === "erebusares") {
+      return "#ffd479";
+    }
+    return null;
+  }
+
+  function resolvePlayerName() {
+    if (state.playerName) return state.playerName;
+    const detected = detectPlayerName();
+    state.playerName = detected;
+    try {
+      localStorage.setItem("terminalIdlePlayer", detected);
+    } catch { }
+    return detected;
+  }
+
+  function detectPlayerName() {
+    const stored = (() => {
+      try {
+        return localStorage.getItem("terminalIdlePlayer");
+      } catch {
+        return null;
+      }
+    })();
+    if (stored) return stored;
+    const globalUser = window.USERNAME || window.userName || window.USER || window.NICKNAME || window.OPERATOR;
+    const trimmed = (globalUser || "").toString().trim();
+    if (trimmed) return trimmed.slice(0, 24);
+    return "Operator";
+  }
+
+  function corruptEntityText(text) {
+    const prestiges = state.stats?.prestiges || 0;
+    const reveal = Math.max(0, Math.min(1, (prestiges - 3) / 47)); // full reveal by prestige ~50
+    const chars = text.split("");
+    const symbols = ["#", "/", "\\", "_", ".", "|", "*", "~"];
+    const result = chars.map((ch) => {
+      if (ch === " ") return " ";
+      const keepChance = reveal + 0.12;
+      if (Math.random() < keepChance) return ch;
+      return Math.random() < 0.1 ? "[" + ch + "]" : symbols[Math.floor(Math.random() * symbols.length)];
+    });
+    return result.join("");
+  }
+
+  function handleChatSend() {
+    if (!ui.chatInput) return;
+    const raw = ui.chatInput.value || "";
+    const text = raw.trim();
+    if (!text) return;
+    ui.chatInput.value = "";
+    const player = resolvePlayerName();
+    const whisper = parseWhisper(text);
+    if (whisper) {
+      sendWhisperFromOperator(player, whisper.target, whisper.message);
+    } else {
+      logChatEvent(chatSources.operator, text, { user: player, id: "OP-000", color: chatSources.operator.color, category: "operator" });
+      handleMentions(text, player);
+      reactToOperatorMessage(text);
+    }
+    trackOperatorSpam();
+  }
+
+  function parseWhisper(text) {
+    const match = text.match(/^\/(w|whisper)\s+([^\s]+)\s+(.+)/i);
+    if (!match) return null;
+    return { target: match[2], message: match[3].trim() };
+  }
+
+  function resolveNpcVoice(targetRaw) {
+    if (!targetRaw) return null;
+    const target = targetRaw.toString().toLowerCase();
+    return (
+      npcVoices.find((v) => v.id.toLowerCase() === target) ||
+      npcVoices.find((v) => v.user.toLowerCase() === target) ||
+      npcVoices.find((v) => v.user.toLowerCase().startsWith(target))
     );
   }
-}
 
-function buildPersonaLine(voice, kind) {
-  const personaPick = pickPersonaLine(voice, kind);
-  if (personaPick) return personaPick;
-  const fallbackKey = kind === "firstClick" ? "welcome" : kind;
-  const fallback = npcLibrary[fallbackKey];
-  if (fallback && fallback.length) return pick(fallback);
-  return pick(npcLibrary.whisper);
-}
+  function logWhisperLine(from, to, text, color) {
+    const opts = { user: `${from} -> ${to}`, id: "WHISPER", category: "whisper" };
+    if (color) opts.color = color;
+    logChatEvent(chatSources.whisper, text, opts);
+  }
 
-function maybeNpcWhisperEvent(kind, detail = "", chanceOverride = null) {
-  const flags = chatFlags();
-  const now = Date.now();
-  const cooldown = 8000;
-  if (flags.lastNpcWhisper && now - flags.lastNpcWhisper < cooldown) return;
-  const chance = chanceOverride ?? (kind === "firstClick" ? 1 : 0.55);
-  if (Math.random() > chance) return;
-  const voice = pick(npcVoices);
-  const template = buildPersonaLine(voice, kind);
-  if (!template) return;
-  const text = formatNpcText(template, voice, { detail });
-  sendNpcWhisper(voice, text);
-}
+  function sendNpcWhisper(voice, text) {
+    if (!text) return;
+    logWhisperLine(voice.user, resolvePlayerName(), text);
+    chatFlags().lastNpcWhisper = Date.now();
+  }
 
-function broadcastNpcGroup(kind, count = 3, extra = {}, allowNames = false) {
-  const shuffled = [...npcVoices].sort(() => 0.5 - Math.random()).slice(0, Math.max(1, count));
-  const used = new Set();
-  shuffled.forEach((voice) => {
-    const basePool = npcLibrary[kind] || [];
-    let template = buildPersonaLine(voice, kind);
-    if (!allowNames && template && /{user}/i.test(template)) {
-      template = pick(basePool.filter((t) => !/{user}/i.test(t))) || template;
+  function sendWhisperFromOperator(player, targetRaw, message) {
+    const voice = resolveNpcVoice(targetRaw);
+    if (!voice) {
+      logChatEvent(chatSources.system, `unable to route whisper: ${targetRaw}`, { category: "system" });
+      return;
     }
-    let text = formatNpcText(template, voice, extra);
-    let attempts = 0;
-    while (used.has(text) && attempts < 5) {
-      const retry = buildPersonaLine(voice, kind) || pick(basePool);
-      text = formatNpcText(retry, voice, extra);
-      attempts += 1;
+    if (!message) return;
+    logWhisperLine(player, voice.user, message);
+    const reply = pickWhisperTemplate(voice, message);
+    if (reply) sendNpcWhisper(voice, formatNpcText(reply, voice, {}));
+  }
+
+  function pickPersonaLine(voice, kind) {
+    const pool = npcLibrary.personaPools?.[voice?.persona] || {};
+    if (pool[kind]?.length) return pick(pool[kind]);
+    if (kind !== "whisper" && pool.banter?.length) return pick(pool.banter);
+    if (pool.whisper?.length) return pick(pool.whisper);
+    return null;
+  }
+
+  function detectWhisperTopic(message = "") {
+    const lower = message.toLowerCase();
+    if (/(help|hint|how|advice|guide)/.test(lower)) return "help";
+    if (/(stuck|lost|blocked|wall)/.test(lower)) return "stuck";
+    if (/(opt|efficien|route|build|calc|optimize)/.test(lower)) return "optimize";
+    if (/(thanks|thank you|ty|appreciate)/.test(lower)) return "praise";
+    if (/(hi|hello|hey|yo)/.test(lower)) return "greet";
+    return "generic";
+  }
+
+  function pickWhisperTemplate(voice, message = "") {
+    const topic = detectWhisperTopic(message);
+    const persona = npcLibrary.personaPools?.[voice?.persona];
+    if (persona?.whisperTopics?.[topic]?.length) return pick(persona.whisperTopics[topic]);
+    if (persona?.whisperTopics?.generic?.length) return pick(persona.whisperTopics.generic);
+    if (npcLibrary.whisperTopics?.[topic]?.length) return pick(npcLibrary.whisperTopics[topic]);
+    if (npcLibrary.whisperTopics?.generic?.length) return pick(npcLibrary.whisperTopics.generic);
+    return pickPersonaLine(voice, "whisper") || pick(npcLibrary.whisper);
+  }
+
+  function maybeNpcWhisperReply(voice) {
+    const flags = chatFlags();
+    const now = Date.now();
+    if (flags.lastNpcWhisper && now - flags.lastNpcWhisper < 3000) return;
+    const template = pickWhisperTemplate(voice);
+    if (!template) return;
+    sendNpcWhisper(voice, formatNpcText(template, voice, {}));
+  }
+
+  function reactToOperatorMessage(text) {
+    const lower = text.toLowerCase();
+    if (containsCurse(lower)) {
+      logChatEvent(chatSources.warning, "language flagged; behavior monitored");
+      return;
     }
-    used.add(text);
-    if (extra?.detail && !text.includes(extra.detail)) {
-      text = `${text} (${extra.detail})`;
+    if (lower === "help" || lower === "assist" || lower === "hint") {
+      logChatEvent(chatSources.dev, pick(devTips));
+      return;
     }
-    logChatEvent({ ...chatSources.npc, ...voice }, text);
-  });
-}
-
-function maybeEntityMessage() {
-  const prestiges = state.stats?.prestiges || 0;
-  if (prestiges < 3) return;
-  const flags = chatFlags();
-  const now = Date.now();
-  const last = flags.lastEntity || 0;
-  const cooldown = Math.max(15000, 120000 - prestiges * 3000);
-  if (now - last < cooldown) return;
-  const pool = prestiges >= 20 ? entityLines.late : prestiges >= 10 ? entityLines.mid : entityLines.early;
-  logChatEvent(chatSources.entity, pick(pool));
-  flags.lastEntity = now;
-}
-
-function maybeDevTip() {
-  const flags = chatFlags();
-  const now = Date.now();
-  if (now - (flags.lastDevTip || 0) < 45000) return;
-  flags.lastDevTip = now;
-  logChatEvent(chatSources.dev, pick(devTips));
-}
-
-function pushNpcLine(kind, detail = "") {
-  const voice = pick(npcVoices);
-  const template = buildPersonaLine(voice, kind);
-  if (!template) return;
-  let text = formatNpcText(template, voice, { detail });
-  if (detail && !text.includes(detail)) {
-    text = `${text} (${detail})`;
-  }
-  logChatEvent({ ...chatSources.npc, ...voice }, text);
-}
-
-function scheduleNpcChatter() {
-  if (npcChatterTimer) clearTimeout(npcChatterTimer);
-  const delay = 18000 + Math.random() * 18000;
-  npcChatterTimer = setTimeout(() => {
-    triggerNpcChatter();
-    scheduleNpcChatter();
-  }, delay);
-}
-
-function triggerNpcChatter() {
-  const flags = chatFlags();
-  if (!flags.firstClick) return; // stay quiet until player clicks once
-  const convoChance = Math.random();
-  if (convoChance < 0.35) {
-    const from = pick(npcVoices);
-    let to = pick(npcVoices);
-    if (to.id === from.id) {
-      to = pick(npcVoices.filter((v) => v.id !== from.id)) || to;
+    if (isGibberish(lower)) {
+      const voice = pick(npcVoices);
+      logChatEvent({ ...chatSources.npc, ...voice }, "???");
+      return;
     }
-    const pair = pick(npcLibrary.conversationQA || []);
-    if (pair && pair.ask && pair.answer) {
-      const askLine = formatNpcText(pair.ask, from, { to: to.user, from: from.user });
-      const replyLine = formatNpcText(pair.answer, to, { from: from.user, to: to.user });
-      logChatEvent({ ...chatSources.npc, ...from }, askLine);
-      logChatEvent({ ...chatSources.npc, ...to }, replyLine);
-    } else {
-      const template = pick(npcLibrary.conversation);
-      if (template) {
-        const line = formatNpcText(template, from, { to: to.user });
-        logChatEvent({ ...chatSources.npc, ...from }, line);
-      }
+    if (handleOperatorIntent(lower)) {
+      return;
     }
-    return;
-  }
-  const voice = pick(npcVoices);
-  const text = pickPersonaLine(voice, "banter") || pick(npcLibrary.random);
-  if (text) {
-    const line = formatNpcText(text, voice, {});
-    logChatEvent({ ...chatSources.npc, ...voice }, line);
-  }
-}
-
-function formatNpcText(template, voice, extra = {}) {
-  if (!template) return "";
-  const player = resolvePlayerName();
-  return template
-    .replace(/{player}/gi, player)
-    .replace(/{user}/gi, voice?.user || "")
-    .replace(/{to}/gi, extra.to || "")
-    .replace(/{from}/gi, extra.from || "")
-    .replace(/{detail}/gi, extra.detail || "")
-    .replace(/{progress}/gi, extra.progress || "")
-    .replace(/{tier}/gi, extra.tier || "")
-    .replace(/{prestige}/gi, extra.prestige || "");
-}
-
-function pick(arr) {
-  if (!arr || !arr.length) return "";
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function resolveEntryColor(entry) {
-  if (entry.color) return entry.color;
-  if (entry.category === "npc" && entry.id) {
-    const voice = npcVoices.find((v) => v.id.toUpperCase() === entry.id.toUpperCase());
-    if (voice && voice.color) return voice.color;
-  }
-  if (entry.category === "whisper") return WHISPER_COLOR;
-  if (entry.category === "operator") return chatSources.operator.color;
-  if (entry.category === "dev" || (entry.user || "").toLowerCase() === "erebusares") {
-    return "#ffd479";
-  }
-  return null;
-}
-
-function resolvePlayerName() {
-  if (state.playerName) return state.playerName;
-  const detected = detectPlayerName();
-  state.playerName = detected;
-  try {
-    localStorage.setItem("terminalIdlePlayer", detected);
-  } catch { }
-  return detected;
-}
-
-function detectPlayerName() {
-  const stored = (() => {
-    try {
-      return localStorage.getItem("terminalIdlePlayer");
-    } catch {
-      return null;
+    if (lower.includes("hello") || lower.includes("hi")) {
+      const voice = pick(npcVoices);
+      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText("hey {player}. we're listening.", voice, {}));
+      return;
     }
-  })();
-  if (stored) return stored;
-  const globalUser = window.USERNAME || window.userName || window.USER || window.NICKNAME || window.OPERATOR;
-  const trimmed = (globalUser || "").toString().trim();
-  if (trimmed) return trimmed.slice(0, 24);
-  return "Operator";
-}
-
-function corruptEntityText(text) {
-  const prestiges = state.stats?.prestiges || 0;
-  const reveal = Math.max(0, Math.min(1, (prestiges - 3) / 47)); // full reveal by prestige ~50
-  const chars = text.split("");
-  const symbols = ["#", "/", "\\", "_", ".", "|", "*", "~"];
-  const result = chars.map((ch) => {
-    if (ch === " ") return " ";
-    const keepChance = reveal + 0.12;
-    if (Math.random() < keepChance) return ch;
-    return Math.random() < 0.1 ? "[" + ch + "]" : symbols[Math.floor(Math.random() * symbols.length)];
-  });
-  return result.join("");
-}
-
-function handleChatSend() {
-  if (!ui.chatInput) return;
-  const raw = ui.chatInput.value || "";
-  const text = raw.trim();
-  if (!text) return;
-  ui.chatInput.value = "";
-  const player = resolvePlayerName();
-  const whisper = parseWhisper(text);
-  if (whisper) {
-    sendWhisperFromOperator(player, whisper.target, whisper.message);
-  } else {
-    logChatEvent(chatSources.operator, text, { user: player, id: "OP-000", color: chatSources.operator.color, category: "operator" });
-    handleMentions(text, player);
-    reactToOperatorMessage(text);
+    maybeBroadcastToNpcGroup();
   }
-  trackOperatorSpam();
-}
 
-function parseWhisper(text) {
-  const match = text.match(/^\/(w|whisper)\s+([^\s]+)\s+(.+)/i);
-  if (!match) return null;
-  return { target: match[2], message: match[3].trim() };
-}
-
-function resolveNpcVoice(targetRaw) {
-  if (!targetRaw) return null;
-  const target = targetRaw.toString().toLowerCase();
-  return (
-    npcVoices.find((v) => v.id.toLowerCase() === target) ||
-    npcVoices.find((v) => v.user.toLowerCase() === target) ||
-    npcVoices.find((v) => v.user.toLowerCase().startsWith(target))
-  );
-}
-
-function logWhisperLine(from, to, text, color) {
-  const opts = { user: `${from} -> ${to}`, id: "WHISPER", category: "whisper" };
-  if (color) opts.color = color;
-  logChatEvent(chatSources.whisper, text, opts);
-}
-
-function sendNpcWhisper(voice, text) {
-  if (!text) return;
-  logWhisperLine(voice.user, resolvePlayerName(), text);
-  chatFlags().lastNpcWhisper = Date.now();
-}
-
-function sendWhisperFromOperator(player, targetRaw, message) {
-  const voice = resolveNpcVoice(targetRaw);
-  if (!voice) {
-    logChatEvent(chatSources.system, `unable to route whisper: ${targetRaw}`, { category: "system" });
-    return;
+  function containsCurse(text) {
+    const curses = ["damn", "shit", "fuck", "bitch"];
+    return curses.some((w) => new RegExp(`\\b${w}\\b`, "i").test(text));
   }
-  if (!message) return;
-  logWhisperLine(player, voice.user, message);
-  const reply = pickWhisperTemplate(voice, message);
-  if (reply) sendNpcWhisper(voice, formatNpcText(reply, voice, {}));
-}
 
-function pickPersonaLine(voice, kind) {
-  const pool = npcLibrary.personaPools?.[voice?.persona] || {};
-  if (pool[kind]?.length) return pick(pool[kind]);
-  if (kind !== "whisper" && pool.banter?.length) return pick(pool.banter);
-  if (pool.whisper?.length) return pick(pool.whisper);
-  return null;
-}
-
-function detectWhisperTopic(message = "") {
-  const lower = message.toLowerCase();
-  if (/(help|hint|how|advice|guide)/.test(lower)) return "help";
-  if (/(stuck|lost|blocked|wall)/.test(lower)) return "stuck";
-  if (/(opt|efficien|route|build|calc|optimize)/.test(lower)) return "optimize";
-  if (/(thanks|thank you|ty|appreciate)/.test(lower)) return "praise";
-  if (/(hi|hello|hey|yo)/.test(lower)) return "greet";
-  return "generic";
-}
-
-function pickWhisperTemplate(voice, message = "") {
-  const topic = detectWhisperTopic(message);
-  const persona = npcLibrary.personaPools?.[voice?.persona];
-  if (persona?.whisperTopics?.[topic]?.length) return pick(persona.whisperTopics[topic]);
-  if (persona?.whisperTopics?.generic?.length) return pick(persona.whisperTopics.generic);
-  if (npcLibrary.whisperTopics?.[topic]?.length) return pick(npcLibrary.whisperTopics[topic]);
-  if (npcLibrary.whisperTopics?.generic?.length) return pick(npcLibrary.whisperTopics.generic);
-  return pickPersonaLine(voice, "whisper") || pick(npcLibrary.whisper);
-}
-
-function maybeNpcWhisperReply(voice) {
-  const flags = chatFlags();
-  const now = Date.now();
-  if (flags.lastNpcWhisper && now - flags.lastNpcWhisper < 3000) return;
-  const template = pickWhisperTemplate(voice);
-  if (!template) return;
-  sendNpcWhisper(voice, formatNpcText(template, voice, {}));
-}
-
-function reactToOperatorMessage(text) {
-  const lower = text.toLowerCase();
-  if (containsCurse(lower)) {
-    logChatEvent(chatSources.warning, "language flagged; behavior monitored");
-    return;
+  function isGibberish(text) {
+    const letters = text.replace(/[^a-z]/gi, "");
+    if (letters.length < 4) return false;
+    const vowels = (letters.match(/[aeiou]/gi) || []).length;
+    const ratio = vowels / letters.length;
+    return ratio < 0.18 || /(.)\\1{3,}/.test(letters);
   }
-  if (lower === "help" || lower === "assist" || lower === "hint") {
-    logChatEvent(chatSources.dev, pick(devTips));
-    return;
-  }
-  if (isGibberish(lower)) {
+
+  function handleOperatorIntent(lower) {
     const voice = pick(npcVoices);
-    logChatEvent({ ...chatSources.npc, ...voice }, "???");
-    return;
-  }
-  if (handleOperatorIntent(lower)) {
-    return;
-  }
-  if (lower.includes("hello") || lower.includes("hi")) {
-    const voice = pick(npcVoices);
-    logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText("hey {player}. we're listening.", voice, {}));
-    return;
-  }
-  maybeBroadcastToNpcGroup();
-}
-
-function containsCurse(text) {
-  const curses = ["damn", "shit", "fuck", "bitch"];
-  return curses.some((w) => new RegExp(`\\b${w}\\b`, "i").test(text));
-}
-
-function isGibberish(text) {
-  const letters = text.replace(/[^a-z]/gi, "");
-  if (letters.length < 4) return false;
-  const vowels = (letters.match(/[aeiou]/gi) || []).length;
-  const ratio = vowels / letters.length;
-  return ratio < 0.18 || /(.)\\1{3,}/.test(letters);
-}
-
-function handleOperatorIntent(lower) {
-  const voice = pick(npcVoices);
-  if (/(stuck|blocked|wall|halt)/.test(lower)) {
-    const line = pickWhisperTemplate(voice, "stuck");
-    logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
-    return true;
-  }
-  if (/(optimize|efficien|route|build|calc)/.test(lower)) {
-    const line = pickWhisperTemplate(voice, "optimize");
-    logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
-    return true;
-  }
-  if (/(thanks|thank you|ty|appreciate)/.test(lower)) {
-    const line = pickWhisperTemplate(voice, "praise");
-    logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
-    return true;
-  }
-  if (/(prestige|reset|reboot)/.test(lower)) {
-    const line = buildPersonaLine(voice, "prestige") || pick(npcLibrary.prestige);
-    logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
-    return true;
-  }
-  return false;
-}
-
-function trackOperatorSpam() {
-  const now = Date.now();
-  operatorSpam.times = (operatorSpam.times || []).filter((t) => now - t < 8000);
-  operatorSpam.times.push(now);
-  const count = operatorSpam.times.length;
-  if (count >= 5) {
-    if (!operatorSpam.warned) {
-      logChatEvent(chatSources.warning, "message flood detected; throttling");
-      operatorSpam.warned = true;
-    }
-    return;
-  }
-  if (count >= 3) {
-    const voice = pick(npcVoices);
-    logChatEvent({ ...chatSources.npc, ...voice }, "slow down, we're reading.");
-  }
-}
-
-function maybeBroadcastToNpcGroup() {
-  if (Math.random() > 0.4) return;
-  const pool = [...npcVoices].sort(() => 0.5 - Math.random()).slice(0, 3);
-  pool.forEach((voice) => {
-    const line = formatNpcText("got your ping, {player}.", voice, {});
-    logChatEvent({ ...chatSources.npc, ...voice }, line);
-  });
-}
-
-function handleMentions(text, playerName) {
-  const mentions = Array.from(text.matchAll(/@([\w-]+)/gi)).map((m) => m[1]);
-  if (!mentions.length) return;
-  mentions.forEach((m) => {
-    const voice = resolveNpcVoice(m);
-    if (voice) {
-      const line = buildPersonaLine(voice, "banter") || formatNpcText("yo {player}, heard you called?", voice, {});
+    if (/(stuck|blocked|wall|halt)/.test(lower)) {
+      const line = pickWhisperTemplate(voice, "stuck");
       logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      return true;
     }
-  });
-}
+    if (/(optimize|efficien|route|build|calc)/.test(lower)) {
+      const line = pickWhisperTemplate(voice, "optimize");
+      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      return true;
+    }
+    if (/(thanks|thank you|ty|appreciate)/.test(lower)) {
+      const line = pickWhisperTemplate(voice, "praise");
+      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      return true;
+    }
+    if (/(prestige|reset|reboot)/.test(lower)) {
+      const line = buildPersonaLine(voice, "prestige") || pick(npcLibrary.prestige);
+      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      return true;
+    }
+    return false;
+  }
 
-function chatFlags() {
-  if (!state.chat.flags) state.chat.flags = {};
-  return state.chat.flags;
-}
+  function trackOperatorSpam() {
+    const now = Date.now();
+    operatorSpam.times = (operatorSpam.times || []).filter((t) => now - t < 8000);
+    operatorSpam.times.push(now);
+    const count = operatorSpam.times.length;
+    if (count >= 5) {
+      if (!operatorSpam.warned) {
+        logChatEvent(chatSources.warning, "message flood detected; throttling");
+        operatorSpam.warned = true;
+      }
+      return;
+    }
+    if (count >= 3) {
+      const voice = pick(npcVoices);
+      logChatEvent({ ...chatSources.npc, ...voice }, "slow down, we're reading.");
+    }
+  }
 
-function setStatus(message) {
-  state.status = message;
-  ui.status.querySelector('span:first-child').textContent = `STATUS: ${message}`;
-}
-}) ();
+  function maybeBroadcastToNpcGroup() {
+    if (Math.random() > 0.4) return;
+    const pool = [...npcVoices].sort(() => 0.5 - Math.random()).slice(0, 3);
+    pool.forEach((voice) => {
+      const line = formatNpcText("got your ping, {player}.", voice, {});
+      logChatEvent({ ...chatSources.npc, ...voice }, line);
+    });
+  }
+
+  function handleMentions(text, playerName) {
+    const mentions = Array.from(text.matchAll(/@([\w-]+)/gi)).map((m) => m[1]);
+    if (!mentions.length) return;
+    mentions.forEach((m) => {
+      const voice = resolveNpcVoice(m);
+      if (voice) {
+        const line = buildPersonaLine(voice, "banter") || formatNpcText("yo {player}, heard you called?", voice, {});
+        logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      }
+    });
+  }
+
+  function chatFlags() {
+    if (!state.chat.flags) state.chat.flags = {};
+    return state.chat.flags;
+  }
+
+  function setStatus(message) {
+    state.status = message;
+    ui.status.querySelector('span:first-child').textContent = `STATUS: ${message}`;
+  }
+})();

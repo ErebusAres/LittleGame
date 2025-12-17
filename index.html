@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,13 @@
   <link rel="stylesheet" href="style.css">
 
 </head>
+
 <body>
   <div id="app">
     <div id="statusLine">
       <span>STATUS: Booting...</span>
       <span id="warningLine">WARNING: Active Development. Progress may be reset at any time.</span>
-      </div>
+    </div>
     <div id="mainGrid">
       <section id="corePanel" class="panel">
         <div class="panel-header">Core</div>
@@ -30,7 +32,9 @@
             <div id="rateDisplay" class="value mono">0/s</div>
           </div>
         </div>
-        <button id="clickButton" class="primary has-tip tip-bottom" data-tip="Manual input. Generates primary currency instantly with current click value.">Execute (Click)</button>
+        <button id="clickButton" class="primary has-tip tip-bottom"
+          data-tip="Manual input. Generates primary currency instantly with current click value.">Execute
+          (Click)</button>
       </section>
 
       <section id="automationPanel" class="panel">
@@ -98,7 +102,9 @@
             <div id="pendingPrestige" class="value mono">0</div>
           </div>
         </div>
-        <button id="prestigeButton" class="secondary has-tip" data-tip="Reboot the system, reset tiers and currency, gain prestige points for a permanent multiplier.">Reboot (Prestige)</button>
+        <button id="prestigeButton" class="secondary has-tip"
+          data-tip="Reboot the system, reset tiers and currency, gain prestige points for a permanent multiplier.">Reboot
+          (Prestige)</button>
         <div class="subsection">
           <div class="subheader">Meta Upgrades</div>
           <div id="metaUpgrades" class="upgrade-list"></div>
@@ -110,7 +116,8 @@
         <div id="tiersList" class="tier-list"></div>
         <div id="nextTier" class="next-tier">
           <div id="nextTierLabel">Next tier locked.</div>
-          <button id="unlockTierButton" class="secondary has-tip" data-tip="Spend current highest tier resource to unlock the next layer. Costs rise with difficulty.">Unlock</button>
+          <button id="unlockTierButton" class="secondary has-tip"
+            data-tip="Spend current highest tier resource to unlock the next layer. Costs rise with difficulty.">Unlock</button>
         </div>
       </section>
 
@@ -123,10 +130,17 @@
       </section>
 
       <section id="chatPanel" class="panel chat-panel">
-        <div class="panel-header chat-tab">CHAT</div>
+        <div class="panel-header chat-tab">
+          <span>CHAT</span>
+          <span class="live-indicator">
+            <span class="live-dot"></span>
+            <span class="live-text">LIVE</span>
+          </span>
+        </div>
         <div id="chatList" class="chat-list"></div>
         <div class="chat-footer">
-          <input id="chatInput" class="chat-footer-line mono small-text" type="text" autocomplete="off" spellcheck="false" placeholder="broadcast to feed...">
+          <input id="chatInput" class="chat-footer-line mono small-text" type="text" autocomplete="off"
+            spellcheck="false" placeholder="broadcast to feed...">
           <button id="chatSendButton" class="small">Send</button>
           <button id="chatLiveButton" class="small secondary hidden-live">Scroll to live</button>
         </div>
@@ -142,7 +156,8 @@
         <button id="importButton">Import</button>
         <button id="hardResetButton" class="danger">Hard Reset</button>
         <div class="spacer"></div>
-        <label for="difficultyInput" class="label inline has-tip tip-top" data-tip="Manual difficulty (1-100). Raises costs and reduces income by this percent. Default 1.">Difficulty</label>
+        <label for="difficultyInput" class="label inline has-tip tip-top"
+          data-tip="Manual difficulty (1-100). Raises costs and reduces income by this percent. Default 1.">Difficulty</label>
         <input id="difficultyInput" type="number" min="1" max="100" value="1" class="short-input mono">
         <label for="saveData" class="label inline">Code</label>
         <input id="saveData" type="text" spellcheck="false" autocomplete="off">
@@ -150,15 +165,16 @@
     </footer>
   </div>
   <div id="achievementsModal" class="modal hidden">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div>Achievements</div>
-          <button id="closeAchievements" class="small secondary">Close</button>
-        </div>
-        <div id="achievementsList" class="achievements-list"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>Achievements</div>
+        <button id="closeAchievements" class="small secondary">Close</button>
       </div>
+      <div id="achievementsList" class="achievements-list"></div>
+    </div>
   </div>
   <div id="toastContainer" class="toast-container"></div>
   <script src="game.js"></script>
 </body>
+
 </html>

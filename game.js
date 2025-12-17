@@ -2,6 +2,25 @@
   "use strict";
 
   const GAME_VERSION = 1;
+  const DEV_MODE = false;
+  const ENCHANT_GLYPHS = [
+    // Minecraft-style runes
+    "ᔑ", "ᒷ", "╎", "𝙹", "ꖌ", "ꖎ", "ᒲ", "リ", "∷", "ᓵ", "ᓭ", "⎓", "ℸ", "⍑", "⊣",
+
+    // Arcane / sigil-like
+    "⌖", "⌁", "⌂", "⌬", "⍜", "⍝", "⍞", "⍟", "⍠", "⍡", "⍢", "⍣",
+
+    // Box-drawing / system glyphs
+    "╎", "╏", "║", "╳", "╱", "╲", "┼", "┤", "├", "┴", "┬",
+
+    // Mathematical / abstract
+    "∀", "∂", "∇", "∑", "∏", "∫", "∴", "∵", "≠", "≈", "≡", "⊕", "⊗", "⊙",
+
+    // Rare visual noise (low frequency)
+    "§", "¤", "¥", "¢", "†", "‡", "¶"
+  ];
+
+
   const STORAGE_KEY = "terminalIdleSaveV1";
   const MAX_OFFLINE_SECONDS = 6 * 3600;
   const RENDER_INTERVAL_MS = 80;
@@ -101,7 +120,9 @@
       "good timing. we just finished the last reboot.",
       "linkup confirmed, {player}. diagnostics look clean.",
       "welcome to the grind. literally and figuratively.",
-      "systems nominal. let's push some numbers."
+      "systems nominal. let's push some numbers.",
+      "hey {player}, the void is watching. don't disappoint.",
+      "stay sharp, {player}. the grid has eyes."
     ],
     upgrade: [
       "nice pickup. buffers will thank you.",
@@ -271,6 +292,21 @@
       "{to}, your last optimization broke something. fix it.",
       "{to}, if the alarms go off, it's your fault.",
       "hey {to}, {player}'s on a streak. don't jinx it."
+    ],
+    curse: [
+      "whoa. language spikes the error logs.",
+      "hey—keep it clean. the grid listens.",
+      "logs just flinched. tone it down.",
+      "static jumped when you said that.",
+      "easy there, operator. words echo here.",
+      "…yeah, the console heard that.",
+      "not judging. just logging."
+    ],
+    curseSentinel: [
+      "verbal anomaly detected.",
+      "operator language deviation logged.",
+      "communications tone escalation noted.",
+      "integrity systems acknowledge verbal spike."
     ],
     conversationQA: [
       { ask: "{to}, you rerouted the coolant lines yet?", answer: "yeah, {from}, flow stabilized. stop worrying." },
@@ -1116,6 +1152,9 @@
   const metaUpgradeButtons = new Map();
 
   let state = loadGame();
+  if (!Array.isArray(state.seenEntityLines)) {
+    state.seenEntityLines = [];
+  }
   let lastRender = 0;
   let clickRunTimer = null;
   let npcChatterTimer = null;
@@ -1219,6 +1258,7 @@
       lastClickTime: 0,
       integrityFlag: false,
       playerName: null,
+      seenEntityLines: [],
       chat: createDefaultChatState(now)
     };
   }
@@ -2524,17 +2564,34 @@
   }
 
   function maybeEntityMessage() {
-    const prestiges = state.stats?.prestiges || 0;
-    if (prestiges < 3) return;
-    const flags = chatFlags();
-    const now = Date.now();
-    const last = flags.lastEntity || 0;
-    const cooldown = Math.max(15000, 120000 - prestiges * 3000);
-    if (now - last < cooldown) return;
-    const pool = prestiges >= 20 ? entityLines.late : prestiges >= 10 ? entityLines.mid : entityLines.early;
-    logChatEvent(chatSources.entity, pick(pool));
-    flags.lastEntity = now;
+    // Entity only speaks after early progression
+    if (!DEV_MODE && (!state.prestige || state.prestige.points < 3)) return;
+
+    let pool;
+    if (state.prestige.points < 8) {
+      pool = entityLines.early;
+    } else if (state.prestige.points < 15) {
+      pool = entityLines.mid;
+    } else {
+      pool = entityLines.late;
+    }
+
+    if (!Array.isArray(pool) || pool.length === 0) return;
+
+    // Filter out lines already spoken
+    const unseen = pool.filter(line => !state.seenEntityLines.includes(line));
+
+    // If all lines have been spoken, Entity goes silent
+    if (unseen.length === 0) return;
+
+    const line = pick(unseen);
+
+    // Remember the raw (uncorrupted) line
+    state.seenEntityLines.push(line);
+
+    logChatEvent(chatSources.entity, line);
   }
+
 
   function maybeDevTip() {
     const flags = chatFlags();
@@ -2704,15 +2761,37 @@
     const prestiges = state.stats?.prestiges || 0;
     const reveal = Math.max(0, Math.min(1, (prestiges - 3) / 47)); // full reveal by prestige ~50
     const chars = text.split("");
-    const symbols = ["#", "/", "\\", "_", ".", "|", "*", "~"];
+    let lastGlyph = null;
+
     const result = chars.map((ch) => {
-      if (ch === " ") return " ";
+      if (ch === " ") {
+        lastGlyph = null;
+        return " ";
+      }
+
       const keepChance = reveal + 0.12;
-      if (Math.random() < keepChance) return ch;
-      return Math.random() < 0.1 ? "[" + ch + "]" : symbols[Math.floor(Math.random() * symbols.length)];
+      if (Math.random() < keepChance) {
+        lastGlyph = null;
+        return ch;
+      }
+
+      if (Math.random() < 0.1) {
+        lastGlyph = null;
+        return "[" + ch + "]";
+      }
+
+      let glyph;
+      do {
+        glyph = ENCHANT_GLYPHS[Math.floor(Math.random() * ENCHANT_GLYPHS.length)];
+      } while (glyph === lastGlyph);
+
+      lastGlyph = glyph;
+      return glyph;
     });
+
     return result.join("");
   }
+
 
   function handleChatSend() {
     if (!ui.chatInput) return;
@@ -2811,10 +2890,45 @@
 
   function reactToOperatorMessage(text) {
     const lower = text.toLowerCase();
-    if (containsCurse(lower)) {
-      logChatEvent(chatSources.warning, "language flagged; behavior monitored");
+    // DEV: manual entity trigger
+    if (DEV_MODE && text.trim().toLowerCase() === "/entity") {
+      maybeEntityMessage();
       return;
     }
+    if (DEV_MODE && text.trim().toLowerCase() === "/entity reset") {
+      state.seenEntityLines = [];
+      logChatEvent(chatSources.system, "entity memory cleared");
+      return;
+    }
+
+    if (containsCurse(lower)) {
+      const flags = chatFlags();
+      const now = Date.now();
+      const cooldownMs = 4000;
+
+      // prevent spam
+      if (!flags.lastCurseReaction || now - flags.lastCurseReaction > cooldownMs) {
+        flags.lastCurseReaction = now;
+
+        // 80% NPC reaction
+        if (Math.random() < 0.8) {
+          const voice = pick(npcVoices);
+          const line =
+            (npcLibrary.curse && npcLibrary.curse.length ? pick(npcLibrary.curse) : null) ||
+            "watch it, operator. the console remembers.";
+          logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+        } else {
+          // 20% Sentinel-ish reaction
+          const line =
+            (npcLibrary.curseSentinel && npcLibrary.curseSentinel.length ? pick(npcLibrary.curseSentinel) : null) ||
+            "verbal anomaly detected.";
+          logChatEvent(chatSources.integrity, line);
+        }
+      }
+
+      return;
+    }
+
     if (lower === "help" || lower === "assist" || lower === "hint") {
       logChatEvent(chatSources.dev, pick(devTips));
       return;
@@ -2836,7 +2950,7 @@
   }
 
   function containsCurse(text) {
-    const curses = ["damn", "shit", "fuck", "bitch"];
+    const curses = ["damn", "shit", "fuck", "bitch", "cunt", "asshole", "dick", "pussy", "nigger", "faggot", "cock", "bollocks"];
     return curses.some((w) => new RegExp(`\\b${w}\\b`, "i").test(text));
   }
 

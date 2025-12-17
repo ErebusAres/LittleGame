@@ -2,7 +2,7 @@
   "use strict";
 
   const GAME_VERSION = 1;
-  const DEV_MODE = true;
+  const DEV_MODE = false;
   const ENCHANT_GLYPHS = [
     // Minecraft-style runes
     "ᔑ", "ᒷ", "╎", "𝙹", "ꖌ", "ꖎ", "ᒲ", "リ", "∷", "ᓵ", "ᓭ", "⎓", "ℸ", "⍑", "⊣",

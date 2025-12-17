@@ -6,19 +6,17 @@
   const ENCHANT_GLYPHS = [
     // Minecraft-style runes
     "ᔑ", "ᒷ", "╎", "𝙹", "ꖌ", "ꖎ", "ᒲ", "リ", "∷", "ᓵ", "ᓭ", "⎓", "ℸ", "⍑", "⊣",
-
     // Arcane / sigil-like
     "⌖", "⌁", "⌂", "⌬", "⍜", "⍝", "⍞", "⍟", "⍠", "⍡", "⍢", "⍣",
-
     // Box-drawing / system glyphs
     "╎", "╏", "║", "╳", "╱", "╲", "┼", "┤", "├", "┴", "┬",
-
     // Mathematical / abstract
     "∀", "∂", "∇", "∑", "∏", "∫", "∴", "∵", "≠", "≈", "≡", "⊕", "⊗", "⊙",
-
     // Rare visual noise (low frequency)
     "§", "¤", "¥", "¢", "†", "‡", "¶"
   ];
+
+  const BASE_TIER_UNLOCK_COST = 1000;
 
 
   const STORAGE_KEY = "terminalIdleSaveV1";
@@ -1756,9 +1754,29 @@
   }
 
   function tierUnlockCost(index) {
-    const diff = Math.pow(getDifficultyScalar(), 1.15);
-    return tierBaseCost(index) * 2.2 * diff;
+    // Static tier unlock costs, paid in previous-tier currency
+    // Only manualDifficulty scales the result
+
+    if (index <= 0) return 0;
+
+    let base;
+
+    if (index === 1) {
+      // Credits → Scripts
+      base = 1000;
+    } else {
+      // Scripts → Daemons starts the x4 chain
+      base = 25;
+      for (let i = 2; i < index; i++) {
+        base *= 4;
+      }
+    }
+
+    return Math.floor(base * state.manualDifficulty);
   }
+
+
+
 
   function buyTierUnit(tier) {
     const cost = tierUnitCost(tier);

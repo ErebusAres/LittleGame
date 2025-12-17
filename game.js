@@ -2,7 +2,7 @@
   "use strict";
 
   const GAME_VERSION = 1;
-  const DEV_MODE = false;
+  const DEV_MODE = true;
   const ENCHANT_GLYPHS = [
     // Minecraft-style runes
     "ᔑ", "ᒷ", "╎", "𝙹", "ꖌ", "ꖎ", "ᒲ", "リ", "∷", "ᓵ", "ᓭ", "⎓", "ℸ", "⍑", "⊣",
@@ -81,7 +81,12 @@
     operator: { id: "OP-000", user: "OPERATOR", category: "operator", color: "#b3f3ff" },
     dev: { id: "DEV-01", user: "ErebusAres", category: "dev", color: "#ffd479" },
     npc: { id: "NPC-000", user: "relay", category: "npc" },
-    entity: { id: "X-111", user: "???", category: "entity" },
+    entity: {
+      id: "OP-000",
+      user: "OPERATOR",
+      category: "entity",
+      obfuscated: true // new flag
+    },
     whisper: { id: "WHISPER", user: "WHISPER", category: "whisper", color: WHISPER_COLOR }
   };
 
@@ -2279,6 +2284,32 @@
     renderChat(!state.chat.scrollLock || opts.forceScroll);
   }
 
+  function getOperatorDisplayName(prestige) {
+    const finalName = "OPERATOR";
+    const glyphs = ENCHANT_GLYPHS;
+
+    if (prestige < 40) {
+      // Fully obfuscated
+      return Array(finalName.length)
+        .fill(0)
+        .map(() => glyphs[Math.floor(Math.random() * glyphs.length)])
+        .join("");
+    }
+
+    // Reveal window 40–47
+    const revealProgress = Math.min(1, (prestige - 40) / 7);
+    const revealedChars = Math.floor(finalName.length * revealProgress);
+
+    return finalName
+      .split("")
+      .map((c, i) =>
+        i < revealedChars
+          ? c
+          : glyphs[Math.floor(Math.random() * glyphs.length)]
+      )
+      .join("");
+  }
+
   function renderChat(forceStick = false) {
     if (!ui.chatList) return;
     const list = ui.chatList;
@@ -2306,10 +2337,82 @@
       time.textContent = formatChatTime(entry.ts);
       const id = document.createElement("span");
       id.className = "chat-id";
-      id.textContent = entry.id || "----";
+
+      let displayId = entry.id || "----";
+
+      if (entry.category === "entity") {
+        const prestige =
+          state?.prestigePoints ??
+          state?.prestige ??
+          0;
+
+        const finalId = "OP-000";
+
+        if (prestige < 40) {
+          displayId = finalId
+            .split("")
+            .map((c) =>
+              c === "-"
+                ? "-"
+                : ENCHANT_GLYPHS[Math.floor(Math.random() * ENCHANT_GLYPHS.length)]
+            )
+            .join("");
+        } else {
+          const progress = Math.min(1, (prestige - 40) / 7);
+          const revealCount = Math.floor(finalId.length * progress);
+
+          displayId = finalId
+            .split("")
+            .map((c, i) =>
+              c === "-"
+                ? "-"
+                : i < revealCount
+                  ? c
+                  : ENCHANT_GLYPHS[Math.floor(Math.random() * ENCHANT_GLYPHS.length)]
+            )
+            .join("");
+        }
+      }
+
+      id.textContent = displayId;
+
       const user = document.createElement("span");
       user.className = "chat-user";
-      user.textContent = entry.user || "system";
+
+      let displayUser = entry.user || "system";
+
+      if (entry.category === "entity") {
+        const prestige =
+          state?.prestigePoints ??
+          state?.prestige ??
+          0;
+
+        const finalName = "OPERATOR";
+
+        if (prestige < 40) {
+          displayUser = Array(finalName.length)
+            .fill(0)
+            .map(() => ENCHANT_GLYPHS[Math.floor(Math.random() * ENCHANT_GLYPHS.length)])
+            .join("");
+        } else {
+          const progress = Math.min(1, (prestige - 40) / 7);
+          const revealCount = Math.floor(finalName.length * progress);
+
+          displayUser = finalName
+            .split("")
+            .map((c, i) =>
+              i < revealCount
+                ? c
+                : ENCHANT_GLYPHS[Math.floor(Math.random() * ENCHANT_GLYPHS.length)]
+            )
+            .join("");
+        }
+      }
+
+      user.textContent = displayUser;
+
+
+
       const resolvedColor = resolveEntryColor(entry);
       if (resolvedColor) {
         user.style.color = resolvedColor;
@@ -2579,6 +2682,32 @@
       }
       logChatEvent({ ...chatSources.npc, ...voice }, text);
     });
+  }
+
+  function createNameScrambler(finalText, {
+    glyphs = ENCHANT_GLYPHS,
+    interval = 60,
+    settleDelay = 120,
+    revealStep = 1
+  } = {}) {
+    let revealed = 0;
+    let frame = 0;
+
+    return () => {
+      frame++;
+      if (frame % Math.floor(settleDelay / interval) === 0 && revealed < finalText.length) {
+        revealed += revealStep;
+      }
+
+      return finalText
+        .split("")
+        .map((char, i) =>
+          i < revealed
+            ? char
+            : glyphs[Math.floor(Math.random() * glyphs.length)]
+        )
+        .join("");
+    };
   }
 
   function maybeEntityMessage() {

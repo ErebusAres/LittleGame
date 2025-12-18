@@ -2289,11 +2289,14 @@
     if (!isFinite(value)) return "INF";
     const abs = Math.abs(value);
     const units = [
-      { v: 1e12, s: "T" },
-      { v: 1e9, s: "B" },
-      { v: 1e6, s: "M" },
-      { v: 1e3, s: "K" }
+      { v: 1e18, s: "Qi", name: "Quintillion" },
+      { v: 1e15, s: "Qa", name: "Quadrillion" },
+      { v: 1e12, s: "T", name: "Trillion" },
+      { v: 1e9, s: "B", name: "Billion" },
+      { v: 1e6, s: "M", name: "Million" },
+      { v: 1e3, s: "K", name: "Thousand" }
     ];
+
     for (const u of units) {
       if (abs >= u.v) return `${(value / u.v).toFixed(2)}${u.s}`;
     }

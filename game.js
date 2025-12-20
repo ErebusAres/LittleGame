@@ -22,6 +22,8 @@
   const STORAGE_KEY = "terminalIdleSaveV1";
   const MAX_OFFLINE_SECONDS = 6 * 3600;
   const RENDER_INTERVAL_MS = 80;
+  const MAX_BULK_BUY = 1000000;
+  const OPS_LOG_LIMIT = 80;
 
   const BIG_SUFFIXES = [
     "",
@@ -248,6 +250,59 @@
     const v = bnNormalize(value);
     return { m: Math.round(v.m * BN_ROUND) / BN_ROUND, e: v.e };
   }
+
+  function seriesCostFromLevel(base, growth, level, count, difficulty = 1) {
+    if (count <= 0) return bnZero();
+    const start = bnPowScalar(growth, level);
+    const sumFactor = bnDivScalar(bnSub(bnPowScalar(growth, count), bnFromNumber(1)), growth - 1);
+    return bnMulScalar(bnMul(start, sumFactor), base * difficulty);
+  }
+
+  function seriesCostFromExp(base, growth, exp, count, difficulty = 1) {
+    if (count <= 0) return bnZero();
+    const start = bnPowFromBigExp(growth, exp);
+    const sumFactor = bnDivScalar(bnSub(bnPowScalar(growth, count), bnFromNumber(1)), growth - 1);
+    return bnMulScalar(bnMul(start, sumFactor), base * difficulty);
+  }
+
+  function maxAffordableSeries(funds, costForCount, maxCap = MAX_BULK_BUY) {
+    if (bnCmp(funds, bnZero()) <= 0) return 0;
+    if (bnCmp(costForCount(1), funds) > 0) return 0;
+    let low = 1;
+    let high = 1;
+    while (high < maxCap && bnCmp(costForCount(high), funds) <= 0) {
+      low = high;
+      high = Math.min(maxCap, high * 2);
+    }
+    if (low === maxCap) return low;
+    let left = low;
+    let right = high;
+    while (left < right) {
+      const mid = Math.floor((left + right + 1) / 2);
+      if (bnCmp(costForCount(mid), funds) <= 0) left = mid;
+      else right = mid - 1;
+    }
+    return left;
+  }
+
+  function getBuyMode() {
+    return state?.uiPrefs?.buyMode || "1";
+  }
+
+  function getAffordableBuyCount(mode, funds, costFor) {
+    if (mode === "max") return maxAffordableSeries(funds, costFor);
+    const target = Math.max(1, Math.floor(Number(mode) || 1));
+    if (bnCmp(funds, costFor(target)) >= 0) return target;
+    if (target > 1 && bnCmp(funds, costFor(1)) >= 0) return 1;
+    return 0;
+  }
+
+  function buyLabel(mode, count) {
+    if (mode === "1") return "";
+    if (mode === "5") return ` x${Math.max(1, count)}`;
+    return " Max";
+  }
+
 
   const tierNames = [
     "Credits",
@@ -1576,6 +1631,8 @@
       integrityFlag: false,
       playerName: null,
       seenEntityLines: [],
+      opsLog: [],
+      uiPrefs: { buyMode: "1", sortUpgradesByCost: false },
       chat: createDefaultChatState(now)
     };
   }
@@ -1631,6 +1688,13 @@
     merged.integrityFlag = !!saved.integrityFlag;
     merged.status = saved.status || "Recovered save";
     merged.playerName = saved.playerName || null;
+    merged.opsLog = Array.isArray(saved.opsLog)
+      ? saved.opsLog.slice(-OPS_LOG_LIMIT).map((entry) => ({
+        ts: Number(entry?.ts) || Date.now(),
+        text: String(entry?.text ?? entry ?? "")
+      }))
+      : [];
+    merged.uiPrefs = { ...base.uiPrefs, ...(saved.uiPrefs || {}) };
     merged.chat = mergeChatState(createDefaultChatState(), saved.chat || {});
     return merged;
   }
@@ -1763,6 +1827,9 @@
     ui.chatFooterLine = ui.chatInput;
     ui.chatLiveButton = document.getElementById("chatLiveButton");
     ui.chatSendButton = document.getElementById("chatSendButton");
+    ui.opsLog = document.getElementById("opsLog");
+    ui.sortUpgradesToggle = document.getElementById("sortUpgradesToggle");
+    ui.buyModeButtons = Array.from(document.querySelectorAll("[data-buy-mode]"));
     ui.status.classList.add("pulse");
 
     document.getElementById("clickButton").addEventListener("click", handleClick);
@@ -1800,6 +1867,28 @@
       ui.chatSendButton.addEventListener("click", handleChatSend);
     }
 
+    if (ui.sortUpgradesToggle) {
+      ui.sortUpgradesToggle.checked = !!state.uiPrefs?.sortUpgradesByCost;
+      ui.sortUpgradesToggle.addEventListener("change", (e) => {
+        state.uiPrefs.sortUpgradesByCost = !!e.target.checked;
+        saveGame();
+        render(true);
+      });
+    }
+
+    if (ui.buyModeButtons.length) {
+      ui.buyModeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mode = btn.dataset.buyMode || "1";
+          state.uiPrefs.buyMode = mode;
+          updateBuyModeUI();
+          saveGame();
+          render(true);
+        });
+      });
+      updateBuyModeUI();
+    }
+
     const globalContainer = document.getElementById("globalUpgrades");
     const gFrag = document.createDocumentFragment();
     globalUpgradeDefs.forEach((def) => {
@@ -1835,6 +1924,14 @@
       frag.appendChild(card);
     });
     list.appendChild(frag);
+  }
+
+  function updateBuyModeUI() {
+    if (!ui.buyModeButtons || !ui.buyModeButtons.length) return;
+    const mode = getBuyMode();
+    ui.buyModeButtons.forEach((btn) => {
+      btn.classList.toggle("active", btn.dataset.buyMode === mode);
+    });
   }
 
   function buildTierCard(tier) {
@@ -2164,72 +2261,99 @@
 
 
   function buyTierUnit(tier) {
-    const cost = getTierAcquireCost(tier);
     const payer = state.tiers[tier.index - 1];
+    const mode = getBuyMode();
+    const costFor = (count) =>
+      seriesCostFromExp(tier.baseCost, tier.costGrowth, tier.amount, count, getDifficultyScalar());
+    const buyCount = getAffordableBuyCount(mode, payer.amount, costFor);
 
-    if (bnCmp(payer.amount, cost) >= 0) {
-      payer.amount = bnSub(payer.amount, cost);
-      tier.amount = bnAdd(tier.amount, bnFromNumber(1));
-      setStatus(`Acquired 1 ${tier.name}`);
-      saveGame();
-      logChatEvent(chatSourceForTier(tier), `+1 ${tier.name} (cost ${formatNumber(cost)} ${payer.name})`);
-    } else {
-      setStatus(`Insufficient ${payer.name}: need ${formatNumber(bnSub(cost, payer.amount))}`);
+    if (buyCount <= 0) {
+      const costOne = costFor(1);
+      setStatus(`Insufficient ${payer.name}: need ${formatNumber(bnSub(costOne, payer.amount))}`);
+      return;
     }
+
+    const totalCost = costFor(buyCount);
+    payer.amount = bnSub(payer.amount, totalCost);
+    tier.amount = bnAdd(tier.amount, bnFromNumber(buyCount));
+    setStatus(`Acquired ${buyCount} ${tier.name}`);
+    saveGame();
+    logOpsEvent(
+      `+${formatNumber(bnFromNumber(buyCount))} ${tier.name} (spent ${formatNumber(totalCost)} ${payer.name})`
+    );
   }
 
 
   function buyTierUpgrade(tier, type) {
-    const cost = tierUpgradeCost(tier, type);
     const payer = state.tiers[Math.max(0, tier.index - 1)];
-    if (bnCmp(payer.amount, cost) >= 0) {
-      payer.amount = bnSub(payer.amount, cost);
-      if (type === "auto") tier.autoLevel += 1;
-      else tier.efficiencyLevel += 1;
-      setStatus(`${tier.name} ${type === "auto" ? "automation" : "efficiency"} upgraded`);
-      saveGame();
-      const newLevel = type === "auto" ? tier.autoLevel : tier.efficiencyLevel;
-      logChatEvent(chatSourceForTier(tier), `${type === "auto" ? "Automation" : "Efficiency"} -> Lv${newLevel} (spent ${formatNumber(cost)} ${payer.name})`);
-    } else {
-      setStatus(`Need ${formatNumber(bnSub(cost, payer.amount))} more ${payer.name}`);
+    const level = type === "auto" ? tier.autoLevel : tier.efficiencyLevel;
+    const base = type === "auto" ? tier.autoCostBase : tier.effCostBase;
+    const growth = type === "auto" ? 1.95 : 2.05;
+    const mode = getBuyMode();
+    const costFor = (count) => seriesCostFromLevel(base, growth, level, count, getDifficultyScalar());
+    const buyCount = getAffordableBuyCount(mode, payer.amount, costFor);
+
+    if (buyCount <= 0) {
+      const costOne = costFor(1);
+      setStatus(`Need ${formatNumber(bnSub(costOne, payer.amount))} more ${payer.name}`);
+      return;
     }
+
+    const totalCost = costFor(buyCount);
+    payer.amount = bnSub(payer.amount, totalCost);
+    if (type === "auto") tier.autoLevel += buyCount;
+    else tier.efficiencyLevel += buyCount;
+    setStatus(`${tier.name} ${type === "auto" ? "automation" : "efficiency"} upgraded x${buyCount}`);
+    saveGame();
+    const newLevel = type === "auto" ? tier.autoLevel : tier.efficiencyLevel;
+    logOpsEvent(
+      `${tier.name} ${type === "auto" ? "Automation" : "Efficiency"} -> Lv${newLevel} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} ${payer.name})`
+    );
   }
 
   function buyGlobalUpgrade(def) {
     const level = state.globalUpgrades[def.id];
-    const cost = bnFromNumber(
-      def.baseCost *
-      Math.pow(def.costGrowth, level) *
-      getDifficultyScalar()
-    );
+    const mode = getBuyMode();
+    const costFor = (count) =>
+      seriesCostFromLevel(def.baseCost, def.costGrowth, level, count, getDifficultyScalar());
+    const buyCount = getAffordableBuyCount(mode, state.tiers[0].amount, costFor);
 
-    if (bnCmp(state.tiers[0].amount, cost) >= 0) {
-      state.tiers[0].amount = bnSub(state.tiers[0].amount, cost);
-      state.globalUpgrades[def.id] += 1;
-      setStatus(`${def.name} upgraded to ${state.globalUpgrades[def.id]}`);
-      saveGame();
-      logChatEvent(
-        chatSources.upgrades,
-        `${def.name} -> Lv${state.globalUpgrades[def.id]} (cost ${formatNumber(cost)} cr)`
-      );
-      maybeNpcFirstUpgrade();
-    } else {
-      setStatus(`Unaffordable: need ${formatNumber(bnSub(cost, state.tiers[0].amount))} credits`);
+    if (buyCount <= 0) {
+      const costOne = costFor(1);
+      setStatus(`Unaffordable: need ${formatNumber(bnSub(costOne, state.tiers[0].amount))} credits`);
+      return;
     }
+
+    const totalCost = costFor(buyCount);
+    state.tiers[0].amount = bnSub(state.tiers[0].amount, totalCost);
+    state.globalUpgrades[def.id] += buyCount;
+    setStatus(`${def.name} upgraded to ${state.globalUpgrades[def.id]} (x${buyCount})`);
+    saveGame();
+    logOpsEvent(
+      `${def.name} -> Lv${state.globalUpgrades[def.id]} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} cr)`
+    );
+    maybeNpcFirstUpgrade();
   }
 
   function buyMetaUpgrade(def) {
     const level = state.prestige.upgrades[def.id] || 0;
-    const cost = bnFromNumber(def.baseCost * Math.pow(def.costGrowth, level));
-    if (bnCmp(state.prestige.points, cost) >= 0) {
-      state.prestige.points = bnSub(state.prestige.points, cost);
-      state.prestige.upgrades[def.id] = level + 1;
-      setStatus(`${def.name} upgraded to ${level + 1}`);
-      saveGame();
-      logChatEvent(chatSources.meta, `${def.name} -> Lv${level + 1} (spent ${formatNumber(cost)} prestige)`);
-    } else {
+    const mode = getBuyMode();
+    const costFor = (count) => seriesCostFromLevel(def.baseCost, def.costGrowth, level, count, 1);
+    const buyCount = getAffordableBuyCount(mode, state.prestige.points, costFor);
+
+    if (buyCount <= 0) {
       setStatus("Not enough prestige points");
+      return;
     }
+
+    const totalCost = costFor(buyCount);
+    state.prestige.points = bnSub(state.prestige.points, totalCost);
+    state.prestige.upgrades[def.id] = level + buyCount;
+    setStatus(`${def.name} upgraded to ${level + buyCount} (x${buyCount})`);
+    saveGame();
+    logOpsEvent(
+      `${def.name} -> Lv${level + buyCount} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} prestige)`
+    );
   }
 
   function unlockNextTier() {
@@ -2375,6 +2499,8 @@
     ui.automationPower.textContent = `x${getAutomationMultiplier().toFixed(2)}`;
     ui.prestigeMultiplier.textContent = `x${getPrestigeMultiplier().toFixed(2)}`;
     ui.difficultyInput.value = state.manualDifficulty || 1;
+    if (ui.sortUpgradesToggle) ui.sortUpgradesToggle.checked = !!state.uiPrefs?.sortUpgradesByCost;
+    updateBuyModeUI();
     renderAchievements();
 
     const autoMult = getAutomationMultiplier();
@@ -2398,25 +2524,36 @@
     globalUpgradeDefs.forEach((def, idx) => {
       const btn = globalUpgradeButtons.get(def.id);
       const level = state.globalUpgrades[def.id];
-      const cost = bnFromNumber(def.baseCost * Math.pow(def.costGrowth, level) * getDifficultyScalar());
-      btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} cr`;
+      const mode = getBuyMode();
+      const costFor = (count) =>
+        seriesCostFromLevel(def.baseCost, def.costGrowth, level, count, getDifficultyScalar());
+      const buyCount = getAffordableBuyCount(mode, state.tiers[0].amount, costFor);
+      const displayCount = buyCount > 0 ? buyCount : 1;
+      const cost = costFor(displayCount);
+      const label = buyLabel(mode, buyCount);
+      btn.textContent = `${def.name} [Lv${level}]${label} Cost: ${formatNumber(cost)} cr`;
       btn.dataset.tip = `${def.desc}`;
-      const affordable = bnCmp(state.tiers[0].amount, cost) >= 0;
+      const affordable = buyCount > 0;
       btn.disabled = !affordable;
       toggleDisabled(btn, !affordable);
-      btn.style.order = orderFromCost(cost, idx);
+      btn.style.order = state.uiPrefs?.sortUpgradesByCost ? orderFromCost(cost, idx) : idx;
     });
 
     metaUpgradeDefs.forEach((def, idx) => {
       const btn = metaUpgradeButtons.get(def.id);
       const level = state.prestige.upgrades[def.id] || 0;
-      const cost = bnFromNumber(def.baseCost * Math.pow(def.costGrowth, level));
-      btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} prestige`;
+      const mode = getBuyMode();
+      const costFor = (count) => seriesCostFromLevel(def.baseCost, def.costGrowth, level, count, 1);
+      const buyCount = getAffordableBuyCount(mode, state.prestige.points, costFor);
+      const displayCount = buyCount > 0 ? buyCount : 1;
+      const cost = costFor(displayCount);
+      const label = buyLabel(mode, buyCount);
+      btn.textContent = `${def.name} [Lv${level}]${label} Cost: ${formatNumber(cost)} prestige`;
       btn.dataset.tip = `${def.desc}\nPermanent meta bonus.`;
-      const affordable = bnCmp(state.prestige.points, cost) >= 0;
+      const affordable = buyCount > 0;
       btn.disabled = !affordable;
       toggleDisabled(btn, !affordable);
-      btn.style.order = orderFromCost(cost, idx);
+      btn.style.order = state.uiPrefs?.sortUpgradesByCost ? orderFromCost(cost, idx) : idx;
     });
 
     ui.prestigePoints.textContent = `${formatNumber(state.prestige.points)} (x${getPrestigeMultiplier().toFixed(2)})`;
@@ -2443,36 +2580,54 @@
             el.buyBtn.style.order = 999; // keep it out of the way
           } else {
             // ✅ Frontier tier: normal behavior
-            const cost = getTierAcquireCost(tier);
             const payer = state.tiers[idx - 1];
+            const costFor = (count) =>
+              seriesCostFromExp(tier.baseCost, tier.costGrowth, tier.amount, count, getDifficultyScalar());
+            const buyCount = getAffordableBuyCount(getBuyMode(), payer.amount, costFor);
+            const displayCount = buyCount > 0 ? buyCount : 1;
+            const cost = costFor(displayCount);
+            const label = buyLabel(getBuyMode(), buyCount);
 
-            el.buyBtn.textContent = `Acquire +1 (${formatNumber(cost)} ${payer.name})`;
+            el.buyBtn.textContent = `Acquire${label} (${formatNumber(cost)} ${payer.name})`;
             el.buyBtn.dataset.tip =
               `Spend ${payer.name} to gain ${tier.name}.\nCost rises with amount and difficulty.`;
 
-            const affordable = bnCmp(payer.amount, cost) >= 0;
+            const affordable = buyCount > 0;
             el.buyBtn.disabled = !affordable;
             toggleDisabled(el.buyBtn, !affordable);
-            el.buyBtn.style.order = orderFromCost(cost, 0);
+            el.buyBtn.style.order = 0;
           }
         }
       }
       const payer = state.tiers[Math.max(0, tier.index - 1)];
-      const autoCost = tierUpgradeCost(tier, "auto");
-      const effCost = tierUpgradeCost(tier, "eff");
-      const affordAuto = bnCmp(payer.amount, autoCost) >= 0;
-      const affordEff = bnCmp(payer.amount, effCost) >= 0;
-      el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
+      const autoBase = tier.autoCostBase;
+      const effBase = tier.effCostBase;
+      const autoLevel = tier.autoLevel;
+      const effLevel = tier.efficiencyLevel;
+      const mode = getBuyMode();
+      const autoCostFor = (count) => seriesCostFromLevel(autoBase, 1.95, autoLevel, count, getDifficultyScalar());
+      const effCostFor = (count) => seriesCostFromLevel(effBase, 2.05, effLevel, count, getDifficultyScalar());
+      const autoCount = getAffordableBuyCount(mode, payer.amount, autoCostFor);
+      const effCount = getAffordableBuyCount(mode, payer.amount, effCostFor);
+      const autoDisplay = autoCount > 0 ? autoCount : 1;
+      const effDisplay = effCount > 0 ? effCount : 1;
+      const autoCost = autoCostFor(autoDisplay);
+      const effCost = effCostFor(effDisplay);
+      const autoLabel = buyLabel(mode, autoCount);
+      const effLabel = buyLabel(mode, effCount);
+      const affordAuto = autoCount > 0;
+      const affordEff = effCount > 0;
+      el.autoBtn.textContent = `Auto Lv${tier.autoLevel}${autoLabel} (${formatNumber(autoCost)})`;
       el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
       el.autoBtn.disabled = !affordAuto;
       toggleDisabled(el.autoBtn, !affordAuto);
-      el.autoBtn.style.order = orderFromCost(autoCost, 1);
+      el.autoBtn.style.order = 1;
       const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
-      el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
+      el.effBtn.textContent = `Eff x${effMult}${effLabel} (${formatNumber(effCost)})`;
       el.effBtn.dataset.tip = `Boosts efficiency by +18% per level and buffer bonus.\nUses ${payer.name}.`;
       el.effBtn.disabled = !affordEff;
       toggleDisabled(el.effBtn, !affordEff);
-      el.effBtn.style.order = orderFromCost(effCost, 2);
+      el.effBtn.style.order = 2;
     });
 
     const nextIndex = state.tiers.length;
@@ -2489,6 +2644,7 @@
       toggleDisabled(ui.unlockTierButton, !canUnlock);
     }
 
+    renderOpsLog();
     renderInfo();
     checkAchievements();
   }
@@ -2726,6 +2882,51 @@
     state.chat.lastMessage = entry;
     if (entry.type === "divider") state.chat.lastDivider = entry.ts;
     renderChat(!state.chat.scrollLock || opts.forceScroll);
+  }
+
+  function logOpsEvent(text) {
+    if (!text) return;
+    if (!Array.isArray(state.opsLog)) state.opsLog = [];
+    state.opsLog.push({ ts: Date.now(), text: String(text) });
+    if (state.opsLog.length > OPS_LOG_LIMIT) {
+      state.opsLog.splice(0, state.opsLog.length - OPS_LOG_LIMIT);
+    }
+    renderOpsLog();
+  }
+
+  function renderOpsLog() {
+    if (!ui.opsLog) return;
+    ui.opsLog.innerHTML = "";
+    const frag = document.createDocumentFragment();
+    const entries = state.opsLog || [];
+    if (!entries.length) {
+      const line = document.createElement("div");
+      line.className = "ops-line";
+      const time = document.createElement("span");
+      time.className = "ops-time";
+      time.textContent = "--";
+      const text = document.createElement("span");
+      text.className = "ops-text";
+      text.textContent = "Ops feed idle.";
+      line.append(time, text);
+      frag.appendChild(line);
+      ui.opsLog.appendChild(frag);
+      return;
+    }
+    entries.forEach((entry) => {
+      const line = document.createElement("div");
+      line.className = "ops-line";
+      const time = document.createElement("span");
+      time.className = "ops-time";
+      time.textContent = formatChatTime(entry.ts);
+      const text = document.createElement("span");
+      text.className = "ops-text";
+      text.textContent = entry.text;
+      line.append(time, text);
+      frag.appendChild(line);
+    });
+    ui.opsLog.appendChild(frag);
+    ui.opsLog.scrollTop = ui.opsLog.scrollHeight;
   }
 
   function getOperatorDisplayName(prestige) {

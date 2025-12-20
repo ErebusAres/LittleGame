@@ -92,6 +92,14 @@
 
       <section id="prestigePanel" class="panel">
         <div class="panel-header">Prestige</div>
+        <div class="panel-toolbar compact">
+          <div class="buy-mode">
+            <span class="label">Buy</span>
+            <button class="small secondary buy-mode-btn" data-buy-mode="1">x1</button>
+            <button class="small secondary buy-mode-btn" data-buy-mode="5">x5</button>
+            <button class="small secondary buy-mode-btn" data-buy-mode="max">Max</button>
+          </div>
+        </div>
         <div class="stat-grid">
           <div class="stat-block">
             <div class="label">Prestige Points</div>
@@ -113,6 +121,14 @@
 
       <section id="tiersPanel" class="panel">
         <div class="panel-header">Tiers</div>
+        <div class="panel-toolbar compact">
+          <div class="buy-mode">
+            <span class="label">Buy</span>
+            <button class="small secondary buy-mode-btn" data-buy-mode="1">x1</button>
+            <button class="small secondary buy-mode-btn" data-buy-mode="5">x5</button>
+            <button class="small secondary buy-mode-btn" data-buy-mode="max">Max</button>
+          </div>
+        </div>
         <div id="tiersList" class="tier-list"></div>
         <div id="nextTier" class="next-tier">
           <div id="nextTierLabel">Next tier locked.</div>
@@ -123,9 +139,25 @@
 
       <section id="upgradesPanel" class="panel">
         <div class="panel-header">Upgrades</div>
+        <div class="panel-toolbar">
+          <div class="buy-mode">
+            <span class="label">Buy</span>
+            <button class="small secondary buy-mode-btn" data-buy-mode="1">x1</button>
+            <button class="small secondary buy-mode-btn" data-buy-mode="5">x5</button>
+            <button class="small secondary buy-mode-btn" data-buy-mode="max">Max</button>
+          </div>
+          <label class="sort-toggle">
+            <input type="checkbox" id="sortUpgradesToggle">
+            <span>Sort by cost</span>
+          </label>
+        </div>
         <div class="subsection">
           <div class="subheader">Core & Automation</div>
           <div id="globalUpgrades" class="upgrade-list"></div>
+        </div>
+        <div class="subsection ops-feed">
+          <div class="subheader">Ops Feed</div>
+          <div id="opsLog" class="ops-log mono small-text"></div>
         </div>
       </section>
 

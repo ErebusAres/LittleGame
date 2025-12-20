@@ -23,45 +23,351 @@
   const MAX_OFFLINE_SECONDS = 6 * 3600;
   const RENDER_INTERVAL_MS = 80;
 
+  const BIG_SUFFIXES = [
+    "",
+    "K",
+    "M",
+    "B",
+    "T",
+    "Qa",
+    "Qi",
+    "Sx",
+    "Sp",
+    "Oc",
+    "No",
+    "Dc",
+    "Ud",
+    "Dd",
+    "Td",
+    "Qad",
+    "Qid",
+    "Sxd",
+    "Spd",
+    "Ocd",
+    "Nod",
+    "Vg",
+    "Uvg",
+    "Dvg",
+    "Tvg",
+    "Qavg",
+    "Qivg",
+    "Sxvg",
+    "Spvg",
+    "Ocvg",
+    "Novg",
+    "Tg",
+    "Utg",
+    "Dtg",
+    "Ttg",
+    "Qatg",
+    "Qitg",
+    "Sxtg",
+    "Sptg",
+    "Octg",
+    "Notg"
+  ];
+
+  const BN_ROUND = 1e12;
+
+  function isBN(value) {
+    return value && typeof value === "object" && typeof value.m === "number" && typeof value.e === "number";
+  }
+
+  function bnNormalize(value) {
+    if (!value) return { m: 0, e: 0 };
+    let m = Number(value.m);
+    let e = Number(value.e);
+    if (!isFinite(m) || !isFinite(e) || m === 0) return { m: 0, e: 0 };
+    const sign = m < 0 ? -1 : 1;
+    m = Math.abs(m);
+    while (m >= 10) {
+      m /= 10;
+      e += 1;
+    }
+    while (m < 1) {
+      m *= 10;
+      e -= 1;
+    }
+    m = Math.round(m * BN_ROUND) / BN_ROUND;
+    if (m >= 10) {
+      m /= 10;
+      e += 1;
+    }
+    return { m: m * sign, e: Math.trunc(e) };
+  }
+
+  function bnFromNumber(value) {
+    const num = Number(value);
+    if (!isFinite(num) || num === 0) return { m: 0, e: 0 };
+    const sign = num < 0 ? -1 : 1;
+    const abs = Math.abs(num);
+    const e = Math.floor(Math.log10(abs));
+    const m = abs / Math.pow(10, e);
+    return bnNormalize({ m: m * sign, e });
+  }
+
+  function bn(value) {
+    if (isBN(value)) return bnNormalize(value);
+    if (typeof value === "number") return bnFromNumber(value);
+    if (value && typeof value === "object" && "m" in value && "e" in value) {
+      return bnNormalize({ m: Number(value.m) || 0, e: Number(value.e) || 0 });
+    }
+    return bnFromNumber(0);
+  }
+
+  function bnZero() {
+    return { m: 0, e: 0 };
+  }
+
+  function bnAbs(value) {
+    const v = bn(value);
+    return v.m < 0 ? { m: -v.m, e: v.e } : v;
+  }
+
+  function bnCmp(a, b) {
+    const av = bn(a);
+    const bv = bn(b);
+    if (av.m === 0 && bv.m === 0) return 0;
+    if (av.m === 0) return bv.m > 0 ? -1 : 1;
+    if (bv.m === 0) return av.m > 0 ? 1 : -1;
+    if (av.m < 0 && bv.m >= 0) return -1;
+    if (av.m >= 0 && bv.m < 0) return 1;
+    const sign = av.m < 0 ? -1 : 1;
+    if (av.e === bv.e) {
+      if (av.m === bv.m) return 0;
+      return av.m > bv.m ? sign : -sign;
+    }
+    return av.e > bv.e ? sign : -sign;
+  }
+
+  function bnAdd(a, b) {
+    const av = bn(a);
+    const bv = bn(b);
+    if (av.m === 0) return bv;
+    if (bv.m === 0) return av;
+    if (av.e >= bv.e) {
+      const diff = av.e - bv.e;
+      if (diff > 20) return av;
+      const m = av.m * Math.pow(10, diff) + bv.m;
+      return bnNormalize({ m, e: bv.e });
+    }
+    const diff = bv.e - av.e;
+    if (diff > 20) return bv;
+    const m = bv.m * Math.pow(10, diff) + av.m;
+    return bnNormalize({ m, e: av.e });
+  }
+
+  function bnSub(a, b) {
+    const bv = bn(b);
+    return bnAdd(a, { m: -bv.m, e: bv.e });
+  }
+
+  function bnMul(a, b) {
+    const av = bn(a);
+    const bv = bn(b);
+    if (av.m === 0 || bv.m === 0) return bnZero();
+    return bnNormalize({ m: av.m * bv.m, e: av.e + bv.e });
+  }
+
+  function bnMulScalar(a, scalar) {
+    const av = bn(a);
+    if (av.m === 0 || scalar === 0) return bnZero();
+    return bnNormalize({ m: av.m * scalar, e: av.e });
+  }
+
+  function bnDivScalar(a, scalar) {
+    const av = bn(a);
+    if (av.m === 0) return bnZero();
+    if (scalar === 0) return { m: Infinity, e: 0 };
+    return bnNormalize({ m: av.m / scalar, e: av.e });
+  }
+
+  function bnShift(a, deltaExp) {
+    const av = bn(a);
+    if (av.m === 0 || deltaExp === 0) return av;
+    return bnNormalize({ m: av.m, e: av.e + deltaExp });
+  }
+
+  function bnLog10(value) {
+    const av = bnAbs(value);
+    if (av.m === 0) return 0;
+    return Math.log10(av.m) + av.e;
+  }
+
+  function bnFromLog10(value) {
+    if (typeof value === "number") {
+      if (!isFinite(value)) return { m: Infinity, e: 0 };
+      if (value === 0) return { m: 1, e: 0 };
+      const e = Math.floor(value);
+      const m = Math.pow(10, value - e);
+      return bnNormalize({ m, e });
+    }
+    const v = bn(value);
+    if (v.m === 0) return { m: 1, e: 0 };
+    if (v.e <= 6) {
+      const numeric = v.m * Math.pow(10, v.e);
+      return bnFromLog10(numeric);
+    }
+    const approx = v.m * Math.pow(10, v.e);
+    if (!isFinite(approx)) return { m: 1, e: Number.MAX_SAFE_INTEGER };
+    const exp = Math.floor(approx);
+    return { m: 1, e: exp };
+  }
+
+  function bnPowScalar(base, exponent) {
+    if (exponent === 0) return bnFromNumber(1);
+    const log10Value = Math.log10(base) * exponent;
+    return bnFromLog10(log10Value);
+  }
+
+  function bnPowFromBigExp(base, exponent) {
+    const exp = bn(exponent);
+    if (exp.m === 0) return bnFromNumber(1);
+    const log10Value = bnMulScalar(exp, Math.log10(base));
+    return bnFromLog10(log10Value);
+  }
+
+  function bnToNumber(value) {
+    const v = bn(value);
+    if (v.m === 0) return 0;
+    if (v.e > 308) return v.m < 0 ? -Infinity : Infinity;
+    if (v.e < -308) return 0;
+    return v.m * Math.pow(10, v.e);
+  }
+
+  function bnFloor(value) {
+    const v = bn(value);
+    if (v.m === 0) return v;
+    if (v.e >= 6) return v;
+    const num = bnToNumber(v);
+    if (!isFinite(num)) return v;
+    return bnFromNumber(Math.floor(num));
+  }
+
+  function bnToSave(value) {
+    const v = bnNormalize(value);
+    return { m: Math.round(v.m * BN_ROUND) / BN_ROUND, e: v.e };
+  }
+
   const tierNames = [
     "Credits",
+    "Files",
+    "Folders",
     "Scripts",
-    "Daemons",
-    "Clusters",
+    "Processes",
+    "Threads",
+    "Queues",
+    "Caches",
+    "Packets",
     "Nodes",
+    "Servers",
+    "Clients",
+    "Sessions",
+    "Clusters",
     "Arrays",
     "Grids",
     "Fabrics",
     "Matrices",
-    "Quantums",
-    "Exas",
-    "Astrals",
-    "Neurals",
-    "Sigmas",
-    "Phantoms",
-    "Spectrums",
-    "Ciphers",
+    "Kernels",
+    "Protocols",
+    "Daemons",
+    "Firewalls",
+    "Routers",
+    "Switches",
+    "Databases",
+    "Indexes",
+    "Pipelines",
+    "Streams",
     "Shards",
-    "Shadows",
-    "Auroras",
-    "Cores"
+    "Archives",
+    "Backups",
+    "Mirrors",
+    "Hypervisors",
+    "Containers",
+    "Orchestrators",
+    "Sandboxes",
+    "Encryptors",
+    "Hashes",
+    "Ciphers",
+    "Keyrings",
+    "Compilers",
+    "Toolchains",
+    "Injectors",
+    "Synths",
+    "Simulators",
+    "Emulators",
+    "Neural Nets",
+    "Predictors",
+    "Cognitions",
+    "Quantum Links",
+    "Entanglers",
+    "Relays",
+    "Beacons",
+    "Gateways",
+    "Portals",
+    "Lattices",
+    "Drones",
+    "Swarms",
+    "Hives",
+    "Nexus",
+    "Starforges",
+    "Pulsars",
+    "Quasars",
+    "Nebulas",
+    "Supernovas",
+    "Voidgates",
+    "Singularities",
+    "Event Horizons",
+    "Accretion",
+    "Darkmatter",
+    "Gravity Wells",
+    "Tesseracts",
+    "Spacetime",
+    "Continuum",
+    "Riftlines",
+    "Wraiths",
+    "Revenants",
+    "Elders",
+    "Overseers",
+    "Leviathans",
+    "Deep Ones",
+    "Dreadnoughts",
+    "Obelisks",
+    "Monoliths",
+    "Cataclysms",
+    "Nightfall",
+    "Starless",
+    "Abyssal",
+    "The Maw",
+    "The Beyond",
+    "The Nameless",
+    "The Outer",
+    "The Infinite",
+    "The Unseen",
+    "The Watchers",
+    "The Whisper",
+    "The Hunger",
+    "The Descent",
+    "The End",
+    "The Void",
+    "The Core"
   ];
 
   const globalUpgradeDefs = [
-    { id: "click", name: "Click Power", desc: "+1 click strength", baseCost: 20, costGrowth: 1.75 },
-    { id: "clickBurst", name: "Click Tap", desc: "+0.5 click strength", baseCost: 10, costGrowth: 1.6 },
-    { id: "automation", name: "Automation Core", desc: "+15% automation power", baseCost: 45, costGrowth: 1.65 },
-    { id: "threads", name: "Parallel Threads", desc: "+0.25 base auto/sec", baseCost: 60, costGrowth: 1.7 },
-    { id: "overclock", name: "Core Overclock", desc: "+5% all output", baseCost: 80, costGrowth: 1.8 },
-    { id: "buffer", name: "Buffer Control", desc: "+3% tier efficiency", baseCost: 120, costGrowth: 1.85 }
+    { id: "click", name: "Click Power", desc: "+0.8 click strength", baseCost: 25, costGrowth: 1.85 },
+    { id: "clickBurst", name: "Click Tap", desc: "+0.4 click strength", baseCost: 12, costGrowth: 1.7 },
+    { id: "automation", name: "Automation Core", desc: "+12% automation power", baseCost: 60, costGrowth: 1.75 },
+    { id: "threads", name: "Parallel Threads", desc: "+0.2 base auto/sec", baseCost: 85, costGrowth: 1.8 },
+    { id: "overclock", name: "Core Overclock", desc: "+3% all output", baseCost: 120, costGrowth: 1.9 },
+    { id: "buffer", name: "Buffer Control", desc: "+2% tier efficiency", baseCost: 160, costGrowth: 1.95 }
   ];
 
   const metaUpgradeDefs = [
-    { id: "prestigeBoost", name: "Signal Booster", desc: "+5% all gains", baseCost: 8, costGrowth: 2 },
-    { id: "clickPersist", name: "Macro Training", desc: "+20% click strength", baseCost: 10, costGrowth: 2.05 },
-    { id: "autoPersist", name: "Daemon Overclock", desc: "+12% auto output", baseCost: 12, costGrowth: 2.1 },
-    { id: "offlineBoost", name: "Offline Cache", desc: "+10% offline gains", baseCost: 15, costGrowth: 2.1 },
-    { id: "difficultySoftener", name: "Load Balancer", desc: "-5% difficulty scale", baseCost: 20, costGrowth: 2.2 }
+    { id: "prestigeBoost", name: "Signal Booster", desc: "+4% all gains", baseCost: 10, costGrowth: 2.1 },
+    { id: "clickPersist", name: "Macro Training", desc: "+15% click strength", baseCost: 12, costGrowth: 2.15 },
+    { id: "autoPersist", name: "Daemon Overclock", desc: "+10% auto output", baseCost: 14, costGrowth: 2.2 },
+    { id: "offlineBoost", name: "Offline Cache", desc: "+8% offline gains", baseCost: 18, costGrowth: 2.2 },
+    { id: "difficultySoftener", name: "Load Balancer", desc: "-4% difficulty scale", baseCost: 24, costGrowth: 2.3 }
   ];
 
   const CHAT_HISTORY_LIMIT = 200;
@@ -1106,7 +1412,13 @@
     // Currency holdings milestones
     const cashMilestones = [1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9, 1e10, 1e11, 1e12];
     cashMilestones.forEach((v) =>
-      add("Currency", `cash-${v}`, `Reserve ${formatNumber(v)}`, `Hold ${formatNumber(v)} Credits at once`, (s) => s.tiers[0]?.amount >= v)
+      add(
+        "Currency",
+        `cash-${v}`,
+        `Reserve ${formatNumber(v)}`,
+        `Hold ${formatNumber(v)} Credits at once`,
+        (s) => bnCmp(s.tiers[0]?.amount, bnFromNumber(v)) >= 0
+      )
     );
 
     // Automation milestones (tier 0 automation levels)
@@ -1186,8 +1498,8 @@
   }
 
   function orderFromCost(cost, tie = 0) {
-    const safe = Math.max(0, cost);
-    return Math.round(Math.log10(safe + 1) * 1000) * 10 + tie;
+    const orderValue = Math.max(0, bnLog10(bnAdd(cost, bnFromNumber(1))));
+    return Math.round(orderValue * 1000) * 10 + tie;
   }
 
   function tierDisplayName(index) {
@@ -1196,7 +1508,7 @@
   }
 
   function tierBaseCost(index) {
-    return 16 * Math.pow(12.5, index);
+    return 20 * Math.pow(14, index);
   }
 
   function makeTier(index) {
@@ -1204,15 +1516,15 @@
       id: `tier-${index}`,
       index,
       name: tierDisplayName(index),
-      amount: 0,
-      baseRate: 0.65 * Math.pow(1.18, index),
+      amount: bnZero(),
+      baseRate: 0.4 * Math.pow(1.15, index),
       baseCost: tierBaseCost(index),
-      costGrowth: 1.16 + index * 0.015,
+      costGrowth: 1.18 + index * 0.02,
       autoLevel: 0,
       efficiencyLevel: 0,
       unlocked: index === 0,
-      autoCostBase: 10 * Math.pow(1.6, index + 1),
-      effCostBase: 16 * Math.pow(1.65, index + 1)
+      autoCostBase: 14 * Math.pow(1.7, index + 1),
+      effCostBase: 22 * Math.pow(1.75, index + 1)
     };
   }
 
@@ -1239,17 +1551,17 @@
       tiers: [makeTier(0)],
       globalUpgrades: { click: 0, clickBurst: 0, automation: 0, threads: 0, overclock: 0, buffer: 0 },
       prestige: {
-        points: 0,
-        pending: 0,
+        points: bnZero(),
+        pending: bnZero(),
         lastRebootAt: now,
-        minRequired: 8,
+        minRequired: 12,
         upgrades: { prestigeBoost: 0, clickPersist: 0, autoPersist: 0, offlineBoost: 0, difficultySoftener: 0 }
       },
       lastTick: now,
       lastSave: now,
-      totalCurrency: 0,
+      totalCurrency: bnZero(),
       status: "Booted",
-      offlineSummary: { gain: 0, seconds: 0 },
+      offlineSummary: { gain: bnZero(), seconds: 0 },
       sessionStart: now,
       manualDifficulty: 1,
       achievements: [],
@@ -1277,6 +1589,10 @@
       ...(saved.prestige || {}),
       upgrades: { ...base.prestige.upgrades, ...(saved.prestige?.upgrades || {}) }
     };
+    merged.prestige.points = bn(saved.prestige?.points ?? base.prestige.points);
+    merged.prestige.pending = bn(saved.prestige?.pending ?? base.prestige.pending);
+    merged.prestige.minRequired = Number(saved.prestige?.minRequired || base.prestige.minRequired);
+    merged.prestige.lastRebootAt = saved.prestige?.lastRebootAt || base.prestige.lastRebootAt;
     merged.tiers = [];
     const savedTiers = Array.isArray(saved.tiers) ? saved.tiers : [];
     const count = Math.max(1, Math.min(101, savedTiers.length || 1));
@@ -1285,17 +1601,21 @@
       const savedTier = savedTiers[i] || {};
       merged.tiers.push({
         ...template,
-        amount: Number(savedTier.amount) || 0,
+        amount: bn(savedTier.amount),
         autoLevel: Number(savedTier.autoLevel) || 0,
         efficiencyLevel: Number(savedTier.efficiencyLevel) || 0,
-        unlocked: savedTier.unlocked ?? i === 0
+        unlocked: savedTier.unlocked ?? i === 0,
+        _lockedAcquireCost: savedTier._lockedAcquireCost != null ? bn(savedTier._lockedAcquireCost) : null
       });
     }
-    merged.totalCurrency = Number(saved.totalCurrency) || 0;
+    merged.totalCurrency = bn(saved.totalCurrency ?? base.totalCurrency);
     merged.lastTick = saved.lastTick || Date.now();
     merged.lastSave = saved.lastSave || Date.now();
     merged.sessionStart = saved.sessionStart || Date.now();
-    merged.offlineSummary = saved.offlineSummary || { gain: 0, seconds: 0 };
+    merged.offlineSummary = {
+      gain: bn(saved.offlineSummary?.gain ?? base.offlineSummary.gain),
+      seconds: Number(saved.offlineSummary?.seconds) || 0
+    };
     merged.manualDifficulty = Math.min(100, Math.max(1, Number(saved.manualDifficulty) || 1));
     merged.achievements = Array.isArray(saved.achievements) ? saved.achievements : [];
     merged.stats = { clicks: 0, prestiges: 0, ...(saved.stats || {}) };
@@ -1375,13 +1695,14 @@
   }
 
   function snapshotForSignature(s) {
+    const sigValue = (value) => (isBN(value) ? bnToSave(value) : value);
     return {
       version: GAME_VERSION,
       manualDifficulty: s.manualDifficulty,
       globalUpgrades: s.globalUpgrades,
-      prestige: { points: s.prestige.points, upgrades: s.prestige.upgrades },
+      prestige: { points: sigValue(s.prestige.points), upgrades: s.prestige.upgrades },
       tiers: s.tiers.map((t) => ({
-        amount: t.amount,
+        amount: sigValue(t.amount),
         autoLevel: t.autoLevel,
         efficiencyLevel: t.efficiencyLevel,
         unlocked: t.unlocked
@@ -1581,7 +1902,7 @@
     if (elapsed > 1) {
       const before = state.tiers[0].amount;
       applyIncome(elapsed * getOfflineMultiplier());
-      const gain = state.tiers[0].amount - before;
+      const gain = bnSub(state.tiers[0].amount, before);
       state.offlineSummary = { gain, seconds: elapsed };
       setStatus(`Offline gains: +${formatNumber(gain)} credits over ${formatNumber(elapsed)}s`);
       logChatEvent(chatSources.system, `offline applied: +${formatNumber(gain)} credits in ${formatNumber(elapsed)}s`, { ts: now });
@@ -1636,9 +1957,10 @@
   }
 
   function addCurrency(amount) {
-    state.tiers[0].amount += amount;
-    state.totalCurrency += amount;
-    if (!state.hardModeStarted && state.totalCurrency >= 1000) {
+    const delta = bn(amount);
+    state.tiers[0].amount = bnAdd(state.tiers[0].amount, delta);
+    state.totalCurrency = bnAdd(state.totalCurrency, delta);
+    if (!state.hardModeStarted && bnCmp(state.totalCurrency, bnFromNumber(1000)) >= 0) {
       state.hardModeStarted = true;
       state.hardModeValid = state.manualDifficulty === 100;
     } else if (state.hardModeStarted && state.hardModeValid && state.manualDifficulty !== 100) {
@@ -1650,7 +1972,7 @@
     const globalCount = Object.values(state.globalUpgrades).reduce((a, b) => a + b, 0);
     const tierLoad = state.tiers.reduce((acc, t) => acc + t.autoLevel + t.efficiencyLevel, 0);
     const metaCount = Object.values(state.prestige.upgrades).reduce((a, b) => a + b, 0);
-    return globalCount + tierLoad + metaCount + state.tiers.length * 1.5;
+    return globalCount + tierLoad + metaCount + state.tiers.length * 1.75;
   }
 
   function getProgressionWall() {
@@ -1660,7 +1982,7 @@
   }
 
   function getManualCostFactor() {
-    return 1 + (state.manualDifficulty || 1) / 100;
+    return getDifficultyScalar();
   }
 
   function getManualIncomeFactor() {
@@ -1670,7 +1992,9 @@
 
   function getDifficultyScalar() {
     // state.difficulty is 1–100 from the UI
-    return 1 + (state.manualDifficulty - 1) * 0.01;
+    const base = 1 + (state.manualDifficulty - 1) * 0.01;
+    const softener = 1 - (state.prestige.upgrades.difficultySoftener || 0) * 0.04;
+    return base * Math.max(0.6, softener);
   }
 
   function isFrontierTier(tier) {
@@ -1678,47 +2002,43 @@
   }
 
   function getIncomeDampener() {
-    return 1; // Keep income reliable; difficulty expressed through rising costs only.
+    const depth = state.tiers.length - 1;
+    const tierDrag = 1 + Math.max(0, depth - 2) * 0.05;
+    const upgradeDrag = 1 + Math.max(0, totalUpgradeLoad() - 5) * 0.012;
+    return Math.max(0.08, 1 / (tierDrag * upgradeDrag));
   }
 
   function getGlobalMultiplier() {
-    const overclock = 1 + state.globalUpgrades.overclock * 0.05;
-    const buffer = 1 + state.globalUpgrades.buffer * 0.03;
+    const overclock = 1 + state.globalUpgrades.overclock * 0.03;
+    const buffer = 1 + state.globalUpgrades.buffer * 0.02;
     return overclock * buffer * getIncomeDampener();
   }
 
   function getPrestigeMultiplier() {
-    const points = Math.max(0, state.prestige.points || 0);
+    const points = bn(state.prestige.points);
     const prestiges = Math.max(0, state.stats?.prestiges || 0);
     const boostLvl = Math.max(0, state.prestige.upgrades?.prestigeBoost || 0);
 
-    // Soft cap grows every time you prestige
-    const baseCap = 2.0;          // starting max bonus from points
-    const capGrowth = 0.35;       // how much the cap grows per prestige
-    const cap = baseCap + prestiges * capGrowth;
-
-    // Diminishing returns curve (smooth, never explodes)
-    const rate = 0.012;
-    const pointBonus = cap * (1 - Math.exp(-points * rate));
-
-    // Existing prestige upgrade stays linear
-    const upgradeBonus = boostLvl * 0.05;
+    const logPoints = Math.max(0, bnLog10(bnAdd(points, bnFromNumber(1))));
+    const baseCap = 1.6 + prestiges * 0.03;
+    const pointBonus = Math.min(baseCap, logPoints * 0.18);
+    const upgradeBonus = boostLvl * 0.04;
 
     return 1 + pointBonus + upgradeBonus;
   }
 
 
   function getAutomationMultiplier() {
-    return 1 + state.globalUpgrades.automation * 0.15 + state.prestige.upgrades.autoPersist * 0.12;
+    return 1 + state.globalUpgrades.automation * 0.12 + state.prestige.upgrades.autoPersist * 0.1;
   }
 
   function tierEfficiencyMultiplier(tier) {
-    return (1 + tier.efficiencyLevel * 0.22) * (1 + state.globalUpgrades.buffer * 0.03);
+    return (1 + tier.efficiencyLevel * 0.18) * (1 + state.globalUpgrades.buffer * 0.02);
   }
 
   function getClickValue() {
-    const base = 1 + state.globalUpgrades.click * 1 + state.globalUpgrades.clickBurst * 0.5;
-    const meta = 1 + state.prestige.upgrades.clickPersist * 0.2;
+    const base = 1 + state.globalUpgrades.click * 0.8 + state.globalUpgrades.clickBurst * 0.4;
+    const meta = 1 + state.prestige.upgrades.clickPersist * 0.15;
     const eff0 = tierEfficiencyMultiplier(state.tiers[0]);
     return base * meta * getPrestigeMultiplier() * eff0 * getManualIncomeFactor();
   }
@@ -1727,73 +2047,86 @@
     const t0 = state.tiers[0];
     const autoMult = getAutomationMultiplier();
     const eff0 = tierEfficiencyMultiplier(t0);
-    const additive = state.globalUpgrades.threads * 0.25;
-    return (t0.autoLevel * (0.45 + state.globalUpgrades.automation * 0.04) + additive) * autoMult * eff0 * getPrestigeMultiplier() * getGlobalMultiplier() * getManualIncomeFactor();
+    const additive = state.globalUpgrades.threads * 0.2;
+    const base = t0.autoLevel * (0.38 + state.globalUpgrades.automation * 0.03) + additive;
+    return bnFromNumber(base * autoMult * eff0 * getPrestigeMultiplier() * getGlobalMultiplier() * getManualIncomeFactor());
   }
 
   function estimateBaseRate() {
     let rate = baseAutoPerSecond();
     if (state.tiers[1]) {
-      rate += tierProductionPerSecond(state.tiers[1]);
+      rate = bnAdd(rate, tierProductionPerSecond(state.tiers[1]));
     }
     return rate;
   }
 
   function tierProductionPerSecond(tier) {
-    if (!tier || tier.index === 0) return 0;
+    if (!tier || tier.index === 0) return bnZero();
     const lower = state.tiers[tier.index - 1];
-    if (!lower) return 0;
+    if (!lower) return bnZero();
     const eff = tierEfficiencyMultiplier(tier);
-    return tier.amount * tier.baseRate * (1 + tier.autoLevel) * eff * getAutomationMultiplier() * getPrestigeMultiplier() * getGlobalMultiplier() * getManualIncomeFactor();
+    const rate =
+      tier.baseRate *
+      (1 + tier.autoLevel) *
+      eff *
+      getAutomationMultiplier() *
+      getPrestigeMultiplier() *
+      getGlobalMultiplier() *
+      getManualIncomeFactor();
+    return bnMulScalar(tier.amount, rate);
   }
 
   function computePrestigeRate() {
     const baseRate = estimateBaseRate();
     const depth = state.tiers.length - 1;
-    const value = Math.max(0, Math.log10(state.totalCurrency + state.tiers[0].amount + 1) - 1);
-    const slow = 1 + getDifficultyScalar() * 0.5 + totalUpgradeLoad() * 0.05;
-    return (value * 0.006 + depth * 0.0005 + baseRate * 0.0003) / slow;
+    const prestiges = Math.max(0, state.stats?.prestiges || 0);
+    const totalWealth = bnAdd(state.totalCurrency, state.tiers[0].amount);
+    const wealthLog = Math.max(0, bnLog10(totalWealth) - 2);
+    const autoLog = Math.max(0, bnLog10(baseRate) - 1);
+    const runSeconds = secondsSincePrestige();
+    const fatigueWindow = 1200 + prestiges * 240;
+    const fatigue = 1 / (1 + Math.pow(runSeconds / Math.max(1, fatigueWindow), 1.15));
+    const prestigePenalty = 1 / (1 + prestiges * 0.12);
+    const slow = 1 + getDifficultyScalar() * 0.9 + totalUpgradeLoad() * 0.08;
+    return (wealthLog * 0.0025 + depth * 0.00025 + autoLog * 0.0006) * fatigue * prestigePenalty / slow;
   }
 
   function getOfflineMultiplier() {
-    return 1 + state.prestige.upgrades.offlineBoost * 0.1;
+    return 1 + state.prestige.upgrades.offlineBoost * 0.08;
   }
 
   function applyIncome(delta) {
-    const autoGain = baseAutoPerSecond() * delta;
-    if (autoGain > 0) addCurrency(autoGain);
+    const autoGain = bnMulScalar(baseAutoPerSecond(), delta);
+    if (bnCmp(autoGain, bnZero()) > 0) addCurrency(autoGain);
 
     for (let i = state.tiers.length - 1; i >= 1; i--) {
       const tier = state.tiers[i];
-      if (!tier.unlocked || tier.amount <= 0) continue;
+      if (!tier.unlocked || bnCmp(tier.amount, bnZero()) <= 0) continue;
       const lower = state.tiers[i - 1];
       const perSec = tierProductionPerSecond(tier);
-      const gained = perSec * delta;
-      lower.amount += gained;
+      const gained = bnMulScalar(perSec, delta);
+      lower.amount = bnAdd(lower.amount, gained);
       if (i === 1) {
-        state.totalCurrency += gained;
+        state.totalCurrency = bnAdd(state.totalCurrency, gained);
       }
     }
 
     const prestigeRate = computePrestigeRate();
-    state.prestige.pending += prestigeRate * delta;
+    state.prestige.pending = bnAdd(state.prestige.pending, bnFromNumber(prestigeRate * delta));
   }
 
   function tierUnitCost(tier) {
-    return Math.floor(
-      tier.baseCost *
-      Math.pow(tier.costGrowth, tier.amount) *
-      getDifficultyScalar()
-    );
+    const growth = bnPowFromBigExp(tier.costGrowth, tier.amount);
+    return bnMulScalar(growth, tier.baseCost * getDifficultyScalar());
   }
 
 
   function tierUpgradeCost(tier, kind) {
     const level = kind === "auto" ? tier.autoLevel : tier.efficiencyLevel;
     const base = kind === "auto" ? tier.autoCostBase : tier.effCostBase;
-    const growth = kind === "auto" ? 1.8 : 1.9;
+    const growth = kind === "auto" ? 1.95 : 2.05;
 
-    return Math.floor(
+    return bnFromNumber(
       base *
       Math.pow(growth, level) *
       getDifficultyScalar()
@@ -1806,22 +2139,19 @@
     // Static tier unlock costs, paid in previous-tier currency
     // Only manualDifficulty scales the result
 
-    if (index <= 0) return 0;
+    if (index <= 0) return bnZero();
 
     let base;
 
     if (index === 1) {
       // Credits → Scripts
-      base = 1000;
+      base = bnFromNumber(1500);
     } else {
       // Scripts → Daemons starts the x4 chain
-      base = 25;
-      for (let i = 2; i < index; i++) {
-        base *= 4;
-      }
+      base = bnMulScalar(bnPowScalar(5, index - 2), 40);
     }
 
-    return Math.floor(base * state.manualDifficulty);
+    return bnMulScalar(base, state.manualDifficulty);
   }
 
   function getTierAcquireCost(tier) {
@@ -1837,14 +2167,14 @@
     const cost = getTierAcquireCost(tier);
     const payer = state.tiers[tier.index - 1];
 
-    if (payer.amount >= cost) {
-      payer.amount -= cost;
-      tier.amount += 1;
+    if (bnCmp(payer.amount, cost) >= 0) {
+      payer.amount = bnSub(payer.amount, cost);
+      tier.amount = bnAdd(tier.amount, bnFromNumber(1));
       setStatus(`Acquired 1 ${tier.name}`);
       saveGame();
       logChatEvent(chatSourceForTier(tier), `+1 ${tier.name} (cost ${formatNumber(cost)} ${payer.name})`);
     } else {
-      setStatus(`Insufficient ${payer.name}: need ${formatNumber(cost - payer.amount)}`);
+      setStatus(`Insufficient ${payer.name}: need ${formatNumber(bnSub(cost, payer.amount))}`);
     }
   }
 
@@ -1852,8 +2182,8 @@
   function buyTierUpgrade(tier, type) {
     const cost = tierUpgradeCost(tier, type);
     const payer = state.tiers[Math.max(0, tier.index - 1)];
-    if (payer.amount >= cost) {
-      payer.amount -= cost;
+    if (bnCmp(payer.amount, cost) >= 0) {
+      payer.amount = bnSub(payer.amount, cost);
       if (type === "auto") tier.autoLevel += 1;
       else tier.efficiencyLevel += 1;
       setStatus(`${tier.name} ${type === "auto" ? "automation" : "efficiency"} upgraded`);
@@ -1861,21 +2191,20 @@
       const newLevel = type === "auto" ? tier.autoLevel : tier.efficiencyLevel;
       logChatEvent(chatSourceForTier(tier), `${type === "auto" ? "Automation" : "Efficiency"} -> Lv${newLevel} (spent ${formatNumber(cost)} ${payer.name})`);
     } else {
-      setStatus(`Need ${formatNumber(cost - payer.amount)} more ${payer.name}`);
+      setStatus(`Need ${formatNumber(bnSub(cost, payer.amount))} more ${payer.name}`);
     }
   }
 
   function buyGlobalUpgrade(def) {
     const level = state.globalUpgrades[def.id];
-    const cost =
-      Math.floor(
-        def.baseCost *
-        Math.pow(def.costGrowth, level) *
-        getDifficultyScalar()
-      );
+    const cost = bnFromNumber(
+      def.baseCost *
+      Math.pow(def.costGrowth, level) *
+      getDifficultyScalar()
+    );
 
-    if (state.tiers[0].amount >= cost) {
-      state.tiers[0].amount -= cost;
+    if (bnCmp(state.tiers[0].amount, cost) >= 0) {
+      state.tiers[0].amount = bnSub(state.tiers[0].amount, cost);
       state.globalUpgrades[def.id] += 1;
       setStatus(`${def.name} upgraded to ${state.globalUpgrades[def.id]}`);
       saveGame();
@@ -1885,15 +2214,15 @@
       );
       maybeNpcFirstUpgrade();
     } else {
-      setStatus(`Unaffordable: need ${formatNumber(cost - state.tiers[0].amount)} credits`);
+      setStatus(`Unaffordable: need ${formatNumber(bnSub(cost, state.tiers[0].amount))} credits`);
     }
   }
 
   function buyMetaUpgrade(def) {
     const level = state.prestige.upgrades[def.id] || 0;
-    const cost = def.baseCost * Math.pow(def.costGrowth, level);
-    if (state.prestige.points >= cost) {
-      state.prestige.points -= cost;
+    const cost = bnFromNumber(def.baseCost * Math.pow(def.costGrowth, level));
+    if (bnCmp(state.prestige.points, cost) >= 0) {
+      state.prestige.points = bnSub(state.prestige.points, cost);
       state.prestige.upgrades[def.id] = level + 1;
       setStatus(`${def.name} upgraded to ${level + 1}`);
       saveGame();
@@ -1916,14 +2245,14 @@
     }
 
     const cost = tierUnlockCost(nextIndex);
-    if (prevTier.amount < cost) {
-      setStatus(`Need ${formatNumber(cost - prevTier.amount)} more ${prevTier.name} to unlock`);
+    if (bnCmp(prevTier.amount, cost) < 0) {
+      setStatus(`Need ${formatNumber(bnSub(cost, prevTier.amount))} more ${prevTier.name} to unlock`);
       return;
     }
-    prevTier.amount -= cost;
+    prevTier.amount = bnSub(prevTier.amount, cost);
     const newTier = makeTier(nextIndex);
     newTier.unlocked = true;
-    newTier.amount = 1;
+    newTier.amount = bnFromNumber(1);
     state.tiers.push(newTier);
     document.getElementById("tiersList").appendChild(buildTierCard(newTier));
     setStatus(`Unlocked ${newTier.name}`);
@@ -1941,10 +2270,10 @@
   }
 
   function doPrestige() {
-    const gained = Math.floor(state.prestige.pending);
-    const required = state.prestige.minRequired || 8;
+    const gained = bnFloor(state.prestige.pending);
+    const required = state.prestige.minRequired || 12;
 
-    if (gained < required) {
+    if (bnCmp(gained, bnFromNumber(required)) < 0) {
       setStatus(`Need at least ${required} prestige to reboot`);
       return;
     }
@@ -1955,23 +2284,25 @@
     const prevDifficulty = state.manualDifficulty;
     const prevAchievements = state.achievements;
     const upgrades = { ...state.prestige.upgrades };
-    const totalPoints = state.prestige.points + gained;
+    const totalPoints = bnAdd(state.prestige.points, gained);
     state = createDefaultState();
     state.chat = mergeChatState(createDefaultChatState(), prevChat || {});
     state.prestige.points = totalPoints;
     state.prestige.upgrades = upgrades;
-    state.prestige.pending = 0;
-    state.status = `Rebooted for +${gained} prestige`;
+    state.prestige.pending = bnZero();
+    state.status = `Rebooted for +${formatNumber(gained)} prestige`;
     state.stats = prevStats;
     state.stats.prestiges += 1;
     // Increase minimum required prestige for next reboot
-    state.prestige.minRequired = Math.ceil(required * 1.5);
+    const growth = 1.22 + Math.min(0.18, state.stats.prestiges * 0.003);
+    const bump = 1 + Math.max(0, state.stats.prestiges - 5) * 0.015;
+    state.prestige.minRequired = Math.ceil(required * growth * bump);
 
     state.manualDifficulty = prevDifficulty;
     state.achievements = prevAchievements;
     state.prestige.lastRebootAt = Date.now();
     insertChatDivider("reboot");
-    logChatEvent(chatSources.prestige, `Rebooted +${gained} (total ${state.prestige.points})`);
+    logChatEvent(chatSources.prestige, `Rebooted +${formatNumber(gained)} (total ${formatNumber(state.prestige.points)})`);
     maybeNpcPrestige(gained);
     maybeEntityMessage();
     maybeDevTip();
@@ -2067,10 +2398,10 @@
     globalUpgradeDefs.forEach((def, idx) => {
       const btn = globalUpgradeButtons.get(def.id);
       const level = state.globalUpgrades[def.id];
-      const cost = Math.floor(def.baseCost * Math.pow(def.costGrowth, level) * getDifficultyScalar());
+      const cost = bnFromNumber(def.baseCost * Math.pow(def.costGrowth, level) * getDifficultyScalar());
       btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} cr`;
       btn.dataset.tip = `${def.desc}`;
-      const affordable = state.tiers[0].amount >= cost;
+      const affordable = bnCmp(state.tiers[0].amount, cost) >= 0;
       btn.disabled = !affordable;
       toggleDisabled(btn, !affordable);
       btn.style.order = orderFromCost(cost, idx);
@@ -2079,10 +2410,10 @@
     metaUpgradeDefs.forEach((def, idx) => {
       const btn = metaUpgradeButtons.get(def.id);
       const level = state.prestige.upgrades[def.id] || 0;
-      const cost = def.baseCost * Math.pow(def.costGrowth, level);
+      const cost = bnFromNumber(def.baseCost * Math.pow(def.costGrowth, level));
       btn.textContent = `${def.name} [Lv${level}] Cost: ${formatNumber(cost)} prestige`;
       btn.dataset.tip = `${def.desc}\nPermanent meta bonus.`;
-      const affordable = state.prestige.points >= cost;
+      const affordable = bnCmp(state.prestige.points, cost) >= 0;
       btn.disabled = !affordable;
       toggleDisabled(btn, !affordable);
       btn.style.order = orderFromCost(cost, idx);
@@ -2119,7 +2450,7 @@
             el.buyBtn.dataset.tip =
               `Spend ${payer.name} to gain ${tier.name}.\nCost rises with amount and difficulty.`;
 
-            const affordable = payer.amount >= cost;
+            const affordable = bnCmp(payer.amount, cost) >= 0;
             el.buyBtn.disabled = !affordable;
             toggleDisabled(el.buyBtn, !affordable);
             el.buyBtn.style.order = orderFromCost(cost, 0);
@@ -2129,8 +2460,8 @@
       const payer = state.tiers[Math.max(0, tier.index - 1)];
       const autoCost = tierUpgradeCost(tier, "auto");
       const effCost = tierUpgradeCost(tier, "eff");
-      const affordAuto = payer.amount >= autoCost;
-      const affordEff = payer.amount >= effCost;
+      const affordAuto = bnCmp(payer.amount, autoCost) >= 0;
+      const affordEff = bnCmp(payer.amount, effCost) >= 0;
       el.autoBtn.textContent = `Auto Lv${tier.autoLevel} (${formatNumber(autoCost)})`;
       el.autoBtn.dataset.tip = `Adds automation for ${tier.name}. Uses ${payer.name}.`;
       el.autoBtn.disabled = !affordAuto;
@@ -2138,7 +2469,7 @@
       el.autoBtn.style.order = orderFromCost(autoCost, 1);
       const effMult = tierEfficiencyMultiplier(tier).toFixed(2);
       el.effBtn.textContent = `Eff x${effMult} (${formatNumber(effCost)})`;
-      el.effBtn.dataset.tip = `Boosts efficiency by +22% per level and buffer bonus.\nUses ${payer.name}.`;
+      el.effBtn.dataset.tip = `Boosts efficiency by +18% per level and buffer bonus.\nUses ${payer.name}.`;
       el.effBtn.disabled = !affordEff;
       toggleDisabled(el.effBtn, !affordEff);
       el.effBtn.style.order = orderFromCost(effCost, 2);
@@ -2153,7 +2484,7 @@
       toggleDisabled(ui.unlockTierButton, true);
     } else {
       ui.nextTierLabel.textContent = `Tier ${nextIndex}: ${tierDisplayName(nextIndex)} Cost: ${formatNumber(unlockCost)} ${prevTier.name}`;
-      const canUnlock = prevTier.amount >= unlockCost;
+      const canUnlock = bnCmp(prevTier.amount, unlockCost) >= 0;
       ui.unlockTierButton.disabled = !canUnlock;
       toggleDisabled(ui.unlockTierButton, !canUnlock);
     }
@@ -2252,7 +2583,7 @@
   }
 
   function syncHardModeStatus() {
-    if (state.totalCurrency >= 1000 && !state.hardModeStarted) {
+    if (bnCmp(state.totalCurrency, bnFromNumber(1000)) >= 0 && !state.hardModeStarted) {
       state.hardModeStarted = true;
       state.hardModeValid = state.manualDifficulty === 100;
     }
@@ -2267,11 +2598,11 @@
     const was100 = state.manualDifficulty === 100;
     state.manualDifficulty = clamped;
     ui.difficultyInput.value = clamped;
-    if (state.totalCurrency >= 1000) {
+    if (bnCmp(state.totalCurrency, bnFromNumber(1000)) >= 0) {
       if (clamped !== 100) state.hardModeValid = false;
       if (!state.hardModeStarted && clamped === 100) state.hardModeStarted = true;
     }
-    if (was100 && clamped !== 100 && state.totalCurrency >= 1000) {
+    if (was100 && clamped !== 100 && bnCmp(state.totalCurrency, bnFromNumber(1000)) >= 0) {
       state.hardModeValid = false;
     }
     setStatus(`Manual difficulty set to ${clamped}`);
@@ -2286,21 +2617,38 @@
   }
 
   function formatNumber(value) {
-    if (!isFinite(value)) return "INF";
-    const abs = Math.abs(value);
-    const units = [
-      { v: 1e18, s: "Qi", name: "Quintillion" },
-      { v: 1e15, s: "Qa", name: "Quadrillion" },
-      { v: 1e12, s: "T", name: "Trillion" },
-      { v: 1e9, s: "B", name: "Billion" },
-      { v: 1e6, s: "M", name: "Million" },
-      { v: 1e3, s: "K", name: "Thousand" }
-    ];
+    const v = bn(value);
+    if (!isFinite(v.m)) return "INF";
+    if (v.m === 0) return "0";
+    const sign = v.m < 0 ? "-" : "";
+    const abs = bnAbs(v);
+    const exp = abs.e;
 
-    for (const u of units) {
-      if (abs >= u.v) return `${(value / u.v).toFixed(2)}${u.s}`;
+    if (exp < 3 && exp > -3) {
+      const num = bnToNumber(abs);
+      if (!isFinite(num)) return `${sign}INF`;
+      if (exp >= 2) return `${sign}${num.toFixed(0)}`;
+      if (exp >= 0) return `${sign}${num.toFixed(2)}`;
+      return `${sign}${num.toFixed(4)}`;
     }
-    return abs >= 100 ? value.toFixed(0) : value.toFixed(2);
+
+    if (exp <= -3) {
+      const num = bnToNumber(abs);
+      if (isFinite(num)) {
+        const decimals = Math.min(8, Math.max(2, -exp + 2));
+        return `${sign}${num.toFixed(decimals)}`;
+      }
+      return `${sign}${abs.m.toFixed(2)}e${exp}`;
+    }
+
+    const tier = Math.floor(exp / 3);
+    const suffix = BIG_SUFFIXES[tier];
+    const scaled = bnShift(abs, -tier * 3);
+    const scaledNum = bnToNumber(scaled);
+    const core = isFinite(scaledNum) ? scaledNum.toFixed(2) : scaled.m.toFixed(2);
+
+    if (suffix) return `${sign}${core}${suffix}`;
+    return `${sign}${core}e${exp}`;
   }
 
   function formatDuration(ms) {
@@ -2437,10 +2785,7 @@
       let displayId = entry.id || "----";
 
       if (entry.category === "entity") {
-        const prestige =
-          state?.prestigePoints ??
-          state?.prestige ??
-          0;
+        const prestige = state.stats?.prestiges || 0;
 
         const finalId = "OP-000";
 
@@ -2478,10 +2823,7 @@
       let displayUser = entry.user || "system";
 
       if (entry.category === "entity") {
-        const prestige =
-          state?.prestigePoints ??
-          state?.prestige ??
-          0;
+        const prestige = state.stats?.prestiges || 0;
 
         const finalName = "OPERATOR";
 
@@ -2658,7 +3000,7 @@
 
   function maybeNpcPrestige(gained) {
     pushNpcLine("prestige");
-    if (gained > 5) pushNpcLine("milestone");
+    if (bnCmp(gained, bnFromNumber(5)) > 0) pushNpcLine("milestone");
     maybeNpcWhisperEvent("prestige", `+${formatNumber(gained)}`);
     npcProgressCatchUp("prestige");
   }
@@ -2808,12 +3150,12 @@
 
   function maybeEntityMessage() {
     // Entity only speaks after early progression
-    if (!DEV_MODE && (!state.prestige || state.prestige.points < 3)) return;
+    if (!DEV_MODE && (!state.prestige || bnCmp(state.prestige.points, bnFromNumber(3)) < 0)) return;
 
     let pool;
-    if (state.prestige.points < 8) {
+    if (bnCmp(state.prestige.points, bnFromNumber(8)) < 0) {
       pool = entityLines.early;
-    } else if (state.prestige.points < 15) {
+    } else if (bnCmp(state.prestige.points, bnFromNumber(15)) < 0) {
       pool = entityLines.mid;
     } else {
       pool = entityLines.late;
@@ -3178,12 +3520,12 @@
         return;
       }
 
-      tier.amount += amount;
+      tier.amount = bnAdd(tier.amount, bnFromNumber(amount));
 
-      setStatus(`DEV: Gave ${amount} ${tier.name}`);
+      setStatus(`DEV: Gave ${formatNumber(amount)} ${tier.name}`);
       logChatEvent(
         chatSources.dev,
-        `Granted ${amount} ${tier.name} via /give`
+        `Granted ${formatNumber(amount)} ${tier.name} via /give`
       );
 
       saveGame();

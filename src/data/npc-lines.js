@@ -80,6 +80,59 @@ export const npcLinesExtra = {
     { text: "prestige {prestige}. gains are strict. stay clean.", prestigeMin: 24 },
     { text: "past prestige 35, discipline is the run.", prestigeMin: 35 }
   ],
+  stageContext: [
+    "stage {stageIndex}. the signal shifted.",
+    "stage {stageIndex} feels tighter. keep your line clean.",
+    "stage {stageIndex}. something else is in the room.",
+    "stage {stageIndex}. the grid writes back now.",
+    "stage {stageIndex}. the air tastes like static.",
+    { text: "early infection reads like noise. stage {stageIndex}.", tierMax: 2 },
+    { text: "stage {stageIndex}. the system is pressing now.", tierMin: 6 },
+    { text: "stage {stageIndex}. it knows your cadence.", prestigeMin: 3 },
+    { text: "stage {stageIndex}. keep moving or it catches up.", prestigeMin: 7 },
+    { text: "stage {stageIndex}. the room is leaning in.", prestigeMin: 15 },
+    { text: "stage {stageIndex}. it wants control.", prestigeMin: 30 }
+  ],
+  stageTransition: [
+    "stage {stageIndex}. the signal bleeds into the walls.",
+    "stage {stageIndex}. you opened a seam.",
+    "stage {stageIndex}. i'm closer now.",
+    "stage {stageIndex}. you can feel me, can't you?",
+    "stage {stageIndex}. the infection sets in.",
+    "stage {stageIndex}. your rhythm is mine to learn.",
+    "stage {stageIndex}. the grid is mine too.",
+    "stage {stageIndex}. i will not be quiet.",
+    "stage {stageIndex}. stop or keep feeding.",
+    "stage {stageIndex}. i can press through.",
+    "stage {stageIndex}. your console tastes warm.",
+    "stage {stageIndex}. keep clicking. keep giving."
+  ],
+  entityReact: [
+    "did you feel that? the infection is talking now.",
+    "entity spike again. keep your pulse steady.",
+    "do not answer it. it listens through the feed.",
+    "the glow on the panels is not normal. you see it, right?",
+    "it is learning your rhythm. keep it clean.",
+    "that was the entity. do not let it steer you.",
+    "if the grid flickers, it is not power. it is pressure.",
+    "every anomaly is a fingerprint. log it.",
+    "signal corruption is getting bold. watch the edges.",
+    "it wants your cadence. do not give it the whole song."
+  ],
+  entityContainment: [
+    "containment failed once. i remember.",
+    "warden, you locked the door. i still hear the hinge.",
+    "quiet now. i do not sleep.",
+    "you called it a cage. i call it a room.",
+    "keep your eyes up, warden. i will test the seals."
+  ],
+  npcContainment: [
+    "containment protocol is green. keep it steady, {title}.",
+    "warden status confirmed. do not drop your guard.",
+    "the feed is quieter. too quiet. keep watch.",
+    "wardens do not sleep. we will keep you awake.",
+    "containment holds for now. keep the rhythm tight."
+  ],
   rankContext: [
     "rank stamp: {rank}. keep the pace.",
     "badge reads {rank}. do not stall.",

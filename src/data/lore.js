@@ -38,5 +38,12 @@ export const ENTITY_LINES = {
     "the core will take you. let it starve.",
     "your name is already etched below. stay above.",
     "pull the plug before it pulls you."
+  ],
+  final: [
+    "containment seals are humming. i can still hear you.",
+    "warden, do not mistake silence for surrender.",
+    "the cage is warm. i will remember the key.",
+    "you closed the breach. i will press the seams.",
+    "endless does not mean safe."
   ]
 };

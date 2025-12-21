@@ -13,6 +13,20 @@ const MAX_OFFLINE_SECONDS = 6 * 3600;
 const RENDER_INTERVAL_MS = 80;
 const MAX_BULK_BUY = 1000000;
 const OPS_LOG_LIMIT = 80;
+const ENTITY_IMPACT_COOLDOWN_MS = 900;
+
+const STAGES = [
+  { id: 1, name: "Boot" },
+  { id: 2, name: "Signal Noise", tierMin: 1, currencyLogMin: 3 },
+  { id: 3, name: "Cross-Talk", tierMin: 2, automationMin: 1, currencyLogMin: 4 },
+  { id: 4, name: "Drift", tierMin: 3, pendingMin: 1, currencyLogMin: 5 },
+  { id: 5, name: "Breach", prestigeMin: 1 },
+  { id: 6, name: "Leakage", prestigeMin: 3, tierMin: 7 },
+  { id: 7, name: "Saturation", prestigeMin: 7, tierMin: 11 },
+  { id: 8, name: "Contamination", prestigeMin: 15, tierMin: 15 },
+  { id: 9, name: "Override", prestigeMin: 30, tierMin: 19 },
+  { id: 10, name: "Possession", prestigeMin: 50, tierMin: 24 }
+];
 
 const BIG_SUFFIXES = [
   "",
@@ -392,6 +406,19 @@ const npcLibrary = {
     "pending {pending} prestige. need {required} to reboot.",
     "prestige total {prestigeTotal}. next reboot needs {required}.",
     "reboot meter: {pending} in cache. target {required}."
+  ],
+  stageContext: [
+    "signal shift detected. stage {stageIndex} is live.",
+    "stage {stageIndex}. the room feels tighter.",
+    "stage {stageIndex}. the grid listens harder now.",
+    "stage {stageIndex}. keep your line clean.",
+    "stage {stageIndex}. the noise feels intentional."
+  ],
+  stageTransition: [
+    "stage {stageIndex}. the signal bleeds.",
+    "stage {stageIndex}. you opened the seam.",
+    "stage {stageIndex}. i'm closer now.",
+    "stage {stageIndex}. do not stop."
   ],
   rankContext: [
     "rank check: {rank}. keep climbing.",
@@ -1407,15 +1434,22 @@ let state = loadGame();
 if (!Array.isArray(state.seenEntityLines)) {
   state.seenEntityLines = [];
 }
+if (!state.story) {
+  state.story = createDefaultStory();
+}
+applyStoryPresentation();
 let lastRender = 0;
 let clickRunTimer = null;
 let npcChatterTimer = null;
 let operatorSpam = { times: [], warned: false };
 let npcThreadTimers = [];
+let entityImpactTimer = null;
+let lastEntityImpactAt = 0;
 
 initUI();
 bootstrapChat();
 applyOfflineProgress();
+syncStage(false);
 render(true);
 requestAnimationFrame(loop);
 
@@ -1424,6 +1458,8 @@ function loop() {
   const delta = Math.min((now - state.lastTick) / 1000, 0.25);
   state.lastTick = now;
   applyIncome(delta);
+  syncStage(false);
+  checkEndlessUnlock();
   if (now - state.lastSave > 10000) {
     saveGame();
   }
@@ -1445,23 +1481,30 @@ function tierDisplayName(index) {
 }
 
 function tierBaseCost(index) {
-  return 20 * Math.pow(14, index);
+  const base = 20 * Math.pow(14, index);
+  if (index >= 1 && index <= 5) {
+    const factor = Math.max(0.47, 0.62 - index * 0.03);
+    return base * factor;
+  }
+  return base;
 }
 
 function makeTier(index) {
+  const earlyTier = index >= 1 && index <= 5;
+  const baseGrowth = 1.18 + index * 0.02;
   return {
     id: `tier-${index}`,
     index,
     name: tierDisplayName(index),
     amount: bnZero(),
-    baseRate: 0.4 * Math.pow(1.15, index),
+    baseRate: 0.4 * Math.pow(1.15, index) * (earlyTier ? 1.2 : 1),
     baseCost: tierBaseCost(index),
-    costGrowth: 1.18 + index * 0.02,
+    costGrowth: earlyTier ? Math.max(1.14, baseGrowth - 0.04) : baseGrowth,
     autoLevel: 0,
     efficiencyLevel: 0,
     unlocked: index === 0,
-    autoCostBase: 14 * Math.pow(1.7, index + 1),
-    effCostBase: 22 * Math.pow(1.75, index + 1)
+    autoCostBase: 14 * Math.pow(1.7, index + 1) * (earlyTier ? 0.85 : 1),
+    effCostBase: 22 * Math.pow(1.75, index + 1) * (earlyTier ? 0.85 : 1)
   };
 }
 
@@ -1482,8 +1525,21 @@ function createDefaultChatState(now = Date.now()) {
   };
 }
 
+function createDefaultStory(now = Date.now()) {
+  return {
+    arcStage: 0,
+    seenBeats: {},
+    endlessUnlocked: false,
+    title: "Operator",
+    uiMode: "classic",
+    unlockedAt: null,
+    updatedAt: now
+  };
+}
+
 function createDefaultState() {
   const now = Date.now();
+  const stage = STAGES[0];
   return {
     version: GAME_VERSION,
     tiers: [makeTier(0)],
@@ -1522,12 +1578,15 @@ function createDefaultState() {
       opsCollapsed: false,
       panels: {}
     },
+    story: createDefaultStory(now),
+    stage: { id: stage.id, name: stage.name, index: 0, at: now },
     chat: createDefaultChatState(now)
   };
 }
 
 function mergeState(base, saved) {
   const merged = { ...base, ...saved };
+  merged.story = mergeStoryState(base.story, saved.story || {});
   merged.version = GAME_VERSION;
   merged.globalUpgrades = { ...base.globalUpgrades, ...(saved.globalUpgrades || {}) };
   merged.prestige = {
@@ -1592,8 +1651,180 @@ function mergeState(base, saved) {
   if (!merged.uiPrefs.panels || typeof merged.uiPrefs.panels !== "object") {
     merged.uiPrefs.panels = {};
   }
+  const savedStageIndex = Number(saved.stage?.index ?? saved.stageIndex ?? 0);
+  const stageIndex = Math.max(0, Math.min(STAGES.length - 1, savedStageIndex));
+  const stageInfo = STAGES[stageIndex] || STAGES[0];
+  merged.stage = {
+    id: stageInfo.id,
+    name: stageInfo.name,
+    index: stageIndex,
+    at: saved.stage?.at || Date.now()
+  };
   merged.chat = mergeChatState(createDefaultChatState(), saved.chat || {});
   return merged;
+}
+
+function mergeStoryState(baseStory, savedStory) {
+  const base = baseStory || createDefaultStory();
+  if (!savedStory || typeof savedStory !== "object") return { ...base };
+  const endlessTitle = savedStory.endlessUnlocked && !savedStory.title ? "Warden" : savedStory.title;
+  return {
+    ...base,
+    ...savedStory,
+    seenBeats: { ...(base.seenBeats || {}), ...(savedStory.seenBeats || {}) },
+    title: endlessTitle || base.title
+  };
+}
+
+function resolveStageIndex() {
+  const tierIndex = Math.max(0, state.tiers.length - 1);
+  const prestiges = Math.max(0, state.stats?.prestiges || 0);
+  const pending = bn(state.prestige.pending);
+  const totalLog = Math.max(0, bnLog10(state.totalCurrency));
+  const automation = state.globalUpgrades.automation || 0;
+
+  for (let i = STAGES.length - 1; i >= 1; i--) {
+    const stage = STAGES[i];
+    let reached = false;
+    if (stage.tierMin != null && tierIndex >= stage.tierMin) reached = true;
+    if (stage.prestigeMin != null && prestiges >= stage.prestigeMin) reached = true;
+    if (stage.pendingMin != null && bnCmp(pending, bnFromNumber(stage.pendingMin)) >= 0) reached = true;
+    if (stage.currencyLogMin != null && totalLog >= stage.currencyLogMin) reached = true;
+    if (stage.automationMin != null && automation >= stage.automationMin) reached = true;
+    if (reached) return i;
+  }
+  return 0;
+}
+
+function getCurrentStage() {
+  const index = typeof state.stage?.index === "number" ? state.stage.index : resolveStageIndex();
+  const safeIndex = Math.max(0, Math.min(STAGES.length - 1, index));
+  const stage = STAGES[safeIndex] || STAGES[0];
+  return { ...stage, index: safeIndex };
+}
+
+function applyStageUI(stage) {
+  if (document.body) {
+    document.body.dataset.stage = String(stage.id);
+  }
+}
+
+function handleStageTransition(prevStage, nextStage) {
+  const now = Date.now();
+  if (!nextStage) return;
+  setStatus(`Stage ${nextStage.id}: ${nextStage.name}`);
+  logOpsEvent(`stage shift: ${nextStage.name} (${nextStage.id}/10)`, "entity");
+  insertChatDivider(`stage ${nextStage.id} // ${nextStage.name}`);
+  const context = buildNpcContext({ stage: nextStage.name, stageIndex: nextStage.id });
+  const template = pickLine(npcLibrary.stageTransition || [], context, { allowRapid: true, repeatWindow: 12000 });
+  if (template) {
+    const line = formatNpcText(template, chatSources.entity, context);
+    logChatEvent(chatSources.entity, line, { forceScroll: true });
+  } else if (now - (state.chat.flags?.lastEntityStagePing || 0) > 12000) {
+    maybeEntityMessage();
+  }
+  if (!state.chat.flags) state.chat.flags = {};
+  state.chat.flags.lastEntityStagePing = now;
+  triggerEntityImpact(true);
+  saveGame();
+}
+
+function syncStage(quiet = false) {
+  const stageIndex = resolveStageIndex();
+  const stage = STAGES[stageIndex] || STAGES[0];
+  const currentIndex = Math.max(0, Math.min(STAGES.length - 1, state.stage?.index ?? 0));
+  if (!state.stage || currentIndex !== stageIndex) {
+    const prevStage = state.stage
+      ? { ...STAGES[currentIndex], index: currentIndex }
+      : null;
+    state.stage = { id: stage.id, name: stage.name, index: stageIndex, at: Date.now() };
+    if (state.story) {
+      state.story.arcStage = stage.id;
+      state.story.updatedAt = Date.now();
+    }
+    applyStageUI(stage);
+    if (!quiet) handleStageTransition(prevStage, stage);
+  } else {
+    applyStageUI(stage);
+  }
+}
+
+function triggerEntityImpact(strong = false) {
+  if (!document.body) return;
+  const now = Date.now();
+  if (!strong && now - lastEntityImpactAt < ENTITY_IMPACT_COOLDOWN_MS) return;
+  lastEntityImpactAt = now;
+  if (entityImpactTimer) clearTimeout(entityImpactTimer);
+  document.body.classList.add("entity-impact");
+  if (strong) {
+    document.body.classList.add("entity-impact-strong");
+  }
+  const duration = strong ? 1400 : 900;
+  entityImpactTimer = setTimeout(() => {
+    document.body.classList.remove("entity-impact");
+    document.body.classList.remove("entity-impact-strong");
+  }, duration);
+}
+
+function getOperatorTitle() {
+  return state?.story?.title || "Operator";
+}
+
+function applyStoryPresentation() {
+  if (!document.body) return;
+  document.body.classList.toggle("endless-mode", !!state.story?.endlessUnlocked);
+  document.body.dataset.title = getOperatorTitle();
+  const upper = getOperatorTitle().toUpperCase();
+  chatSources.operator.user = upper;
+  chatSources.entity.user = upper;
+  chatSources.entity.id = state.story?.endlessUnlocked ? "WD-000" : "OP-000";
+  if (state.story?.endlessUnlocked && state.playerName === "Operator") {
+    state.playerName = state.story.title;
+  }
+}
+
+function checkEndlessUnlock() {
+  if (!state.story) state.story = createDefaultStory();
+  if (state.story.endlessUnlocked) return;
+  const prestiges = Math.max(0, state.stats?.prestiges || 0);
+  if (prestiges < 50) return;
+  triggerContainmentEnding();
+}
+
+function triggerContainmentEnding() {
+  if (!state.story) state.story = createDefaultStory();
+  if (state.story.endlessUnlocked) return;
+
+  state.story.endlessUnlocked = true;
+  state.story.title = "Warden";
+  state.story.uiMode = "endless";
+  state.story.unlockedAt = Date.now();
+  state.story.updatedAt = Date.now();
+
+  if (state.playerName && state.playerName === "Operator") {
+    state.playerName = state.story.title;
+  }
+
+  applyStoryPresentation();
+  setStatus("Containment active // Warden protocol");
+  insertChatDivider("containment protocol");
+  logOpsEvent("containment protocol engaged", "entity");
+  logOpsEvent("infected signal routed to quarantine", "entity");
+  logOpsEvent("warden authority granted", "entity");
+
+  const context = buildNpcContext({ title: state.story.title });
+  const entityLine = pickLine(npcLibrary.entityContainment || [], context, { allowRapid: true, repeatWindow: 12000 });
+  if (entityLine) {
+    logChatEvent(chatSources.entity, formatNpcText(entityLine, chatSources.entity, context), { forceScroll: true });
+  }
+
+  const npcLine = pickLine(npcLibrary.npcContainment || [], context, { allowRapid: true, repeatWindow: 12000 });
+  if (npcLine) {
+    const voice = pick(npcVoices);
+    sendNpcChat(voice, formatNpcText(npcLine, voice, context), { tone: "warning", allowRapid: true });
+  }
+
+  saveGame();
 }
 
 function mergeChatState(base, saved) {
@@ -2210,10 +2441,10 @@ function computePrestigeRate() {
   const fatigueWindow = 1800 + prestiges * 240;
   const fatigue = 1 / (1 + Math.pow(runSeconds / Math.max(1, fatigueWindow), 1.1));
   const prestigePenalty = 1 / (1 + prestiges * 0.14);
-  const slow = 1 + getDifficultyScalar() * 0.7 + totalUpgradeLoad() * 0.06;
-  const earlyBoost = prestiges === 0 ? 1.25 : prestiges < 3 ? 1.1 : 1;
+  const slow = 1 + getDifficultyScalar() * 0.65 + totalUpgradeLoad() * 0.055;
+  const earlyBoost = prestiges === 0 ? 1.28 : prestiges < 3 ? 1.12 : 1.03;
   return (
-    (wealthLog * 0.004 + depth * 0.00045 + autoLog * 0.0011) *
+    (wealthLog * 0.0046 + depth * 0.00052 + autoLog * 0.00125) *
     fatigue *
     prestigePenalty *
     earlyBoost /
@@ -2275,13 +2506,14 @@ function tierUnlockCost(index) {
 
   if (index === 1) {
     // Credits → Scripts
-    base = bnFromNumber(1500);
+    base = bnFromNumber(1200);
   } else {
     // Scripts → Daemons starts the x4 chain
     base = bnMulScalar(bnPowScalar(5, index - 2), 40);
   }
 
-  return bnMulScalar(base, state.manualDifficulty);
+  const scaled = index <= 5 ? bnMulScalar(base, 0.85) : base;
+  return bnMulScalar(scaled, state.manualDifficulty);
 }
 
 function getTierAcquireCost(tier) {
@@ -2446,13 +2678,17 @@ function doPrestige() {
 
   recordPlayerAction();
   flushClickRun();
+  const prevStage = state.stage;
   const prevChat = state.chat;
   const prevStats = state.stats;
   const prevDifficulty = state.manualDifficulty;
   const prevAchievements = state.achievements;
+  const prevStory = state.story;
   const upgrades = { ...state.prestige.upgrades };
   const totalPoints = bnAdd(state.prestige.points, gained);
   state = createDefaultState();
+  if (prevStage) state.stage = prevStage;
+  state.story = mergeStoryState(createDefaultStory(), prevStory || {});
   state.chat = mergeChatState(createDefaultChatState(), prevChat || {});
   state.prestige.points = totalPoints;
   state.prestige.upgrades = upgrades;
@@ -2468,11 +2704,13 @@ function doPrestige() {
   state.manualDifficulty = prevDifficulty;
   state.achievements = prevAchievements;
   state.prestige.lastRebootAt = Date.now();
+  applyStoryPresentation();
   insertChatDivider("reboot");
   logChatEvent(chatSources.prestige, `Rebooted +${formatNumber(gained)} (total ${formatNumber(state.prestige.points)})`);
   maybeNpcPrestige(gained);
   maybeEntityMessage();
   maybeDevTip();
+  syncStage(false);
   rebuildTierUI();
   render(true);
   saveGame();
@@ -2506,6 +2744,7 @@ function importSave() {
     }
     state = mergeState(createDefaultState(), parsed);
     state.lastTick = Date.now();
+    applyStoryPresentation();
     rebuildTierUI();
     applyOpsCollapsedUI();
     applyPanelStates();
@@ -2523,6 +2762,7 @@ function hardReset() {
   const confirmed = confirm("Hard reset all progress? Prestige will be wiped.");
   if (!confirmed) return;
   state = createDefaultState();
+  applyStoryPresentation();
   rebuildTierUI();
   applyOpsCollapsedUI();
   applyPanelStates();
@@ -2718,7 +2958,9 @@ function renderInfo() {
   const cps = state.lastCps || 0;
   const grace = Date.now() < state.cpsGraceUntil;
   ui.cpsDisplay.textContent = `${cps.toFixed(1)}${state.penaltyScale < 1 && !grace ? " (penalty)" : ""}`;
-  ui.infoDetail.textContent = `Status: ${state.status || "Stable"}`;
+  const titleSuffix = state.story?.title && state.story.title !== "Operator" ? ` | Title: ${state.story.title}` : "";
+  const modeSuffix = state.story?.endlessUnlocked ? " | Mode: Endless" : "";
+  ui.infoDetail.textContent = `Status: ${state.status || "Stable"}${titleSuffix}${modeSuffix}`;
 }
 
 function renderAchievements() {
@@ -2931,10 +3173,15 @@ function buildNpcContext(extra = {}) {
   const prestigeCount = Math.max(0, state.stats?.prestiges || 0);
   const pending = bnFloor(state.prestige.pending);
   const required = Math.max(0, state.prestige.minRequired || 0);
+  const stage = getCurrentStage();
+  const title = getOperatorTitle();
   return {
     tier: String(frontier.index),
     tierIndex: frontier.index,
     tierName: frontier.name,
+    stage: stage.name,
+    stageIndex: stage.id,
+    title,
     prestige: String(prestigeCount),
     prestigeCount,
     rank: getOperatorRank(prestigeCount),
@@ -3098,6 +3345,10 @@ function logChatEvent(source, text, opts = {}) {
     tone: opts.tone || null,
     type: opts.type === "divider" ? "divider" : "line"
   };
+  if (entry.category === "entity") {
+    triggerEntityImpact(false);
+    maybeNpcEntityReaction();
+  }
   state.chat.history.push(entry);
   if (state.chat.history.length > CHAT_HISTORY_LIMIT) {
     state.chat.history.splice(0, state.chat.history.length - CHAT_HISTORY_LIMIT);
@@ -3201,7 +3452,7 @@ function renderChat(forceStick = false) {
     if (entry.category === "entity") {
       const prestige = state.stats?.prestiges || 0;
 
-      const finalId = "OP-000";
+      const finalId = state.story?.endlessUnlocked ? "WD-000" : "OP-000";
 
       if (prestige < 40) {
         displayId = finalId
@@ -3239,7 +3490,7 @@ function renderChat(forceStick = false) {
     if (entry.category === "entity") {
       const prestige = state.stats?.prestiges || 0;
 
-      const finalName = "OPERATOR";
+      const finalName = getOperatorTitle().toUpperCase();
 
       if (prestige < 40) {
         displayUser = Array(finalName.length)
@@ -3549,7 +3800,10 @@ function maybeEntityMessage() {
   if (!DEV_MODE && (!state.prestige || bnCmp(state.prestige.points, bnFromNumber(3)) < 0)) return;
 
   let pool;
-  if (bnCmp(state.prestige.points, bnFromNumber(8)) < 0) {
+  const prestigeCount = Math.max(0, state.stats?.prestiges || 0);
+  if (state.story?.endlessUnlocked || prestigeCount >= 45) {
+    pool = entityLines.final || entityLines.late;
+  } else if (bnCmp(state.prestige.points, bnFromNumber(8)) < 0) {
     pool = entityLines.early;
   } else if (bnCmp(state.prestige.points, bnFromNumber(15)) < 0) {
     pool = entityLines.mid;
@@ -3580,6 +3834,19 @@ function maybeDevTip() {
   if (now - (flags.lastDevTip || 0) < 45000) return;
   flags.lastDevTip = now;
   logChatEvent(chatSources.dev, pick(devTips));
+}
+
+function maybeNpcEntityReaction() {
+  const flags = chatFlags();
+  const now = Date.now();
+  if (now - (flags.lastEntityNpcReaction || 0) < 45000) return;
+  if (Math.random() > 0.55) return;
+  const template = pickLine(npcLibrary.entityReact || [], buildNpcContext());
+  if (!template) return;
+  flags.lastEntityNpcReaction = now;
+  const voice = pick(npcVoices);
+  const line = formatNpcText(template, voice, buildNpcContext());
+  sendNpcChat(voice, line, { tone: "warning", allowRapid: true });
 }
 
 function pushNpcLine(kind, detail = "", opts = {}) {
@@ -3621,6 +3888,10 @@ function triggerNpcChatter() {
     const choices = [{ key: "tierContext", tone: "tier" }, { key: "rankContext", tone: "rank" }];
     if (bnCmp(state.prestige.pending, bnZero()) > 0 || (state.stats?.prestiges || 0) > 0) {
       choices.push({ key: "prestigeContext", tone: "prestige" });
+    }
+    const stage = getCurrentStage();
+    if (stage.index >= 2) {
+      choices.push({ key: "stageContext", tone: "stage" });
     }
     const choice = pick(choices);
     const template = pickLine(npcLibrary[choice.key] || [], buildNpcContext());
@@ -3680,6 +3951,9 @@ function formatNpcText(template, voice, extra = {}) {
     .replace(/{progress}/gi, extra.progress || "")
     .replace(/{tier}/gi, extra.tier || "")
     .replace(/{tierName}/gi, extra.tierName || "")
+    .replace(/{stage}/gi, extra.stage || "")
+    .replace(/{stageIndex}/gi, extra.stageIndex || "")
+    .replace(/{title}/gi, extra.title || "")
     .replace(/{rank}/gi, extra.rank || "")
     .replace(/{pending}/gi, extra.pending || "")
     .replace(/{required}/gi, extra.required || "")
@@ -3765,7 +4039,7 @@ function detectPlayerName() {
   const globalUser = window.USERNAME || window.userName || window.USER || window.NICKNAME || window.OPERATOR;
   const trimmed = (globalUser || "").toString().trim();
   if (trimmed) return trimmed.slice(0, 24);
-  return "Operator";
+  return getOperatorTitle();
 }
 
 function corruptEntityText(text) {
@@ -4125,6 +4399,7 @@ function setStatus(message) {
   state.status = message;
   ui.status.querySelector('span:first-child').textContent = `STATUS: ${message}`;
 }
+
 
 
 

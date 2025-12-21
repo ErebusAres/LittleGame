@@ -1,4 +1,4 @@
-window.NPC_LINES_EXTRA = {
+export const npcLinesExtra = {
   welcome: [
     "grid boots green. you are on the wire.",
     "welcome back, {player}. keep it sharp.",

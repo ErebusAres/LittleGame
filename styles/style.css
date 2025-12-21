@@ -18,7 +18,7 @@
 
 @font-face {
   font-family: "Whiterabbit";
-  src: url("whiterabbit-webfont.ttf") format("truetype");
+  src: url("../assets/fonts/whiterabbit-webfont.ttf") format("truetype");
   font-display: swap;
 }
 

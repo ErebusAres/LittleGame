@@ -26,8 +26,9 @@
             </div>
           </div>
           <div id="tiersList" class="tier-list"></div>
-          <div id="nextTier" class="next-tier">
-            <div id="nextTierLabel">Next tier locked.</div>
+          <div id="nextTier" class="next-tier tier-card">
+            <div class="next-tier-header">Next Tier</div>
+            <div id="nextTierLabel" class="next-tier-label">Next tier locked.</div>
             <button id="unlockTierButton" class="secondary has-tip"
               data-tip="Spend current highest tier resource to unlock the next layer. Costs rise with difficulty.">Unlock</button>
           </div>
@@ -115,7 +116,7 @@
             </div>
           </div>
           <div class="core-actions">
-            <button id="clickButton" class="primary has-tip tip-bottom"
+            <button id="clickButton" class="primary has-tip tip-right"
               data-tip="Manual input. Generates primary currency instantly with current click value.">Execute
               (Click)</button>
             <div class="buy-mode">
@@ -225,10 +226,12 @@
         <div>Achievements</div>
         <button id="closeAchievements" class="small secondary">Close</button>
       </div>
+      <div id="achievementsSummary" class="achievement-summary"></div>
       <div id="achievementsList" class="achievements-list"></div>
     </div>
   </div>
   <div id="toastContainer" class="toast-container"></div>
+  <div id="tooltipLayer" class="tooltip-layer" aria-hidden="true"></div>
   <script type="module" src="src/game.js"></script>
 </body>
 

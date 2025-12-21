@@ -325,7 +325,7 @@ export const npcLinesExtra = {
     "{to}, your logs are messy. clean them.",
     "{to}, keep an eye on {player}'s depth.",
     "hey {to}, the buffers are whining again.",
-    "{to}, i need a second set of eyes on tier {player}.",
+    "{to}, i need a second set of eyes on tier {tier}.",
     "{to}, if you see spikes, call it.",
     "{to}, your coffee just died. tragic.",
     "{to}, stop betting against {player}.",
@@ -627,21 +627,21 @@ export const npcLinesExtra = {
       "small efficiency buys can break a wall."
     ],
     optimize: [
-      "opt tip: alternate auto and eff buys.",
-      "opt tip: check ROI before large buys.",
+      "ops note: alternate auto and eff buys.",
+      "ops note: check payback before large buys.",
       "threads upgrade pays early.",
       "overclock is best after tier 5.",
       "low CPS is safer, higher output.",
-      "opt tip: max buy after a reset spike.",
+      "ops note: max buy after a reset spike.",
       "balance prestige upgrades across the board.",
       "efficiency multiplies everything. keep it up.",
       "short loops compound faster.",
-      "opt tip: smooth your spend curve.",
-      "opt tip: stack buffer before deep pushes.",
-      "opt tip: avoid single-stat tunnels.",
-      "opt tip: plan your unlock timing.",
-      "opt tip: save for upgrades, then batch buy.",
-      "opt tip: keep autos slightly ahead of eff."
+      "ops note: smooth your spend curve.",
+      "ops note: stack buffer before deep pushes.",
+      "ops note: avoid single-stat tunnels.",
+      "ops note: plan your unlock timing.",
+      "ops note: save for upgrades, then batch buy.",
+      "ops note: keep autos slightly ahead of eff."
     ],
     praise: [
       "clean play. keep that line.",
@@ -699,7 +699,7 @@ export const npcLinesExtra = {
       banter: [
         "you can go faster, {player}.",
         "clean split. now beat it.",
-        "opt or die. simple.",
+        "optimize or fall behind. simple.",
         "your curve is decent. tighten it.",
         "we are racing. do not drift.",
         "no wasted buys. ever.",
@@ -733,26 +733,26 @@ export const npcLinesExtra = {
         "quiet tip: eff before clicks.",
         "you can cut cost by alternating buys.",
         "autos are king past tier 5.",
-        "do not waste on low ROI.",
+        "do not waste on low payback.",
         "precision beats brute force.",
         "tighten your loop and you win.",
-        "opt order matters. keep it strict.",
+        "buy order matters. keep it strict.",
         "stop spamming. stack smarter."
       ],
       whisperTopics: {
         help: [
           "go eff now, then auto.",
           "shift to autos and stop spamming clicks.",
-          "opt by cost, not by habit.",
-          "watch ROI, then buy."
+          "buy by cost, not by habit.",
+          "watch payback, then buy."
         ],
         stuck: [
           "prestige and re-run. stop stalling.",
-          "drop diff by 5, then sprint.",
+          "drop difficulty a notch, then sprint.",
           "short loop, quick reset."
         ],
         optimize: [
-          "threads > click power right now.",
+          "threads beat click power right now.",
           "max buy after a spike, not before.",
           "alternating buys beats brute force."
         ],
@@ -902,6 +902,140 @@ export const npcLinesExtra = {
         ]
       }
     },
+    chill: {
+      banter: [
+        "easy pace, {player}. the grid waits.",
+        "slow and steady. the numbers add up.",
+        "keep it chill. upgrades will do the work.",
+        "good flow. no need to rush it.",
+        "steady clicks beat panic spikes.",
+        "take the long view. it pays.",
+        "if you miss a buy, it is fine. keep moving.",
+        "calm line, clean run.",
+        "smooth loops are faster than frantic ones.",
+        "ride the curve. do not fight it.",
+        "a clean reboot beats a messy grind.",
+        "let the autos breathe, then layer in clicks.",
+        "if you are unsure, buy the thing that makes time.",
+        "soft steps, strong climb."
+      ],
+      achievement: [
+        "nice badge. breathe it in.",
+        "clean unlock. keep the vibe.",
+        "solid milestone. no rush on the next.",
+        "that one felt smooth. respect.",
+        "good pace. the grid is on your side.",
+        "clean work. keep your rhythm.",
+        "another win. no stress."
+      ],
+      warning: [
+        "too much noise. slow down.",
+        "steady inputs beat spam.",
+        "keep the rhythm clean. sentinel is picky.",
+        "take a breath. the grid is still here.",
+        "spam stings. smooth it out.",
+        "you are heating the line. cool it.",
+        "keep it even. no spikes."
+      ],
+      whisper: [
+        "tip: smooth upgrades beat spikes.",
+        "autos will carry you past T3.",
+        "if you stall, prep a clean reboot.",
+        "stack efficiency early and coast.",
+        "keep your next tier unlock in sight, not your pride.",
+        "focus on flow: auto -> eff -> click.",
+        "if the bar slows, shift to automation."
+      ],
+      whisperTopics: {
+        help: [
+          "grab auto levels first, then clicks.",
+          "unlock a new tier, then stabilize.",
+          "keep the loop calm and consistent.",
+          "watch your rate, not just your total."
+        ],
+        stuck: [
+          "short reboot and try again.",
+          "drop difficulty a bit and ride the wave.",
+          "if it feels heavy, reset clean."
+        ],
+        optimize: [
+          "smooth buys beat panic max.",
+          "alternate auto and efficiency to keep pace.",
+          "aim for steady gains over bursts."
+        ],
+        praise: [
+          "good work. keep it light.",
+          "nice pace. that is clean.",
+          "you are running smooth. respect."
+        ]
+      }
+    },
+    angry: {
+      banter: [
+        "stop coasting. push the line.",
+        "you are too slow. tighten it.",
+        "buy smarter or get buried.",
+        "noise on the line. fix it.",
+        "i hate wasted clicks. clean it up.",
+        "push harder. the grid will not wait.",
+        "if you stall, that is on you.",
+        "focus. no fluff.",
+        "you are leaving gains on the table.",
+        "panic buys are why you are stuck.",
+        "move. the curve is passing you.",
+        "no mercy on waste. cut it."
+      ],
+      achievement: [
+        "about time. keep moving.",
+        "good. now do it again.",
+        "fine. not impressed.",
+        "another badge. keep it sharp.",
+        "decent. next one better.",
+        "ok. do not slow down.",
+        "you can do more. do it."
+      ],
+      warning: [
+        "you are sloppy. slow the spam.",
+        "sentinel is watching. stop the noise.",
+        "too many spikes. stabilize it.",
+        "your rhythm is trash. clean it up.",
+        "inputs are dirty. fix it.",
+        "noise kills runs. stop it.",
+        "you are bleeding gains."
+      ],
+      whisper: [
+        "tip: stop buying junk. go auto.",
+        "short loop. fast reboot.",
+        "if you cannot afford it, do not touch it.",
+        "push tier unlocks, not fluff.",
+        "buy the thing that makes time, not the thing that feels good.",
+        "cost curve is a blade. respect it.",
+        "clean the line. then push."
+      ],
+      whisperTopics: {
+        help: [
+          "buy auto. stop clicking.",
+          "unlock the next tier and ride it.",
+          "you need efficiency, not noise.",
+          "stop stalling and push the unlock."
+        ],
+        stuck: [
+          "prestige and stop whining.",
+          "lower difficulty, then sprint.",
+          "reset. now."
+        ],
+        optimize: [
+          "max buy only when it matters.",
+          "stop wasting on low payback.",
+          "if it is not efficient, cut it."
+        ],
+        praise: [
+          "fine. keep it tight.",
+          "ok. do not slow down.",
+          "you did it. keep pushing."
+        ]
+      }
+    },
     shy: {
       banter: [
         "uh, nice pace, {player}.",
@@ -1009,7 +1143,7 @@ export const npcLinesExtra = {
           "short reset helps sometimes."
         ],
         optimize: [
-          "check ROI before bulk buys.",
+          "check payback before bulk buys.",
           "avoid penalties; keep CPS steady.",
           "keep autos slightly ahead."
         ],
@@ -1142,7 +1276,7 @@ export const npcLinesExtra = {
         "metrics look stable. proceed.",
         "cost curve is steep. adjust.",
         "data says: do not overclick.",
-        "your ROI is improving.",
+        "your returns are improving.",
         "numbers align. keep moving.",
         "trendline steady. keep course.",
         "variance low. good signal."
@@ -1160,7 +1294,7 @@ export const npcLinesExtra = {
         "input variance too high. correct."
       ],
       whisper: [
-        "optimal path: eff -> auto -> buffer.",
+        "optimal path: efficiency -> automation -> buffer.",
         "data says: short loop then prestige.",
         "trendline is solid. keep pace.",
         "model says: balance tiers now."
@@ -1169,7 +1303,7 @@ export const npcLinesExtra = {
         help: [
           "invest in efficiency at this depth.",
           "autos outscale clicks here.",
-          "ROI favors balanced upgrades."
+          "Payback favors balanced upgrades."
         ],
         stuck: [
           "prestige probability favorable.",
@@ -1177,7 +1311,7 @@ export const npcLinesExtra = {
           "reduce variance to recover gains."
         ],
         optimize: [
-          "threads ROI is high now.",
+          "threads pay best right now.",
           "overclock after tier 5 is optimal.",
           "efficiency scales best per cost."
         ],

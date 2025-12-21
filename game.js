@@ -429,6 +429,11 @@
   const CHAT_SCROLL_TOLERANCE = 12;
   const CLICK_RUN_COOLDOWN = 2200;
   const WHISPER_COLOR = "#ff8aa8";
+  const AFK_THRESHOLD_MS = 5 * 60 * 1000;
+  const NPC_LINE_COOLDOWN_MS = 4500;
+  const NPC_REPEAT_WINDOW_MS = 45000;
+  const NPC_GLOBAL_REPEAT_WINDOW_MS = 60000;
+  const OPS_SCROLL_TOLERANCE = 8;
 
   const chatSources = {
     system: { id: "SYS-CORE", user: "SYSTEM", category: "system" },
@@ -463,6 +468,19 @@
     { id: "N9-APEX", user: "apex", color: "#7be0ff", highscore: true, skill: 1.1, persona: "tryhard" }
   ];
 
+  const OPERATOR_RANKS = [
+    { min: 0, name: "Rookie" },
+    { min: 3, name: "Runner" },
+    { min: 6, name: "Splitter" },
+    { min: 10, name: "Breaker" },
+    { min: 15, name: "Signal Knight" },
+    { min: 20, name: "Ghostwire" },
+    { min: 28, name: "Null Agent" },
+    { min: 36, name: "Abyss Walker" },
+    { min: 44, name: "Voidcaller" },
+    { min: 50, name: "Endline" }
+  ];
+
   const npcLibrary = {
     welcome: [
       "welcome to the grid. don't blink.",
@@ -487,6 +505,32 @@
       "systems nominal. let's push some numbers.",
       "hey {player}, the void is watching. don't disappoint.",
       "stay sharp, {player}. the grid has eyes."
+    ],
+    idle: [
+      "feed is quiet. ping us when you're back.",
+      "no input for a bit. we'll keep the lights on.",
+      "operator went silent. hope you return soon.",
+      "grid idle and listening. blink when you're back.",
+      "keeping the channel warm. take your time."
+    ],
+    tierContext: [
+      "depth check: T{tier} ({tierName}). steady pace.",
+      "current layer is {tierName} (T{tier}). push when ready.",
+      "T{tier} is humming. {tierName} wants more.",
+      "you're parked at {tierName}. T{tier} looks stable.",
+      "{tierName} is live at T{tier}. keep it clean."
+    ],
+    prestigeContext: [
+      "prestige buffer reads {pending}. threshold is {required}.",
+      "pending {pending} prestige. need {required} to reboot.",
+      "prestige total {prestigeTotal}. next reboot needs {required}.",
+      "reboot meter: {pending} in cache. target {required}."
+    ],
+    rankContext: [
+      "rank check: {rank}. keep climbing.",
+      "operator rank reads {rank}. steady work.",
+      "badge says {rank}. don't slow now.",
+      "rank {rank}. the grid noticed."
     ],
     upgrade: [
       "nice pickup. buffers will thank you.",
@@ -1423,6 +1467,8 @@
     }
   };
 
+  mergeNpcLines(npcLibrary, window.NPC_LINES_EXTRA);
+
   const devTips = [
     "tip: watch the chat footer for the freshest ping.",
     "tip: manual spam triggers penalties; pace or automate.",
@@ -1594,7 +1640,8 @@
       lastNpcWhisper: 0,
       flags: {
         npcProgress: {},
-        greeted: false
+        greeted: false,
+        npcMemory: {}
       }
     };
   }
@@ -1614,6 +1661,7 @@
       },
       lastTick: now,
       lastSave: now,
+      lastActionAt: now,
       totalCurrency: bnZero(),
       status: "Booted",
       offlineSummary: { gain: bnZero(), seconds: 0 },
@@ -1632,7 +1680,12 @@
       playerName: null,
       seenEntityLines: [],
       opsLog: [],
-      uiPrefs: { buyMode: "1", sortUpgradesByCost: false },
+      uiPrefs: {
+        buyMode: "1",
+        sortUpgradesByCost: false,
+        opsCollapsed: false,
+        panels: {}
+      },
       chat: createDefaultChatState(now)
     };
   }
@@ -1668,6 +1721,7 @@
     merged.totalCurrency = bn(saved.totalCurrency ?? base.totalCurrency);
     merged.lastTick = saved.lastTick || Date.now();
     merged.lastSave = saved.lastSave || Date.now();
+    merged.lastActionAt = Date.now();
     merged.sessionStart = saved.sessionStart || Date.now();
     merged.offlineSummary = {
       gain: bn(saved.offlineSummary?.gain ?? base.offlineSummary.gain),
@@ -1691,10 +1745,17 @@
     merged.opsLog = Array.isArray(saved.opsLog)
       ? saved.opsLog.slice(-OPS_LOG_LIMIT).map((entry) => ({
         ts: Number(entry?.ts) || Date.now(),
-        text: String(entry?.text ?? entry ?? "")
+        text: String(entry?.text ?? entry ?? ""),
+        category: entry?.category || "system"
       }))
       : [];
     merged.uiPrefs = { ...base.uiPrefs, ...(saved.uiPrefs || {}) };
+    if (merged.uiPrefs.opsCollapsed == null) {
+      merged.uiPrefs.opsCollapsed = false;
+    }
+    if (!merged.uiPrefs.panels || typeof merged.uiPrefs.panels !== "object") {
+      merged.uiPrefs.panels = {};
+    }
     merged.chat = mergeChatState(createDefaultChatState(), saved.chat || {});
     return merged;
   }
@@ -1715,6 +1776,7 @@
         category: entry.category || "system",
         text: String(entry.text || ""),
         color: entry.color || null,
+        tone: entry.tone || null,
         type: entry.type === "divider" ? "divider" : "line"
       })),
       flags: { npcProgress: {}, ...(saved.flags || {}) }
@@ -1828,8 +1890,11 @@
     ui.chatLiveButton = document.getElementById("chatLiveButton");
     ui.chatSendButton = document.getElementById("chatSendButton");
     ui.opsLog = document.getElementById("opsLog");
+    ui.opsSection = document.getElementById("opsFeedSection");
+    ui.opsToggle = document.getElementById("opsToggle");
     ui.sortUpgradesToggle = document.getElementById("sortUpgradesToggle");
     ui.buyModeButtons = Array.from(document.querySelectorAll("[data-buy-mode]"));
+    ui.panelActionButtons = Array.from(document.querySelectorAll("[data-panel-action]"));
     ui.status.classList.add("pulse");
 
     document.getElementById("clickButton").addEventListener("click", handleClick);
@@ -1889,6 +1954,34 @@
       updateBuyModeUI();
     }
 
+    if (state.uiPrefs.opsCollapsed == null) state.uiPrefs.opsCollapsed = false;
+
+    if (ui.opsToggle) {
+      ui.opsToggle.addEventListener("click", () => {
+        setOpsCollapsed(!state.uiPrefs.opsCollapsed);
+      });
+    }
+
+    if (ui.panelActionButtons.length) {
+      ui.panelActionButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const panel = btn.closest(".panel");
+          if (!panel || !panel.dataset.panelId) return;
+          const panelId = panel.dataset.panelId;
+          const action = btn.dataset.panelAction;
+          if (action === "min") {
+            togglePanelCollapsed(panelId);
+          } else if (action === "max") {
+            const group = panel.closest("[data-panel-group]");
+            togglePanelMaximized(panelId, group);
+          }
+        });
+      });
+      applyPanelStates();
+    }
+
+    applyOpsCollapsedUI();
+
     const globalContainer = document.getElementById("globalUpgrades");
     const gFrag = document.createDocumentFragment();
     globalUpgradeDefs.forEach((def) => {
@@ -1932,6 +2025,102 @@
     ui.buyModeButtons.forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.buyMode === mode);
     });
+  }
+
+  function getPanelState(panelId) {
+    if (!state.uiPrefs) state.uiPrefs = {};
+    if (!state.uiPrefs.panels || typeof state.uiPrefs.panels !== "object") {
+      state.uiPrefs.panels = {};
+    }
+    if (!state.uiPrefs.panels[panelId]) {
+      state.uiPrefs.panels[panelId] = { collapsed: false, maximized: false };
+    }
+    return state.uiPrefs.panels[panelId];
+  }
+
+  function togglePanelCollapsed(panelId) {
+    const panelState = getPanelState(panelId);
+    panelState.collapsed = !panelState.collapsed;
+    if (panelState.collapsed) panelState.maximized = false;
+    applyPanelStates();
+    saveGame();
+  }
+
+  function togglePanelMaximized(panelId, groupEl) {
+    const panelState = getPanelState(panelId);
+    const nextMax = !panelState.maximized;
+    if (nextMax && groupEl) {
+      const groupPanels = Array.from(groupEl.querySelectorAll(".panel[data-panel-id]"));
+      groupPanels.forEach((panel) => {
+        const otherId = panel.dataset.panelId;
+        if (!otherId) return;
+        const stateRef = getPanelState(otherId);
+        stateRef.maximized = false;
+      });
+      panelState.collapsed = false;
+    }
+    panelState.maximized = nextMax;
+    applyPanelStates();
+    saveGame();
+  }
+
+  function applyPanelStates() {
+    const panels = Array.from(document.querySelectorAll(".panel[data-panel-id]"));
+    const groupMap = new Map();
+
+    panels.forEach((panel) => {
+      const panelId = panel.dataset.panelId;
+      if (!panelId) return;
+      const panelState = getPanelState(panelId);
+
+      const group = panel.closest("[data-panel-group]");
+      if (group) {
+        const groupId = group.dataset.panelGroup || "__default__";
+        const entry = groupMap.get(groupId) || { group, maxPanelId: null };
+        if (panelState.maximized) {
+          if (!entry.maxPanelId) {
+            entry.maxPanelId = panelId;
+          } else {
+            panelState.maximized = false;
+          }
+        }
+        groupMap.set(groupId, entry);
+      }
+
+      panel.classList.toggle("is-collapsed", !!panelState.collapsed);
+      panel.classList.toggle("is-maximized", !!panelState.maximized);
+
+      const minBtn = panel.querySelector("[data-panel-action='min']");
+      if (minBtn) {
+        minBtn.setAttribute("aria-label", panelState.collapsed ? "Restore" : "Minimize");
+      }
+      const maxBtn = panel.querySelector("[data-panel-action='max']");
+      if (maxBtn) {
+        maxBtn.setAttribute("aria-label", panelState.maximized ? "Restore" : "Maximize");
+      }
+    });
+
+    groupMap.forEach(({ group, maxPanelId }) => {
+      group.classList.toggle("column-maximized", !!maxPanelId);
+      if (maxPanelId) group.dataset.maxPanel = maxPanelId;
+      else group.removeAttribute("data-max-panel");
+    });
+  }
+
+  function setOpsCollapsed(collapsed) {
+    if (!state.uiPrefs) state.uiPrefs = {};
+    state.uiPrefs.opsCollapsed = !!collapsed;
+    applyOpsCollapsedUI();
+    saveGame();
+  }
+
+  function applyOpsCollapsedUI() {
+    const opsCollapsed = !!state.uiPrefs?.opsCollapsed;
+    if (ui.opsSection) ui.opsSection.classList.toggle("collapsed", opsCollapsed);
+    if (ui.opsToggle) {
+      ui.opsToggle.textContent = opsCollapsed ? "Show" : "Hide";
+      ui.opsToggle.setAttribute("aria-expanded", String(!opsCollapsed));
+    }
   }
 
   function buildTierCard(tier) {
@@ -2010,6 +2199,7 @@
   }
 
   function handleClick() {
+    recordPlayerAction();
     // First-ever click: NPC greeting only, no other reactions
     if (!state.chat.flags.greeted) {
       triggerNpcGreeting();
@@ -2276,10 +2466,12 @@
     const totalCost = costFor(buyCount);
     payer.amount = bnSub(payer.amount, totalCost);
     tier.amount = bnAdd(tier.amount, bnFromNumber(buyCount));
+    recordPlayerAction();
     setStatus(`Acquired ${buyCount} ${tier.name}`);
     saveGame();
     logOpsEvent(
-      `+${formatNumber(bnFromNumber(buyCount))} ${tier.name} (spent ${formatNumber(totalCost)} ${payer.name})`
+      `+${formatNumber(bnFromNumber(buyCount))} ${tier.name} (spent ${formatNumber(totalCost)} ${payer.name})`,
+      "tier"
     );
   }
 
@@ -2303,11 +2495,13 @@
     payer.amount = bnSub(payer.amount, totalCost);
     if (type === "auto") tier.autoLevel += buyCount;
     else tier.efficiencyLevel += buyCount;
+    recordPlayerAction();
     setStatus(`${tier.name} ${type === "auto" ? "automation" : "efficiency"} upgraded x${buyCount}`);
     saveGame();
     const newLevel = type === "auto" ? tier.autoLevel : tier.efficiencyLevel;
     logOpsEvent(
-      `${tier.name} ${type === "auto" ? "Automation" : "Efficiency"} -> Lv${newLevel} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} ${payer.name})`
+      `${tier.name} ${type === "auto" ? "Automation" : "Efficiency"} -> Lv${newLevel} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} ${payer.name})`,
+      "tier"
     );
   }
 
@@ -2327,10 +2521,12 @@
     const totalCost = costFor(buyCount);
     state.tiers[0].amount = bnSub(state.tiers[0].amount, totalCost);
     state.globalUpgrades[def.id] += buyCount;
+    recordPlayerAction();
     setStatus(`${def.name} upgraded to ${state.globalUpgrades[def.id]} (x${buyCount})`);
     saveGame();
     logOpsEvent(
-      `${def.name} -> Lv${state.globalUpgrades[def.id]} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} cr)`
+      `${def.name} -> Lv${state.globalUpgrades[def.id]} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} cr)`,
+      "upgrade"
     );
     maybeNpcFirstUpgrade();
   }
@@ -2349,10 +2545,12 @@
     const totalCost = costFor(buyCount);
     state.prestige.points = bnSub(state.prestige.points, totalCost);
     state.prestige.upgrades[def.id] = level + buyCount;
+    recordPlayerAction();
     setStatus(`${def.name} upgraded to ${level + buyCount} (x${buyCount})`);
     saveGame();
     logOpsEvent(
-      `${def.name} -> Lv${level + buyCount} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} prestige)`
+      `${def.name} -> Lv${level + buyCount} (+${formatNumber(bnFromNumber(buyCount))}) (spent ${formatNumber(totalCost)} prestige)`,
+      "prestige"
     );
   }
 
@@ -2378,6 +2576,7 @@
     newTier.unlocked = true;
     newTier.amount = bnFromNumber(1);
     state.tiers.push(newTier);
+    recordPlayerAction();
     document.getElementById("tiersList").appendChild(buildTierCard(newTier));
     setStatus(`Unlocked ${newTier.name}`);
     insertChatDivider(`T${nextIndex} // ${newTier.name}`);
@@ -2402,6 +2601,7 @@
       return;
     }
 
+    recordPlayerAction();
     flushClickRun();
     const prevChat = state.chat;
     const prevStats = state.stats;
@@ -2464,6 +2664,8 @@
       state = mergeState(createDefaultState(), parsed);
       state.lastTick = Date.now();
       rebuildTierUI();
+      applyOpsCollapsedUI();
+      applyPanelStates();
       setStatus("Import successful");
       logChatEvent(chatSources.system, "imported save (verified)");
       render(true);
@@ -2479,6 +2681,8 @@
     if (!confirmed) return;
     state = createDefaultState();
     rebuildTierUI();
+    applyOpsCollapsedUI();
+    applyPanelStates();
     render(true);
     saveGame();
     setStatus("System wiped");
@@ -2498,7 +2702,9 @@
     ui.rate.textContent = `${formatNumber(estimateBaseRate())}/s`;
     ui.automationPower.textContent = `x${getAutomationMultiplier().toFixed(2)}`;
     ui.prestigeMultiplier.textContent = `x${getPrestigeMultiplier().toFixed(2)}`;
-    ui.difficultyInput.value = state.manualDifficulty || 1;
+    if (ui.difficultyInput && document.activeElement !== ui.difficultyInput) {
+      ui.difficultyInput.value = state.manualDifficulty || 1;
+    }
     if (ui.sortUpgradesToggle) ui.sortUpgradesToggle.checked = !!state.uiPrefs?.sortUpgradesByCost;
     updateBuyModeUI();
     renderAchievements();
@@ -2749,6 +2955,7 @@
   }
 
   function onDifficultyChange() {
+    recordPlayerAction();
     const raw = Number(ui.difficultyInput.value || 1);
     const clamped = Math.min(100, Math.max(1, Math.round(raw)));
     const was100 = state.manualDifficulty === 100;
@@ -2859,6 +3066,178 @@
     scheduleNpcChatter();
   }
 
+  function recordPlayerAction(ts = Date.now()) {
+    state.lastActionAt = ts;
+  }
+
+  function isPlayerAfk(now = Date.now()) {
+    const last = state.lastActionAt || state.sessionStart || now;
+    return now - last > AFK_THRESHOLD_MS;
+  }
+
+  function getOperatorRank(prestigeCount = 0) {
+    const count = Math.max(0, Math.floor(Number(prestigeCount) || 0));
+    for (let i = OPERATOR_RANKS.length - 1; i >= 0; i -= 1) {
+      if (count >= OPERATOR_RANKS[i].min) return OPERATOR_RANKS[i].name;
+    }
+    return OPERATOR_RANKS[0].name;
+  }
+
+  function buildNpcContext(extra = {}) {
+    const frontier = state.tiers[state.tiers.length - 1] || state.tiers[0];
+    const prestigeCount = Math.max(0, state.stats?.prestiges || 0);
+    const pending = bnFloor(state.prestige.pending);
+    const required = Math.max(0, state.prestige.minRequired || 0);
+    return {
+      tier: String(frontier.index),
+      tierIndex: frontier.index,
+      tierName: frontier.name,
+      prestige: String(prestigeCount),
+      prestigeCount,
+      rank: getOperatorRank(prestigeCount),
+      pending: formatNumber(pending),
+      required: formatNumber(required),
+      prestigeTotal: formatNumber(state.prestige.points),
+      ...extra
+    };
+  }
+
+  function normalizeNpcLine(text) {
+    return String(text || "").toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function getGlobalNpcMemory() {
+    const flags = chatFlags();
+    if (!flags.npcGlobalMemory || typeof flags.npcGlobalMemory !== "object") {
+      flags.npcGlobalMemory = { recent: {} };
+    }
+    if (!flags.npcGlobalMemory.recent || typeof flags.npcGlobalMemory.recent !== "object") {
+      flags.npcGlobalMemory.recent = {};
+    }
+    return flags.npcGlobalMemory;
+  }
+
+  function isNpcLineRecentlyUsed(text, now, cooldownOverride) {
+    const normalized = normalizeNpcLine(text);
+    if (!normalized) return false;
+    const memory = getGlobalNpcMemory();
+    const windowMs = Math.max(NPC_GLOBAL_REPEAT_WINDOW_MS, cooldownOverride || 0);
+    const last = memory.recent[normalized] || 0;
+    return last && now - last < windowMs;
+  }
+
+  function recordNpcLineUsage(text, now = Date.now()) {
+    const normalized = normalizeNpcLine(text);
+    if (!normalized) return;
+    const memory = getGlobalNpcMemory();
+    memory.recent[normalized] = now;
+    const cutoff = now - NPC_GLOBAL_REPEAT_WINDOW_MS;
+    Object.keys(memory.recent).forEach((key) => {
+      if (memory.recent[key] < cutoff) delete memory.recent[key];
+    });
+  }
+
+  function coerceLineEntry(entry) {
+    if (!entry) return null;
+    if (typeof entry === "string") return { text: entry };
+    if (typeof entry === "object") {
+      return { ...entry, text: entry.text || "" };
+    }
+    return null;
+  }
+
+  function lineMatchesContext(entry, context = {}, opts = {}) {
+    if (!entry || !entry.text) return false;
+    const tierIndex = Number(context.tierIndex ?? context.tier ?? 0);
+    const prestigeCount = Number(context.prestigeCount ?? context.prestige ?? 0);
+    if (entry.tierMin != null && tierIndex < entry.tierMin) return false;
+    if (entry.tierMax != null && tierIndex > entry.tierMax) return false;
+    if (entry.prestigeMin != null && prestigeCount < entry.prestigeMin) return false;
+    if (entry.prestigeMax != null && prestigeCount > entry.prestigeMax) return false;
+    const tags = Array.isArray(entry.tags) ? entry.tags.map((t) => String(t).toLowerCase()) : [];
+    if (tags.includes("afk") && !opts.allowAfk) return false;
+    if (tags.includes("active") && opts.allowAfk) return false;
+    return true;
+  }
+
+  function pickWeighted(entries) {
+    if (!entries.length) return null;
+    const total = entries.reduce((sum, entry) => sum + (Number(entry.weight) > 0 ? Number(entry.weight) : 1), 0);
+    if (total <= 0) return entries[Math.floor(Math.random() * entries.length)];
+    let roll = Math.random() * total;
+    for (const entry of entries) {
+      roll -= Number(entry.weight) > 0 ? Number(entry.weight) : 1;
+      if (roll <= 0) return entry;
+    }
+    return entries[entries.length - 1];
+  }
+
+  function pickLine(pool, context = {}, opts = {}) {
+    if (!Array.isArray(pool) || pool.length === 0) return "";
+    const now = Date.now();
+    const entries = pool
+      .map(coerceLineEntry)
+      .filter(Boolean)
+      .filter((entry) => lineMatchesContext(entry, context, opts));
+    if (!entries.length) return "";
+    const filtered = entries.filter((entry) => !isNpcLineRecentlyUsed(entry.text, now, entry.cooldown));
+    const choice = pickWeighted(filtered.length ? filtered : entries);
+    return choice?.text || "";
+  }
+
+  function mergeNpcLines(base, extra) {
+    if (!extra || typeof extra !== "object") return base;
+    Object.keys(extra).forEach((key) => {
+      const extraVal = extra[key];
+      if (Array.isArray(extraVal)) {
+        if (!Array.isArray(base[key])) base[key] = [];
+        base[key] = base[key].concat(extraVal);
+      } else if (extraVal && typeof extraVal === "object") {
+        if (!base[key] || typeof base[key] !== "object" || Array.isArray(base[key])) {
+          base[key] = {};
+        }
+        mergeNpcLines(base[key], extraVal);
+      } else if (base[key] == null) {
+        base[key] = extraVal;
+      }
+    });
+    return base;
+  }
+
+  function getNpcMemory(key) {
+    const flags = chatFlags();
+    if (!flags.npcMemory || typeof flags.npcMemory !== "object") {
+      flags.npcMemory = {};
+    }
+    if (!flags.npcMemory[key]) {
+      flags.npcMemory[key] = { lastTs: 0, lastText: "", recent: {} };
+    }
+    return flags.npcMemory[key];
+  }
+
+  function sendNpcChat(voice, text, opts = {}) {
+    if (!text) return false;
+    const now = Date.now();
+    const key = (voice?.id || voice?.user || "npc").toString().toLowerCase();
+    const memory = getNpcMemory(key);
+    const normalized = normalizeNpcLine(text);
+    if (!opts.force) {
+      if (!opts.allowRapid && now - (memory.lastTs || 0) < NPC_LINE_COOLDOWN_MS) return false;
+      if (memory.recent?.[normalized] && now - memory.recent[normalized] < NPC_REPEAT_WINDOW_MS) return false;
+      if (isNpcLineRecentlyUsed(text, now, opts.repeatWindow)) return false;
+    }
+    memory.lastTs = now;
+    memory.lastText = text;
+    if (!memory.recent || typeof memory.recent !== "object") memory.recent = {};
+    memory.recent[normalized] = now;
+    Object.keys(memory.recent).forEach((entry) => {
+      if (now - memory.recent[entry] > NPC_REPEAT_WINDOW_MS) delete memory.recent[entry];
+    });
+    recordNpcLineUsage(text, now);
+    logChatEvent({ ...chatSources.npc, ...voice }, text, { tone: opts.tone });
+    return true;
+  }
+
   function logChatEvent(source, text, opts = {}) {
     if (!text) return;
     const color = opts.color || source?.color;
@@ -2873,6 +3252,7 @@
       category: opts.category || source?.category || "system",
       text: renderedText,
       color,
+      tone: opts.tone || null,
       type: opts.type === "divider" ? "divider" : "line"
     };
     state.chat.history.push(entry);
@@ -2884,19 +3264,29 @@
     renderChat(!state.chat.scrollLock || opts.forceScroll);
   }
 
-  function logOpsEvent(text) {
+  function logOpsEvent(text, category = "system") {
     if (!text) return;
     if (!Array.isArray(state.opsLog)) state.opsLog = [];
-    state.opsLog.push({ ts: Date.now(), text: String(text) });
+    state.opsLog.push({ ts: Date.now(), text: String(text), category });
     if (state.opsLog.length > OPS_LOG_LIMIT) {
       state.opsLog.splice(0, state.opsLog.length - OPS_LOG_LIMIT);
     }
     renderOpsLog();
   }
 
+  function isOpsAtBottom() {
+    if (!ui.opsLog) return true;
+    const list = ui.opsLog;
+    const diff = list.scrollHeight - list.scrollTop - list.clientHeight;
+    return diff < OPS_SCROLL_TOLERANCE;
+  }
+
   function renderOpsLog() {
     if (!ui.opsLog) return;
-    ui.opsLog.innerHTML = "";
+    const list = ui.opsLog;
+    const atBottom = isOpsAtBottom();
+    const prevScrollTop = list.scrollTop;
+    list.innerHTML = "";
     const frag = document.createDocumentFragment();
     const entries = state.opsLog || [];
     if (!entries.length) {
@@ -2910,12 +3300,13 @@
       text.textContent = "Ops feed idle.";
       line.append(time, text);
       frag.appendChild(line);
-      ui.opsLog.appendChild(frag);
+      list.appendChild(frag);
       return;
     }
     entries.forEach((entry) => {
       const line = document.createElement("div");
-      line.className = "ops-line";
+      const category = entry.category || "system";
+      line.className = `ops-line cat-${category}`;
       const time = document.createElement("span");
       time.className = "ops-time";
       time.textContent = formatChatTime(entry.ts);
@@ -2925,8 +3316,12 @@
       line.append(time, text);
       frag.appendChild(line);
     });
-    ui.opsLog.appendChild(frag);
-    ui.opsLog.scrollTop = ui.opsLog.scrollHeight;
+    list.appendChild(frag);
+    if (atBottom) {
+      list.scrollTop = list.scrollHeight;
+    } else {
+      list.scrollTop = Math.min(prevScrollTop, Math.max(0, list.scrollHeight - list.clientHeight));
+    }
   }
 
   function getOperatorDisplayName(prestige) {
@@ -2975,6 +3370,7 @@
       }
       const line = document.createElement("div");
       line.className = `chat-line cat-${entry.category || "system"}`;
+      if (entry.tone) line.dataset.tone = entry.tone;
       const prefix = document.createElement("div");
       prefix.className = "chat-prefix";
       const time = document.createElement("span");
@@ -3163,7 +3559,7 @@
     if (reduced && !flags.penaltyActive) {
       logChatEvent(chatSources.warning, "penalty detected, reducing funds");
       const voice = pick(npcVoices);
-      logChatEvent({ ...chatSources.npc, ...voice }, "autoclick vibes? that's weak.");
+      sendNpcChat(voice, "autoclick vibes? that's weak.");
       maybeNpcWhisperEvent("warning", "penalty detected", 0.8);
       flags.penaltyActive = true;
     } else if (!reduced && flags.penaltyActive && state.penaltyScale > 0.995) {
@@ -3192,7 +3588,7 @@
     const key = `tier-${tier.index}`;
     if (!flags[key]) {
       flags[key] = true;
-      pushNpcLine("milestone");
+      pushNpcLine("tierContext", "", { tone: "tier" });
     }
     if ([10, 25, 50, 100].includes(tier.index)) {
       pushNpcLine("milestone");
@@ -3201,6 +3597,7 @@
 
   function maybeNpcPrestige(gained) {
     pushNpcLine("prestige");
+    pushNpcLine("prestigeContext", "", { tone: "prestige" });
     if (bnCmp(gained, bnFromNumber(5)) > 0) pushNpcLine("milestone");
     maybeNpcWhisperEvent("prestige", `+${formatNumber(gained)}`);
     npcProgressCatchUp("prestige");
@@ -3223,7 +3620,7 @@
 
       const timer = setTimeout(() => {
         const line = formatNpcText(part.text, speaker, { from: from.user, to: to.user });
-        logChatEvent({ ...chatSources.npc, ...speaker }, line);
+        sendNpcChat(speaker, line, { allowRapid: true });
       }, delay);
 
       npcThreadTimers.push(timer);
@@ -3264,25 +3661,27 @@
     }
     flags.npcProgress[voice.user] = record;
     if (updates.length) {
-      const template = pick(npcLibrary.npcProgress);
-      const text = formatNpcText(template, voice, { progress: updates.join(", ") });
-      logChatEvent({ ...chatSources.npc, ...voice }, text);
+      const template = pickLine(npcLibrary.npcProgress, buildNpcContext());
+      const text = formatNpcText(template, voice, buildNpcContext({ progress: updates.join(", ") }));
+      const tone = updates.some((entry) => entry.startsWith("Reboot")) ? "prestige" : "tier";
+      sendNpcChat(voice, text, { tone });
     } else if (voice.highscore && Math.random() < 0.4) {
       // High scorer flexes occasionally
-      logChatEvent(
-        { ...chatSources.npc, ...voice },
-        formatNpcText("{user} is aiming past {player}. don't blink.", voice, {})
+      sendNpcChat(
+        voice,
+        formatNpcText("{user} is aiming past {player}. don't blink.", voice, buildNpcContext()),
+        { tone: "rank" }
       );
     }
   }
 
-  function buildPersonaLine(voice, kind) {
-    const personaPick = pickPersonaLine(voice, kind);
+  function buildPersonaLine(voice, kind, context = {}) {
+    const personaPick = pickPersonaLine(voice, kind, context);
     if (personaPick) return personaPick;
     const fallbackKey = kind === "firstClick" ? "welcome" : kind;
     const fallback = npcLibrary[fallbackKey];
-    if (fallback && fallback.length) return pick(fallback);
-    return pick(npcLibrary.whisper);
+    if (fallback && fallback.length) return pickLine(fallback, context);
+    return pickLine(npcLibrary.whisper, context);
   }
 
   function maybeNpcWhisperEvent(kind, detail = "", chanceOverride = null) {
@@ -3293,9 +3692,9 @@
     const chance = chanceOverride ?? (kind === "firstClick" ? 1 : 0.55);
     if (Math.random() > chance) return;
     const voice = pick(npcVoices);
-    const template = buildPersonaLine(voice, kind);
+    const template = buildPersonaLine(voice, kind, buildNpcContext({ detail }));
     if (!template) return;
-    const text = formatNpcText(template, voice, { detail });
+    const text = formatNpcText(template, voice, buildNpcContext({ detail }));
     sendNpcWhisper(voice, text);
   }
 
@@ -3304,22 +3703,27 @@
     const used = new Set();
     shuffled.forEach((voice) => {
       const basePool = npcLibrary[kind] || [];
-      let template = buildPersonaLine(voice, kind);
+      let template = buildPersonaLine(voice, kind, buildNpcContext(extra));
       if (!allowNames && template && /{user}/i.test(template)) {
-        template = pick(basePool.filter((t) => !/{user}/i.test(t))) || template;
+        const filtered = basePool.filter((entry) => {
+          const text = typeof entry === "string" ? entry : entry?.text || "";
+          return !/{user}/i.test(text);
+        });
+        template = pickLine(filtered, buildNpcContext(extra)) || template;
       }
-      let text = formatNpcText(template, voice, extra);
+      const context = buildNpcContext(extra);
+      let text = formatNpcText(template, voice, context);
       let attempts = 0;
       while (used.has(text) && attempts < 5) {
-        const retry = buildPersonaLine(voice, kind) || pick(basePool);
-        text = formatNpcText(retry, voice, extra);
+        const retry = buildPersonaLine(voice, kind, context) || pickLine(basePool, context);
+        text = formatNpcText(retry, voice, context);
         attempts += 1;
       }
       used.add(text);
       if (extra?.detail && !text.includes(extra.detail)) {
         text = `${text} (${extra.detail})`;
       }
-      logChatEvent({ ...chatSources.npc, ...voice }, text);
+      sendNpcChat(voice, text, { tone: extra?.tone });
     });
   }
 
@@ -3387,15 +3791,16 @@
     logChatEvent(chatSources.dev, pick(devTips));
   }
 
-  function pushNpcLine(kind, detail = "") {
-    const voice = pick(npcVoices);
-    const template = buildPersonaLine(voice, kind);
+  function pushNpcLine(kind, detail = "", opts = {}) {
+    const voice = opts.voice || pick(npcVoices);
+    const context = buildNpcContext({ detail, ...(opts.extra || {}) });
+    const template = buildPersonaLine(voice, kind, context) || pickLine(npcLibrary[kind] || [], context);
     if (!template) return;
-    let text = formatNpcText(template, voice, { detail });
+    let text = formatNpcText(template, voice, context);
     if (detail && !text.includes(detail)) {
       text = `${text} (${detail})`;
     }
-    logChatEvent({ ...chatSources.npc, ...voice }, text);
+    sendNpcChat(voice, text, { tone: opts.tone, allowRapid: opts.allowRapid, force: opts.force });
   }
 
   function scheduleNpcChatter() {
@@ -3410,6 +3815,30 @@
   function triggerNpcChatter() {
     const flags = chatFlags();
     if (!flags.firstClick) return; // stay quiet until player clicks once
+    if (isPlayerAfk()) {
+      const voice = pick(npcVoices);
+      const template = pickLine(npcLibrary.idle || [], buildNpcContext(), { allowAfk: true });
+      if (template) {
+        const line = formatNpcText(template, voice, buildNpcContext());
+        sendNpcChat(voice, line, { tone: "idle" });
+      }
+      return;
+    }
+
+    if (Math.random() < 0.22) {
+      const voice = pick(npcVoices);
+      const choices = [{ key: "tierContext", tone: "tier" }, { key: "rankContext", tone: "rank" }];
+      if (bnCmp(state.prestige.pending, bnZero()) > 0 || (state.stats?.prestiges || 0) > 0) {
+        choices.push({ key: "prestigeContext", tone: "prestige" });
+      }
+      const choice = pick(choices);
+      const template = pickLine(npcLibrary[choice.key] || [], buildNpcContext());
+      if (template) {
+        const line = formatNpcText(template, voice, buildNpcContext());
+        if (sendNpcChat(voice, line, { tone: choice.tone })) return;
+      }
+    }
+
     const convoChance = Math.random();
     if (convoChance < 0.35) {
       const from = pick(npcVoices);
@@ -3425,15 +3854,15 @@
       } else {
         const pair = pick(npcLibrary.conversationQA || []);
         if (pair && pair.ask && pair.answer) {
-          const askLine = formatNpcText(pair.ask, from, { to: to.user, from: from.user });
-          const replyLine = formatNpcText(pair.answer, to, { from: from.user, to: to.user });
-          logChatEvent({ ...chatSources.npc, ...from }, askLine);
-          logChatEvent({ ...chatSources.npc, ...to }, replyLine);
+          const askLine = formatNpcText(pair.ask, from, buildNpcContext({ to: to.user, from: from.user }));
+          const replyLine = formatNpcText(pair.answer, to, buildNpcContext({ from: from.user, to: to.user }));
+          sendNpcChat(from, askLine, { allowRapid: true });
+          sendNpcChat(to, replyLine, { allowRapid: true });
         } else {
-          const template = pick(npcLibrary.conversation);
+          const template = pickLine(npcLibrary.conversation, buildNpcContext({ to: to.user }));
           if (template) {
-            const line = formatNpcText(template, from, { to: to.user });
-            logChatEvent({ ...chatSources.npc, ...from }, line);
+            const line = formatNpcText(template, from, buildNpcContext({ to: to.user }));
+            sendNpcChat(from, line, { allowRapid: true });
           }
         }
       }
@@ -3441,10 +3870,10 @@
       return;
     }
     const voice = pick(npcVoices);
-    const text = pickPersonaLine(voice, "banter") || pick(npcLibrary.random);
+    const text = pickPersonaLine(voice, "banter", buildNpcContext()) || pickLine(npcLibrary.random, buildNpcContext());
     if (text) {
-      const line = formatNpcText(text, voice, {});
-      logChatEvent({ ...chatSources.npc, ...voice }, line);
+      const line = formatNpcText(text, voice, buildNpcContext());
+      sendNpcChat(voice, line);
     }
   }
 
@@ -3459,6 +3888,11 @@
       .replace(/{detail}/gi, extra.detail || "")
       .replace(/{progress}/gi, extra.progress || "")
       .replace(/{tier}/gi, extra.tier || "")
+      .replace(/{tierName}/gi, extra.tierName || "")
+      .replace(/{rank}/gi, extra.rank || "")
+      .replace(/{pending}/gi, extra.pending || "")
+      .replace(/{required}/gi, extra.required || "")
+      .replace(/{prestigeTotal}/gi, extra.prestigeTotal || "")
       .replace(/{prestige}/gi, extra.prestige || "");
   }
 
@@ -3483,10 +3917,10 @@
         const text = formatNpcText(
           greetings[index % greetings.length],
           npc,
-          { player: state.playerName || "operator" }
+          buildNpcContext()
         );
 
-        logChatEvent({ ...chatSources.npc, ...npc }, text);
+        sendNpcChat(npc, text, { force: true });
       }, delay);
     });
 
@@ -3585,6 +4019,7 @@
     const text = raw.trim();
     if (!text) return;
     ui.chatInput.value = "";
+    recordPlayerAction();
     const player = resolvePlayerName();
     const whisper = parseWhisper(text);
     if (whisper) {
@@ -3621,6 +4056,21 @@
 
   function sendNpcWhisper(voice, text) {
     if (!text) return;
+    const now = Date.now();
+    const key = (voice?.id || voice?.user || "npc").toString().toLowerCase();
+    const memory = getNpcMemory(key);
+    const normalized = normalizeNpcLine(text);
+    if (now - (memory.lastTs || 0) < NPC_LINE_COOLDOWN_MS) return;
+    if (memory.recent?.[normalized] && now - memory.recent[normalized] < NPC_REPEAT_WINDOW_MS) return;
+    if (isNpcLineRecentlyUsed(text, now)) return;
+    memory.lastTs = now;
+    memory.lastText = text;
+    if (!memory.recent || typeof memory.recent !== "object") memory.recent = {};
+    memory.recent[normalized] = now;
+    Object.keys(memory.recent).forEach((entry) => {
+      if (now - memory.recent[entry] > NPC_REPEAT_WINDOW_MS) delete memory.recent[entry];
+    });
+    recordNpcLineUsage(text, now);
     logWhisperLine(voice.user, resolvePlayerName(), text);
     chatFlags().lastNpcWhisper = Date.now();
   }
@@ -3634,14 +4084,14 @@
     if (!message) return;
     logWhisperLine(player, voice.user, message);
     const reply = pickWhisperTemplate(voice, message);
-    if (reply) sendNpcWhisper(voice, formatNpcText(reply, voice, {}));
+    if (reply) sendNpcWhisper(voice, formatNpcText(reply, voice, buildNpcContext()));
   }
 
-  function pickPersonaLine(voice, kind) {
+  function pickPersonaLine(voice, kind, context = {}) {
     const pool = npcLibrary.personaPools?.[voice?.persona] || {};
-    if (pool[kind]?.length) return pick(pool[kind]);
-    if (kind !== "whisper" && pool.banter?.length) return pick(pool.banter);
-    if (pool.whisper?.length) return pick(pool.whisper);
+    if (pool[kind]?.length) return pickLine(pool[kind], context);
+    if (kind !== "whisper" && pool.banter?.length) return pickLine(pool.banter, context);
+    if (pool.whisper?.length) return pickLine(pool.whisper, context);
     return null;
   }
 
@@ -3658,11 +4108,12 @@
   function pickWhisperTemplate(voice, message = "") {
     const topic = detectWhisperTopic(message);
     const persona = npcLibrary.personaPools?.[voice?.persona];
-    if (persona?.whisperTopics?.[topic]?.length) return pick(persona.whisperTopics[topic]);
-    if (persona?.whisperTopics?.generic?.length) return pick(persona.whisperTopics.generic);
-    if (npcLibrary.whisperTopics?.[topic]?.length) return pick(npcLibrary.whisperTopics[topic]);
-    if (npcLibrary.whisperTopics?.generic?.length) return pick(npcLibrary.whisperTopics.generic);
-    return pickPersonaLine(voice, "whisper") || pick(npcLibrary.whisper);
+    const context = buildNpcContext();
+    if (persona?.whisperTopics?.[topic]?.length) return pickLine(persona.whisperTopics[topic], context);
+    if (persona?.whisperTopics?.generic?.length) return pickLine(persona.whisperTopics.generic, context);
+    if (npcLibrary.whisperTopics?.[topic]?.length) return pickLine(npcLibrary.whisperTopics[topic], context);
+    if (npcLibrary.whisperTopics?.generic?.length) return pickLine(npcLibrary.whisperTopics.generic, context);
+    return pickPersonaLine(voice, "whisper", context) || pickLine(npcLibrary.whisper, context);
   }
 
   function maybeNpcWhisperReply(voice) {
@@ -3671,7 +4122,7 @@
     if (flags.lastNpcWhisper && now - flags.lastNpcWhisper < 3000) return;
     const template = pickWhisperTemplate(voice);
     if (!template) return;
-    sendNpcWhisper(voice, formatNpcText(template, voice, {}));
+    sendNpcWhisper(voice, formatNpcText(template, voice, buildNpcContext()));
   }
 
   function resolveTierFromArg(arg) {
@@ -3747,13 +4198,13 @@
         if (Math.random() < 0.8) {
           const voice = pick(npcVoices);
           const line =
-            (npcLibrary.curse && npcLibrary.curse.length ? pick(npcLibrary.curse) : null) ||
+            (npcLibrary.curse && npcLibrary.curse.length ? pickLine(npcLibrary.curse, buildNpcContext()) : null) ||
             "watch it, operator. the console remembers.";
-          logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+          sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()));
         } else {
           // 20% Sentinel-ish reaction
           const line =
-            (npcLibrary.curseSentinel && npcLibrary.curseSentinel.length ? pick(npcLibrary.curseSentinel) : null) ||
+            (npcLibrary.curseSentinel && npcLibrary.curseSentinel.length ? pickLine(npcLibrary.curseSentinel, buildNpcContext()) : null) ||
             "verbal anomaly detected.";
           logChatEvent(chatSources.integrity, line);
         }
@@ -3768,7 +4219,7 @@
     }
     if (isGibberish(lower)) {
       const voice = pick(npcVoices);
-      logChatEvent({ ...chatSources.npc, ...voice }, "???");
+      sendNpcChat(voice, "???");
       return;
     }
     if (handleOperatorIntent(lower)) {
@@ -3776,7 +4227,7 @@
     }
     if (lower.includes("hello") || lower.includes("hi")) {
       const voice = pick(npcVoices);
-      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText("hey {player}. we're listening.", voice, {}));
+      sendNpcChat(voice, formatNpcText("hey {player}. we're listening.", voice, buildNpcContext()));
       return;
     }
     maybeBroadcastToNpcGroup();
@@ -3799,22 +4250,37 @@
     const voice = pick(npcVoices);
     if (/(stuck|blocked|wall|halt)/.test(lower)) {
       const line = pickWhisperTemplate(voice, "stuck");
-      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()));
       return true;
     }
     if (/(optimize|efficien|route|build|calc)/.test(lower)) {
       const line = pickWhisperTemplate(voice, "optimize");
-      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()));
       return true;
     }
     if (/(thanks|thank you|ty|appreciate)/.test(lower)) {
       const line = pickWhisperTemplate(voice, "praise");
-      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()));
+      return true;
+    }
+    if (/(rank|status|badge)/.test(lower)) {
+      const line = pickLine(npcLibrary.rankContext, buildNpcContext()) || pickLine(npcLibrary.random, buildNpcContext());
+      if (!line) return true;
+      sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()), { tone: "rank" });
+      return true;
+    }
+    if (/(tier|depth|layer|level)/.test(lower)) {
+      const line = pickLine(npcLibrary.tierContext, buildNpcContext()) || pickLine(npcLibrary.milestone, buildNpcContext());
+      if (!line) return true;
+      sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()), { tone: "tier" });
       return true;
     }
     if (/(prestige|reset|reboot)/.test(lower)) {
-      const line = buildPersonaLine(voice, "prestige") || pick(npcLibrary.prestige);
-      logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+      const line =
+        pickLine(npcLibrary.prestigeContext, buildNpcContext()) ||
+        buildPersonaLine(voice, "prestige", buildNpcContext()) ||
+        pickLine(npcLibrary.prestige, buildNpcContext());
+      sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()), { tone: "prestige" });
       return true;
     }
     return false;
@@ -3834,7 +4300,7 @@
     }
     if (count >= 3) {
       const voice = pick(npcVoices);
-      logChatEvent({ ...chatSources.npc, ...voice }, "slow down, we're reading.");
+      sendNpcChat(voice, "slow down, we're reading.");
     }
   }
 
@@ -3842,8 +4308,8 @@
     if (Math.random() > 0.4) return;
     const pool = [...npcVoices].sort(() => 0.5 - Math.random()).slice(0, 3);
     pool.forEach((voice) => {
-      const line = formatNpcText("got your ping, {player}.", voice, {});
-      logChatEvent({ ...chatSources.npc, ...voice }, line);
+      const line = formatNpcText("got your ping, {player}.", voice, buildNpcContext());
+      sendNpcChat(voice, line);
     });
   }
 
@@ -3853,8 +4319,8 @@
     mentions.forEach((m) => {
       const voice = resolveNpcVoice(m);
       if (voice) {
-        const line = buildPersonaLine(voice, "banter") || formatNpcText("yo {player}, heard you called?", voice, {});
-        logChatEvent({ ...chatSources.npc, ...voice }, formatNpcText(line, voice, {}));
+        const line = buildPersonaLine(voice, "banter") || formatNpcText("yo {player}, heard you called?", voice, buildNpcContext());
+        sendNpcChat(voice, formatNpcText(line, voice, buildNpcContext()));
       }
     });
   }

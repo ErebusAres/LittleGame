@@ -16,158 +16,179 @@
       <span id="warningLine">WARNING: Active Development. Progress may be reset at any time.</span>
     </div>
     <div id="mainGrid">
-      <section id="corePanel" class="panel">
-        <div class="panel-header">Core</div>
-        <div class="stat-grid">
-          <div class="stat-block">
-            <div class="label">Credits</div>
-            <div id="currencyDisplay" class="value mono">0</div>
+      <section id="progressionColumn" data-panel-group="progression">
+        <section id="tiersPanel" class="panel" data-panel-id="tiers">
+          <div class="panel-header">
+            <span>Tiers</span>
+            <div class="panel-actions">
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="min" aria-label="Minimize"></button>
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="max" aria-label="Maximize"></button>
+            </div>
           </div>
-          <div class="stat-block">
-            <div class="label">Click Value</div>
-            <div id="clickValueDisplay" class="value mono">+1</div>
+          <div id="tiersList" class="tier-list"></div>
+          <div id="nextTier" class="next-tier">
+            <div id="nextTierLabel">Next tier locked.</div>
+            <button id="unlockTierButton" class="secondary has-tip"
+              data-tip="Spend current highest tier resource to unlock the next layer. Costs rise with difficulty.">Unlock</button>
           </div>
-          <div class="stat-block">
-            <div class="label">Generation</div>
-            <div id="rateDisplay" class="value mono">0/s</div>
-          </div>
-        </div>
-        <button id="clickButton" class="primary has-tip tip-bottom"
-          data-tip="Manual input. Generates primary currency instantly with current click value.">Execute
-          (Click)</button>
+        </section>
       </section>
 
-      <section id="automationPanel" class="panel">
-        <div class="panel-header">Automation</div>
-        <div class="stat-grid">
-          <div class="stat-block">
-            <div class="label">Automation Power</div>
-            <div id="automationPower" class="value mono">x1.00</div>
+      <section id="metaColumn" data-panel-group="meta">
+        <section id="prestigePanel" class="panel" data-panel-id="prestige">
+          <div class="panel-header">
+            <span>Prestige</span>
+            <div class="panel-actions">
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="min" aria-label="Minimize"></button>
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="max" aria-label="Maximize"></button>
+            </div>
           </div>
-          <div class="stat-block">
-            <div class="label">Prestige Multiplier</div>
-            <div id="prestigeMultiplier" class="value mono">x1.00</div>
+          <div class="stat-grid">
+            <div class="stat-block">
+              <div class="label">Prestige Points</div>
+              <div id="prestigePoints" class="value mono">0</div>
+            </div>
+            <div class="stat-block">
+              <div class="label">Pending Gain</div>
+              <div id="pendingPrestige" class="value mono">0</div>
+            </div>
           </div>
-        </div>
-        <div class="ascii-wrap">
-          <div class="label">Throughput</div>
-          <div id="autoBar" class="ascii-bar">[......................]</div>
-        </div>
+          <button id="prestigeButton" class="secondary has-tip"
+            data-tip="Reboot the system, reset tiers and currency, gain prestige points for a permanent multiplier.">Reboot
+            (Prestige)</button>
+          <div class="subsection">
+            <div class="subheader">Meta Upgrades</div>
+            <div id="metaUpgrades" class="upgrade-list"></div>
+          </div>
+        </section>
+
+        <section id="upgradesPanel" class="panel" data-panel-id="upgrades">
+          <div class="panel-header">
+            <span>Upgrades</span>
+            <div class="panel-actions">
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="min" aria-label="Minimize"></button>
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="max" aria-label="Maximize"></button>
+            </div>
+          </div>
+          <div class="panel-toolbar compact">
+            <label class="sort-toggle">
+              <input type="checkbox" id="sortUpgradesToggle">
+              <span>Sort by cost</span>
+            </label>
+          </div>
+          <div class="upgrade-scroll">
+            <div class="subsection">
+              <div class="subheader">Core & Automation</div>
+              <div id="globalUpgrades" class="upgrade-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="corePanel" class="panel core-strip" data-panel-id="command">
+          <div class="panel-header">
+            <span>Command</span>
+            <div class="panel-actions">
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="min" aria-label="Minimize"></button>
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="max" aria-label="Maximize"></button>
+            </div>
+          </div>
+          <div class="core-stats">
+            <div class="stat-block">
+              <div class="label">Credits</div>
+              <div id="currencyDisplay" class="value mono">0</div>
+            </div>
+            <div class="stat-block">
+              <div class="label">Click Value</div>
+              <div id="clickValueDisplay" class="value mono">+1</div>
+            </div>
+            <div class="stat-block">
+              <div class="label">Generation</div>
+              <div id="rateDisplay" class="value mono">0/s</div>
+            </div>
+            <div class="stat-block">
+              <div class="label">Automation Power</div>
+              <div id="automationPower" class="value mono">x1.00</div>
+            </div>
+            <div class="stat-block">
+              <div class="label">Prestige Multiplier</div>
+              <div id="prestigeMultiplier" class="value mono">x1.00</div>
+            </div>
+          </div>
+          <div class="core-actions">
+            <button id="clickButton" class="primary has-tip tip-bottom"
+              data-tip="Manual input. Generates primary currency instantly with current click value.">Execute
+              (Click)</button>
+            <div class="buy-mode">
+              <span class="label">Buy</span>
+              <button class="small secondary buy-mode-btn" data-buy-mode="1">x1</button>
+              <button class="small secondary buy-mode-btn" data-buy-mode="5">x5</button>
+              <button class="small secondary buy-mode-btn" data-buy-mode="max">Max</button>
+            </div>
+          </div>
+          <div class="core-throughput">
+            <div class="label">Throughput</div>
+            <div id="autoBar" class="ascii-bar">[......................]</div>
+          </div>
+        </section>
       </section>
 
-      <section id="infoPanel" class="panel">
-        <div class="panel-header">Info</div>
-        <div class="info-grid">
-          <div class="info-line">
-            <div class="label">Session</div>
-            <div id="sessionTime" class="value mono">00:00</div>
+      <section id="commandColumn" data-panel-group="command">
+        <section id="intelPanel" class="panel intel-strip intel-ops-panel" data-panel-id="intel">
+          <div class="panel-header">
+            <span>Intel / Ops</span>
+            <div class="panel-actions">
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="min" aria-label="Minimize"></button>
+              <button class="small secondary panel-action-btn" type="button" data-panel-action="max" aria-label="Maximize"></button>
+              <button id="opsToggle" class="small secondary panel-toggle" type="button" aria-expanded="true">Hide</button>
+            </div>
           </div>
-          <div class="info-line">
-            <div class="label">Upgrades</div>
-            <div id="upgradeCount" class="value mono">0</div>
+          <div class="intel-grid">
+            <div class="info-line">
+              <div class="label">Session</div>
+              <div id="sessionTime" class="value mono">00:00</div>
+            </div>
+            <div class="info-line">
+              <div class="label">Upgrades</div>
+              <div id="upgradeCount" class="value mono">0</div>
+            </div>
+            <div class="info-line">
+              <div class="label">Offline</div>
+              <div id="offlineDisplay" class="value mono">None</div>
+            </div>
+            <div class="info-line">
+              <div class="label">Difficulty</div>
+              <div id="difficultyStatus" class="value mono">1x</div>
+            </div>
+            <div class="info-line">
+              <div class="label">Hard Mode</div>
+              <div id="hardModeStatus" class="value mono">Idle</div>
+            </div>
+            <div class="info-line">
+              <div class="label">Integrity</div>
+              <div id="integrityStatus" class="value mono">Clean</div>
+            </div>
+            <div class="info-line">
+              <div class="label">CPS</div>
+              <div id="cpsDisplay" class="value mono">0.0</div>
+            </div>
           </div>
-          <div class="info-line">
-            <div class="label">Offline</div>
-            <div id="offlineDisplay" class="value mono">None</div>
+          <div class="muted mono small-text" id="infoDetail">System steady.</div>
+          <div id="opsFeedSection" class="ops-feed">
+            <div class="ops-body">
+              <div id="opsLog" class="ops-log mono small-text"></div>
+            </div>
           </div>
-          <div class="info-line">
-            <div class="label">Difficulty</div>
-            <div id="difficultyStatus" class="value mono">1x</div>
-          </div>
-          <div class="info-line">
-            <div class="label">Hard Mode</div>
-            <div id="hardModeStatus" class="value mono">Idle</div>
-          </div>
-          <div class="info-line">
-            <div class="label">Integrity</div>
-            <div id="integrityStatus" class="value mono">Clean</div>
-          </div>
-          <div class="info-line">
-            <div class="label">CPS</div>
-            <div id="cpsDisplay" class="value mono">0.0</div>
-          </div>
-        </div>
-        <div class="muted mono small-text" id="infoDetail">System steady.</div>
-      </section>
+        </section>
 
-      <section id="prestigePanel" class="panel">
-        <div class="panel-header">Prestige</div>
-        <div class="panel-toolbar compact">
-          <div class="buy-mode">
-            <span class="label">Buy</span>
-            <button class="small secondary buy-mode-btn" data-buy-mode="1">x1</button>
-            <button class="small secondary buy-mode-btn" data-buy-mode="5">x5</button>
-            <button class="small secondary buy-mode-btn" data-buy-mode="max">Max</button>
-          </div>
-        </div>
-        <div class="stat-grid">
-          <div class="stat-block">
-            <div class="label">Prestige Points</div>
-            <div id="prestigePoints" class="value mono">0</div>
-          </div>
-          <div class="stat-block">
-            <div class="label">Pending Gain</div>
-            <div id="pendingPrestige" class="value mono">0</div>
-          </div>
-        </div>
-        <button id="prestigeButton" class="secondary has-tip"
-          data-tip="Reboot the system, reset tiers and currency, gain prestige points for a permanent multiplier.">Reboot
-          (Prestige)</button>
-        <div class="subsection">
-          <div class="subheader">Meta Upgrades</div>
-          <div id="metaUpgrades" class="upgrade-list"></div>
-        </div>
-      </section>
-
-      <section id="tiersPanel" class="panel">
-        <div class="panel-header">Tiers</div>
-        <div class="panel-toolbar compact">
-          <div class="buy-mode">
-            <span class="label">Buy</span>
-            <button class="small secondary buy-mode-btn" data-buy-mode="1">x1</button>
-            <button class="small secondary buy-mode-btn" data-buy-mode="5">x5</button>
-            <button class="small secondary buy-mode-btn" data-buy-mode="max">Max</button>
-          </div>
-        </div>
-        <div id="tiersList" class="tier-list"></div>
-        <div id="nextTier" class="next-tier">
-          <div id="nextTierLabel">Next tier locked.</div>
-          <button id="unlockTierButton" class="secondary has-tip"
-            data-tip="Spend current highest tier resource to unlock the next layer. Costs rise with difficulty.">Unlock</button>
-        </div>
-      </section>
-
-      <section id="upgradesPanel" class="panel">
-        <div class="panel-header">Upgrades</div>
-        <div class="panel-toolbar">
-          <div class="buy-mode">
-            <span class="label">Buy</span>
-            <button class="small secondary buy-mode-btn" data-buy-mode="1">x1</button>
-            <button class="small secondary buy-mode-btn" data-buy-mode="5">x5</button>
-            <button class="small secondary buy-mode-btn" data-buy-mode="max">Max</button>
-          </div>
-          <label class="sort-toggle">
-            <input type="checkbox" id="sortUpgradesToggle">
-            <span>Sort by cost</span>
-          </label>
-        </div>
-        <div class="subsection">
-          <div class="subheader">Core & Automation</div>
-          <div id="globalUpgrades" class="upgrade-list"></div>
-        </div>
-        <div class="subsection ops-feed">
-          <div class="subheader">Ops Feed</div>
-          <div id="opsLog" class="ops-log mono small-text"></div>
-        </div>
-      </section>
-
-      <section id="chatPanel" class="panel chat-panel">
+        <section id="chatPanel" class="panel chat-panel">
         <div class="panel-header chat-tab">
           <span>CHAT</span>
-          <span class="live-indicator">
-            <span class="live-dot"></span>
-            <span class="live-text">LIVE</span>
-          </span>
+          <div class="panel-header-right">
+            <span class="live-indicator">
+              <span class="live-dot"></span>
+              <span class="live-text">LIVE</span>
+            </span>
+          </div>
         </div>
         <div id="chatList" class="chat-list"></div>
         <div class="chat-footer">
@@ -176,6 +197,7 @@
           <button id="chatSendButton" class="small">Send</button>
           <button id="chatLiveButton" class="small secondary hidden-live">Scroll to live</button>
         </div>
+        </section>
       </section>
     </div>
 
@@ -206,6 +228,7 @@
     </div>
   </div>
   <div id="toastContainer" class="toast-container"></div>
+  <script src="npc-lines.js"></script>
   <script src="game.js"></script>
 </body>
 

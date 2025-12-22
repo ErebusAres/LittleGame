@@ -137,6 +137,7 @@ let tooltipTarget = null;
 let tooltipMoveRaf = null;
 
 initUI();
+setupExitSave();
 bootstrapChat();
 applyOfflineProgress();
 syncStage(false);
@@ -568,6 +569,13 @@ function saveGame() {
   } catch (err) {
     // ignore storage errors quietly
   }
+}
+
+function setupExitSave() {
+  window.addEventListener("pagehide", saveGame);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) saveGame();
+  });
 }
 
 function encodeSave(obj) {
